@@ -106,28 +106,28 @@ main {
 }
 
 .corner.top-left {
-    top: 15%;
-    left: 10%;
+    top: 8%;
+    left: 2%;
     width: 15px;
     height: 15px;
 }
 
 .corner.top-right {
-    top: 15%;
+    top: 8%;
     right: 10%;
     width: 18px;
     height: 15px;
 }
 
 .corner.bottom-left {
-    top: 40%;
-    left: 10%;
+    top: 75%;
+    left: 2%;
     width: 15px;
     height: 18px;
 }
 
 .corner.bottom-right {
-    top: 40%;
+    top: 75%;
     right: 10%;
     width: 18px;
     height: 18px;

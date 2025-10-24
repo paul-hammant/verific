@@ -197,17 +197,37 @@ captureBtn.addEventListener('click', async () => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
 
-        // Calculate the region within registration marks
-        // These values MUST match the CSS in styles.css (.corner positions)
-        const leftMargin = 0.10;    // 10% from left
-        const rightMargin = 0.10;   // 10% from right
-        const topMargin = 0.15;     // 15% from top
-        const bottomMargin = 0.60;  // 60% from bottom (bottom marks at 40% from top)
+        // Calculate what portion of the video is visible in the container
+        // The video has object-fit: cover and object-position: top
+        // Container aspect ratio is 2:1 (width:height)
+        const containerAspect = 2; // width / height
+        const videoAspect = video.videoWidth / video.videoHeight;
 
+        let visibleVideoTop = 0;
+        let visibleVideoHeight = video.videoHeight;
+
+        if (videoAspect < containerAspect) {
+            // Video is taller/narrower than container
+            // Width fills container, height is cropped
+            // Calculate how much of video height is visible
+            const scaleFactor = containerAspect / videoAspect;
+            visibleVideoHeight = video.videoHeight / scaleFactor;
+            visibleVideoTop = 0; // object-position: top means we show from top
+        }
+
+        // Registration marks are at: left 2%, right 10%, top 8%, bottom 75%
+        // Crop INSIDE the marks to avoid OCR picking up the black squares
+        // Add ~4% padding inside each mark
+        const leftMargin = 0.06;    // Marks at 2%, crop at 6% (inside the marks)
+        const rightMargin = 0.14;   // Marks at 90%, crop at 86% (inside the marks)
+        const topMargin = 0.12;     // Marks at 8%, crop at 12% (inside the marks)
+        const bottomMargin = 0.29;  // Marks at 75%, crop ends at 71% (inside the marks)
+
+        // Calculate crop region in actual video coordinates
         const sourceX = video.videoWidth * leftMargin;
-        const sourceY = video.videoHeight * topMargin;
+        const sourceY = visibleVideoTop + (visibleVideoHeight * topMargin);
         const sourceWidth = video.videoWidth * (1 - leftMargin - rightMargin);
-        const sourceHeight = video.videoHeight * (1 - topMargin - bottomMargin);
+        const sourceHeight = visibleVideoHeight * (1 - topMargin - bottomMargin);
 
         canvas.width = sourceWidth;
         canvas.height = sourceHeight;
