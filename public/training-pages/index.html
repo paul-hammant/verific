@@ -1,0 +1,200 @@
+<!--
+    Copyright (C) 2025, Paul Hammant
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verific Training Pages</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        .instructions {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .instructions h2 {
+            color: #1976d2;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        .training-cards {
+            display: grid;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 25px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .card p {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .card a {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .card a:hover {
+            background: #5568d3;
+            transform: translateX(4px);
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #e2e8f0;
+            text-align: center;
+            color: #666;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #48bb78;
+            color: white;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📱 Verific Training Pages</h1>
+        <p class="subtitle">Practice scanning certifications with the Verific OCR-to-hash verifier</p>
+
+        <div class="instructions">
+            <h2>How to Use These Training Pages</h2>
+            <ol>
+                <li><strong>Display on Computer:</strong> Open one of the training pages below on your desktop or laptop screen</li>
+                <li><strong>Open Verific App:</strong> On your phone, go to <a href="https://paul-hammant.github.io/verific/" target="_blank">paul-hammant.github.io/verific</a></li>
+                <li><strong>Start Camera:</strong> Click "Start Camera" in the app</li>
+                <li><strong>Align Registration Marks:</strong> Position your phone so the black square registration marks in the app align with the squares on the training page</li>
+                <li><strong>Capture & Verify:</strong> Click "Capture & Verify" to scan and verify the certification</li>
+                <li><strong>Check Results:</strong> The app will extract text, compute the hash, and verify against the certification database</li>
+            </ol>
+        </div>
+
+        <h2>Training Pages</h2>
+        <div class="training-cards">
+            <div class="card">
+                <h3>Medical PPE Gloves <span class="badge">VERIFIED</span></h3>
+                <p>Practice scanning a medical gloves certification. This example demonstrates verification of personal protective equipment using the ASTM D6319-19 standard.</p>
+                <a href="medical-ppe-gloves.html">Open Training Page →</a>
+            </div>
+
+            <div class="card">
+                <h3>Food Safety Equipment <span class="badge">VERIFIED</span></h3>
+                <p>Practice scanning a food safety equipment certification. This example shows NSF/ANSI Standard 8 compliance for commercial kitchen equipment.</p>
+                <a href="food-safety-equipment.html">Open Training Page →</a>
+            </div>
+
+            <div class="card">
+                <h3>Electronics Safety <span class="badge">VERIFIED</span></h3>
+                <p>Practice scanning an electronics safety certification. This example demonstrates UL certification for power supply units.</p>
+                <a href="electronics-safety.html">Open Training Page →</a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>These are training examples for the <a href="https://paul-hammant.github.io/verific/">Verific OCR-to-hash verification system</a></p>
+            <p>All certifications are verified in the hash database and will return positive verification results.</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+{
+  "e6200eead4c2ec90f6393eb1559d4b24c3dcbdc54e6fd610014bb9f668cc8710": {
+    "status": "verified",
+    "message": "Intertek certification validated",
+    "timestamp": "2025-10-24T06:44:30.456Z"
+  },
+  "110524636eb2bf65af643bfe7c2823de7628d2c5969cd699249896475f3b5808": {
+    "status": "verified",
+    "message": "BSI Group certification - Type IIR mask",
+    "timestamp": "2025-10-24T06:44:30.456Z"
+  },
+  "9899d75881c02c5aa3fb84b1fc3cbe63a4a6831b0e3c918947113a200fb89a77": {
+    "status": "verified",
+    "message": "CE marked surgical gloves",
+    "timestamp": "2025-10-24T06:44:30.456Z"
+  },
+  "3607bbe2d8db48906656230e4bcddc8f34642677c49fd84a51caef8d49a73a1c": {
+    "status": "verified",
+    "message": "Training example: Medical PPE Gloves",
+    "timestamp": "2025-10-24T06:44:30.456Z"
+  },
+  "d9e01dd0cd3630231285472d0f09367e35f5cbf43a0ac9579b5d29c9541f3c80": {
+    "status": "verified",
+    "message": "Training example: Food Safety Equipment",
+    "timestamp": "2025-10-24T06:44:30.456Z"
+  },
+  "3488a496f310f743da8dbcadb1fbdcaa7987984380dc3a0f8ecaf0683c540f92": {
+    "status": "verified",
+    "message": "Training example: Electronics Safety",
+    "timestamp": "2025-10-24T06:44:30.456Z"
+  },
+  "d8f402889929a49d489d30ca9991989111c4bd0e3bdac15791d95c81269c31a5": {
+    "status": "revoked",
+    "message": "Product recalled due to safety concerns",
+    "timestamp": "2025-10-24T06:44:30.456Z"
+  },
+  "fe59b91b97619ae831e895bd38a123d3500a393778d0ab58c2fffb894e0704be": {
+    "status": "denied",
+    "message": "Certification application denied",
+    "timestamp": "2025-10-24T06:44:30.457Z"
+  }
+}

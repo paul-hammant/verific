@@ -1,0 +1,32 @@
+{
+  "name": "ocr-hash-verifier",
+  "version": "1.0.0",
+  "description": "OCR-to-Hash verification system for physical documents",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "build": "webpack",
+    "serve": "cd public && python3 -m http.server 8000"
+  },
+  "keywords": [
+    "ocr",
+    "verification",
+    "hash",
+    "audit"
+  ],
+  "author": "",
+  "license": "AGPL-3.0-or-later",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "better-sqlite3": "^9.2.2",
+    "jest": "^29.7.0",
+    "sharp": "^0.34.4",
+    "tesseract.js": "^6.0.1"
+  }
+}

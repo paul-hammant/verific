@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical PPE Gloves Certification - Training Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .instructions {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .instructions h2 {
+            color: #1976d2;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        .certification-box {
+            position: relative;
+            padding: 40px;
+            background: white;
+            margin: 30px 0;
+        }
+
+        .registration-marks {
+            position: absolute;
+            top: 8%;
+            left: 2%;
+            right: 10%;
+            bottom: 5%;
+            pointer-events: none;
+        }
+
+        .corner {
+            position: absolute;
+            background: black;
+        }
+
+        .corner.top-left {
+            top: 0;
+            left: 0;
+            width: 15px;
+            height: 15px;
+        }
+
+        .corner.top-right {
+            top: 0;
+            right: 0;
+            width: 18px;
+            height: 15px;
+        }
+
+        .corner.bottom-left {
+            bottom: 0;
+            left: 0;
+            width: 15px;
+            height: 18px;
+        }
+
+        .corner.bottom-right {
+            bottom: 0;
+            right: 0;
+            width: 18px;
+            height: 18px;
+        }
+
+        .cert-content {
+            font-size: 18px;
+            line-height: 1.6;
+            white-space: pre-line;
+            margin-bottom: 20px;
+        }
+
+        .verify-url {
+            font-family: monospace;
+            font-size: 14px;
+            color: #666;
+            word-break: break-all;
+        }
+
+        .info {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .info strong {
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Medical PPE Gloves Certification</h1>
+
+        <div class="instructions">
+            <h2>📱 How to Use This Training Page</h2>
+            <ol>
+                <li>Open the <a href="https://paul-hammant.github.io/verific/" target="_blank">Verific webapp</a> on your phone</li>
+                <li>Display this page on your computer screen</li>
+                <li>Use your phone camera to scan the certification box below</li>
+                <li>Align the registration marks (black squares) on your phone with the marks in the box</li>
+                <li>Click "Capture & Verify" to verify the certification</li>
+            </ol>
+        </div>
+
+        <div class="certification-box">
+            <div class="registration-marks">
+                <div class="corner top-left"></div>
+                <div class="corner top-right"></div>
+                <div class="corner bottom-left"></div>
+                <div class="corner bottom-right"></div>
+            </div>
+
+            <div class="cert-content">Certified Medical Gloves
+Manufacturer: SafeMed Industries
+Standard: ASTM D6319-19
+Batch: 2024-B-8847
+Tested: January 15, 2024
+Certified by: TÜV SÜD</div>
+
+            <div class="verify-url">https://paul-hammant.github.io/verific/c</div>
+        </div>
+
+        <div class="info">
+            <strong>Expected Result:</strong> When scanned correctly, the app should compute hash
+            <code>3607bbe2d8db4890...</code> and verify it against the certification database.
+        </div>
+    </div>
+</body>
+</html>

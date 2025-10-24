@@ -1,0 +1,118 @@
+<!--
+    Copyright (C) 2025, Paul Hammant
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as
+    published by the Free Software Foundation, either version 3 of the
+    License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verific: OCR to hash verifier</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js'></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 id="appTitle">Verific: OCR to hash verifier</h1>
+            <p>Scan text within registration marks to verify authenticity</p>
+            <div id="buildTimestamp" style="display: none; font-size: 0.8rem; margin-top: 10px; opacity: 0.8;"></div>
+        </header>
+
+        <main>
+            <div class="camera-section">
+                <div class="video-container">
+                    <video id="video" autoplay playsinline></video>
+                    <canvas id="overlay"></canvas>
+                    <div class="registration-marks">
+                        <div class="corner top-left"></div>
+                        <div class="corner top-right"></div>
+                        <div class="corner bottom-left"></div>
+                        <div class="corner bottom-right"></div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button id="startCamera" class="btn btn-primary">Start Camera</button>
+                    <button id="captureBtn" class="btn btn-success" disabled>Capture & Verify</button>
+                    <button id="stopCamera" class="btn btn-secondary" disabled>Stop Camera</button>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <div class="status-indicator" id="statusIndicator">
+                    <div class="status-icon">📷</div>
+                    <div class="status-text">Ready to scan</div>
+                </div>
+
+                <div class="progress-bar" id="progressBar" style="display: none;">
+                    <div class="progress-fill"></div>
+                    <div class="progress-text">Processing...</div>
+                </div>
+
+                <div class="result-card" id="textResult" style="display: none;">
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="cropped">Cropped Image</button>
+                        <button class="tab-btn" data-tab="extracted">Extracted Text</button>
+                        <button class="tab-btn" data-tab="normalized">Normalized Text</button>
+                    </div>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab-cropped">
+                            <img id="croppedImage" style="max-width: 100%; border: 1px solid #e2e8f0; border-radius: 8px;" />
+                        </div>
+                        <div class="tab-pane" id="tab-extracted">
+                            <pre id="extractedText"></pre>
+                        </div>
+                        <div class="tab-pane" id="tab-normalized">
+                            <pre id="normalizedText"></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-card" id="hashResult" style="display: none;">
+                    <h3>SHA-256 Hash</h3>
+                    <div class="hash-value" id="hashValue"></div>
+                    <button id="copyHash" class="btn btn-small">Copy Hash</button>
+                </div>
+
+                <div class="result-card" id="verificationResult" style="display: none;">
+                    <h3>Verification Status</h3>
+                    <div class="verification-status" id="verificationStatus"></div>
+                    <div class="verification-url" id="verificationUrl"></div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <details>
+                <summary>How it works</summary>
+                <ol>
+                    <li>Position the registration marks around the text you want to verify</li>
+                    <li>Capture the image - OCR extracts the text</li>
+                    <li>Text is normalized (trim spaces, collapse whitespace)</li>
+                    <li>SHA-256 hash is computed</li>
+                    <li>Hash is verified against the certification server</li>
+                </ol>
+            </details>
+            <p style="margin-top: 15px; text-align: center; font-size: 0.9rem; color: #666;">
+                <a href="https://github.com/paul-hammant/verific/tree/main/public" target="_blank" style="color: #667eea; text-decoration: none;">View Source Code</a> · Licensed under AGPL-3.0-or-later
+            </p>
+        </footer>
+    </div>
+
+    <script src="app-url-based.js"></script>
+</body>
+</html>
