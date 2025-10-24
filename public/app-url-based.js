@@ -59,8 +59,63 @@ const copyHashBtn = document.getElementById('copyHash');
 const verificationResult = document.getElementById('verificationResult');
 const verificationStatus = document.getElementById('verificationStatus');
 const verificationUrl = document.getElementById('verificationUrl');
+// Capture info elements (for user-facing diagnostics)
+const captureInfo = document.getElementById('captureInfo');
+const captureMethodEl = document.getElementById('captureMethod');
+const captureResolutionEl = document.getElementById('captureResolution');
 
 let stream = null;
+
+async function startStreamWithConstraintsSequence() {
+    const attempts = [
+        {
+            label: '4K',
+            constraints: {
+                video: {
+                    facingMode: { exact: 'environment' },
+                    width: { exact: 3840 },
+                    height: { exact: 2160 },
+                    frameRate: { ideal: 30, max: 60 }
+                }
+            }
+        },
+        {
+            label: '1080p',
+            constraints: {
+                video: {
+                    facingMode: { exact: 'environment' },
+                    width: { exact: 1920 },
+                    height: { exact: 1080 },
+                    frameRate: { ideal: 30, max: 60 }
+                }
+            }
+        },
+        {
+            label: '720p',
+            constraints: {
+                video: {
+                    facingMode: { exact: 'environment' },
+                    width: { exact: 1280 },
+                    height: { exact: 720 },
+                    frameRate: { ideal: 30, max: 60 }
+                }
+            }
+        }
+    ];
+
+    let lastError = null;
+    for (const attempt of attempts) {
+        try {
+            console.log(`Requesting camera at ${attempt.label}...`);
+            const s = await navigator.mediaDevices.getUserMedia(attempt.constraints);
+            return s;
+        } catch (e) {
+            console.warn(`Failed ${attempt.label} constraints`, e);
+            lastError = e;
+        }
+    }
+    throw lastError || new Error('Unable to access camera with provided constraints');
+}
 
 // Tab switching functionality
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -98,15 +153,20 @@ startCameraBtn.addEventListener('click', async () => {
     try {
         updateStatus('📷', 'Starting camera...', '#667eea');
 
-        stream = await navigator.mediaDevices.getUserMedia({
-            video: {
-                facingMode: 'environment', // Use back camera on mobile
-                width: { ideal: 1920 },
-                height: { ideal: 1080 }
-            }
-        });
+        stream = await startStreamWithConstraintsSequence();
 
+        // Attach stream to video (viewfinder), but treat it as optional UI now
         video.srcObject = stream;
+
+        // Diagnostics and guidance
+        const settings = stream.getVideoTracks()[0].getSettings?.() || {};
+        console.log('Actual camera settings (preview track):', settings);
+        updateStatus('✅', 'Camera active - fill the frame; marks just off-screen', '#48bb78');
+        captureInfo.style.display = 'block';
+        captureMethodEl.textContent = 'Capture method: Preview (waiting for capture)';
+        const width = settings.width || video.videoWidth || '-';
+        const height = settings.height || video.videoHeight || '-';
+        captureResolutionEl.textContent = `Resolution: ${width} x ${height} (preview)`;
 
         // Listen for when the stream ends (e.g., iOS stops camera when page loses focus)
         stream.getTracks().forEach(track => {
@@ -122,7 +182,7 @@ startCameraBtn.addEventListener('click', async () => {
         captureBtn.disabled = false;
         stopCameraBtn.disabled = false;
 
-        updateStatus('✅', 'Camera active - position marks around text + URL', '#48bb78');
+        updateStatus('✅', 'Camera active - fill the frame; marks just off-screen', '#48bb78');
     } catch (error) {
         console.error('Error accessing camera:', error);
         updateStatus('❌', 'Camera access denied', '#f56565');
@@ -187,62 +247,47 @@ captureBtn.addEventListener('click', async () => {
         hashResult.style.display = 'none';
         verificationResult.style.display = 'none';
 
-        // Reset tabs to show cropped image first
+        // Reset tabs to show captured image first
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-        document.querySelector('[data-tab="cropped"]').classList.add('active');
-        document.getElementById('tab-cropped').classList.add('active');
+        document.querySelector('[data-tab="captured"]').classList.add('active');
+        document.getElementById('tab-captured').classList.add('active');
 
-        // Capture image from video within registration marks
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-
-        // Calculate what portion of the video is visible in the container
-        // The video has object-fit: cover and object-position: top
-        // Container aspect ratio is 2:1 (width:height)
-        const containerAspect = 2; // width / height
-        const videoAspect = video.videoWidth / video.videoHeight;
-
-        let visibleVideoTop = 0;
-        let visibleVideoHeight = video.videoHeight;
-
-        if (videoAspect < containerAspect) {
-            // Video is taller/narrower than container
-            // Width fills container, height is cropped
-            // Calculate how much of video height is visible
-            const scaleFactor = containerAspect / videoAspect;
-            visibleVideoHeight = video.videoHeight / scaleFactor;
-            visibleVideoTop = 0; // object-position: top means we show from top
+        // Prefer high-res still photo via ImageCapture API
+        const track = stream.getVideoTracks()[0];
+        let imageBitmap = null;
+        let usedMethod = 'Video frame';
+        if ('ImageCapture' in window) {
+            try {
+                const ic = new ImageCapture(track);
+                const photo = await ic.takePhoto(); // Blob
+                imageBitmap = await createImageBitmap(photo);
+                console.log('Captured still via ImageCapture:', photo.type, photo.size, photo);
+                usedMethod = 'ImageCapture.takePhoto()';
+            } catch (e) {
+                console.warn('ImageCapture.takePhoto failed, falling back to canvas frame', e);
+            }
         }
 
-        // Registration marks are at: left 2%, right 10%, top 8%, bottom 75%
-        // Crop INSIDE the marks to avoid OCR picking up the black squares
-        // Add ~4% padding inside each mark
-        const leftMargin = 0.06;    // Marks at 2%, crop at 6% (inside the marks)
-        const rightMargin = 0.14;   // Marks at 90%, crop at 86% (inside the marks)
-        const topMargin = 0.12;     // Marks at 8%, crop at 12% (inside the marks)
-        const bottomMargin = 0.29;  // Marks at 75%, crop ends at 71% (inside the marks)
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (imageBitmap) {
+            canvas.width = imageBitmap.width;
+            canvas.height = imageBitmap.height;
+            ctx.drawImage(imageBitmap, 0, 0);
+        } else {
+            // Fallback to current video frame
+            const vw = video.videoWidth || (video.srcObject ? (stream.getVideoTracks()[0].getSettings().width || 1280) : 1280);
+            const vh = video.videoHeight || (video.srcObject ? (stream.getVideoTracks()[0].getSettings().height || 720) : 720);
+            canvas.width = vw;
+            canvas.height = vh;
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        }
 
-        // Calculate crop region in actual video coordinates
-        const sourceX = video.videoWidth * leftMargin;
-        const sourceY = visibleVideoTop + (visibleVideoHeight * topMargin);
-        const sourceWidth = video.videoWidth * (1 - leftMargin - rightMargin);
-        const sourceHeight = visibleVideoHeight * (1 - topMargin - bottomMargin);
-
-        canvas.width = sourceWidth;
-        canvas.height = sourceHeight;
-
-        ctx.drawImage(
-            video,
-            sourceX,
-            sourceY,
-            sourceWidth,
-            sourceHeight,
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
+        // Update capture diagnostics visible to user
+        captureInfo.style.display = 'block';
+        captureMethodEl.textContent = `Capture method: ${usedMethod}`;
+        captureResolutionEl.textContent = `Resolution: ${canvas.width} x ${canvas.height}`;
 
         // Display the cropped image immediately
         croppedImage.src = canvas.toDataURL();

@@ -232,6 +232,59 @@ Check `README.md` for user-facing docs and deployment instructions.
 - NFT-less verification (no blockchain needed for basic use case)
 - The Medpro/Intertek fraud case that inspired this
 
+## Recent Development Session (Oct 2025)
+
+### Training Pages
+- Replaced medical/industrial certifications with **Unseen University** (Terry Pratchett) graduation certificates:
+  - Bachelor of Thaumatology (Ponder Stibbons)
+  - Master of Applied Anthropics (Esk Weatherwax)
+  - Doctorate in High Energy Magic (Adrian Turnipseed)
+- Moved to `public/training-pages/` and `public/c/{hash}/index.html` (static HTML, no Jekyll)
+- Registration marks positioned at: top 8%, left 2%, right 10%, bottom 75%
+- Generated with `generate-training-pages.js`
+- Added footer link from main app to training pages
+
+### Camera Viewport Changes
+- Added `aspect-ratio: 2/1` to video container to show only top half of camera feed (portrait mode optimization)
+- Applied `object-fit: cover` and `object-position: top` to video element
+- Updated crop calculation to account for visible portion vs full video dimensions
+- Added 4% padding inside registration marks to prevent OCR from reading black squares
+
+### Camera API Limitations Discovered
+
+**Key Issue**: iPhone SE (single wide-angle camera) captures huge field of view at practical distances. At same distance where test card should fill frame:
+- Native camera captures: keyboard, sofa, Chrome UI, laptop screen with tiny test card (~5% of frame)
+- Registration marks are tiny relative to actual camera FOV
+- Result: Low pixel density for OCR, poor accuracy
+
+**Research findings**:
+- `getUserMedia` zoom constraints supported in Chrome 87+ but **NOT in iOS Safari**
+- No way to control which lens iOS uses (auto-switches between wide/ultra-wide/telephoto on multi-lens devices)
+- iPhone SE has single fixed wide-angle lens with ~60-80° FOV
+- Only "zoom" option: physically move phone closer to subject
+- Resources:
+  - https://web.dev/camera-pan-tilt-zoom/
+  - https://stackoverflow.com/questions/70383781/wide-angle-and-zoom-cameras-arent-accessible-on-ios-safari-webkit
+
+**Current Problems**:
+1. Registration marks create false expectations about captured area
+2. Wide FOV means text appears small even when "aligned" with marks
+3. Tesseract gets insufficient pixels per character
+4. Cropping from low-density image doesn't improve OCR quality
+
+**Potential Solutions** (not yet implemented):
+1. Remove registration marks entirely
+2. Request maximum resolution (3840x2160) in getUserMedia constraints
+3. Instruct users to get very close (inches from screen) to fill wide FOV with just text
+4. Capture full frame, optionally with small margin crop
+5. Update UI messaging: "Fill frame with certificate text, get as close as possible"
+
+### Current State (needs continuation)
+- Registration marks still present but known to be problematic
+- Crop calculation fixed to match visible video area, but doesn't solve FOV issue
+- App functional for training pages but pixel density may be insufficient for real-world use
+- Next step: Consider removing marks and pivoting to "zoom with your feet" approach
+
 ## License
 
 GNU Affero General Public License v3.0 or later (AGPL-3.0-or-later)

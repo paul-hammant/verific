@@ -37,12 +37,6 @@
                 <div class="video-container">
                     <video id="video" autoplay playsinline></video>
                     <canvas id="overlay"></canvas>
-                    <div class="registration-marks">
-                        <div class="corner top-left"></div>
-                        <div class="corner top-right"></div>
-                        <div class="corner bottom-left"></div>
-                        <div class="corner bottom-right"></div>
-                    </div>
                 </div>
 
                 <div class="controls">
@@ -57,6 +51,10 @@
                     <div class="status-icon">📷</div>
                     <div class="status-text">Ready to scan</div>
                 </div>
+                <div class="status-indicator" id="captureInfo" style="display: none;">
+                    <div class="status-text" id="captureMethod">Capture method: -</div>
+                    <div class="status-text" id="captureResolution">Resolution: -</div>
+                </div>
 
                 <div class="progress-bar" id="progressBar" style="display: none;">
                     <div class="progress-fill"></div>
@@ -65,12 +63,12 @@
 
                 <div class="result-card" id="textResult" style="display: none;">
                     <div class="tabs">
-                        <button class="tab-btn active" data-tab="cropped">Cropped Image</button>
+                        <button class="tab-btn active" data-tab="captured">Captured Image</button>
                         <button class="tab-btn" data-tab="extracted">Extracted Text</button>
                         <button class="tab-btn" data-tab="normalized">Normalized Text</button>
                     </div>
                     <div class="tab-content">
-                        <div class="tab-pane active" id="tab-cropped">
+                        <div class="tab-pane active" id="tab-captured">
                             <img id="croppedImage" style="max-width: 100%; border: 1px solid #e2e8f0; border-radius: 8px;" />
                         </div>
                         <div class="tab-pane" id="tab-extracted">
