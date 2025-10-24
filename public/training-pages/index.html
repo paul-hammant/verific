@@ -1,26 +1,9 @@
-<!--
-    Copyright (C) 2025, Paul Hammant
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
-
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
--->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verific Training Pages</title>
+    <title>Verific Training Pages - Unseen University</title>
     <style>
         * {
             margin: 0;
@@ -29,35 +12,34 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
             padding: 40px 20px;
-            color: #333;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 800px;
             margin: 0 auto;
             background: white;
             padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         h1 {
-            color: #667eea;
+            color: #333;
             margin-bottom: 10px;
-            font-size: 2rem;
+            text-align: center;
         }
 
         .subtitle {
+            text-align: center;
             color: #666;
             margin-bottom: 30px;
-            font-size: 1.1rem;
+            font-style: italic;
         }
 
-        .instructions {
+        .intro {
             background: #e3f2fd;
             padding: 20px;
             border-radius: 8px;
@@ -65,136 +47,106 @@
             border-left: 4px solid #2196f3;
         }
 
-        .instructions h2 {
+        .intro h2 {
             color: #1976d2;
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-        }
-
-        .instructions ol {
-            margin-left: 20px;
-            line-height: 1.8;
-        }
-
-        .training-cards {
-            display: grid;
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .card {
-            background: #f7fafc;
-            border-radius: 8px;
-            padding: 25px;
-            border-left: 4px solid #667eea;
-            transition: all 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .card h3 {
-            color: #333;
             margin-bottom: 10px;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
         }
 
-        .card p {
-            color: #666;
+        .cert-list {
+            list-style: none;
+        }
+
+        .cert-item {
+            background: #f7fafc;
+            padding: 20px;
             margin-bottom: 15px;
-            line-height: 1.6;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            transition: transform 0.2s;
         }
 
-        .card a {
+        .cert-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .cert-item h3 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .cert-item p {
+            color: #666;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .cert-item a {
             display: inline-block;
-            padding: 10px 20px;
+            padding: 8px 16px;
             background: #667eea;
             color: white;
             text-decoration: none;
-            border-radius: 6px;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: background 0.2s;
         }
 
-        .card a:hover {
+        .cert-item a:hover {
             background: #5568d3;
-            transform: translateX(4px);
         }
 
-        .footer {
-            margin-top: 40px;
+        footer {
+            margin-top: 30px;
             padding-top: 20px;
-            border-top: 2px solid #e2e8f0;
+            border-top: 1px solid #e2e8f0;
             text-align: center;
             color: #666;
+            font-size: 0.9rem;
         }
 
-        .footer a {
+        footer a {
             color: #667eea;
             text-decoration: none;
-            font-weight: 600;
-        }
-
-        .footer a:hover {
-            text-decoration: underline;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 12px;
-            background: #48bb78;
-            color: white;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-left: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📱 Verific Training Pages</h1>
-        <p class="subtitle">Practice scanning certifications with the Verific OCR-to-hash verifier</p>
+        <h1>Verific Training Pages</h1>
+        <p class="subtitle">Unseen University Graduation Certificates</p>
 
-        <div class="instructions">
-            <h2>How to Use These Training Pages</h2>
-            <ol>
-                <li><strong>Display on Computer:</strong> Open one of the training pages below on your desktop or laptop screen</li>
-                <li><strong>Open Verific App:</strong> On your phone, go to <a href="https://paul-hammant.github.io/verific/" target="_blank">paul-hammant.github.io/verific</a></li>
-                <li><strong>Start Camera:</strong> Click "Start Camera" in the app</li>
-                <li><strong>Align Registration Marks:</strong> Position your phone so the black square registration marks in the app align with the squares on the training page</li>
-                <li><strong>Capture & Verify:</strong> Click "Capture & Verify" to scan and verify the certification</li>
-                <li><strong>Check Results:</strong> The app will extract text, compute the hash, and verify against the certification database</li>
-            </ol>
+        <div class="intro">
+            <h2>📱 About These Training Pages</h2>
+            <p>These training pages demonstrate the Verific OCR-to-hash verification system using fictional graduation certificates from Terry Pratchett's Unseen University.</p>
+            <p style="margin-top: 10px;">Each certificate can be scanned using the <a href="https://paul-hammant.github.io/verific/" target="_blank" style="color: #1976d2;">Verific webapp</a> to verify its authenticity.</p>
         </div>
 
-        <h2>Training Pages</h2>
-        <div class="training-cards">
-            <div class="card">
-                <h3>Medical PPE Gloves <span class="badge">VERIFIED</span></h3>
-                <p>Practice scanning a medical gloves certification. This example demonstrates verification of personal protective equipment using the ASTM D6319-19 standard.</p>
-                <a href="medical-ppe-gloves.html">Open Training Page →</a>
-            </div>
+        <ul class="cert-list">
+            <li class="cert-item">
+                <h3>Bachelor of Thaumatology</h3>
+                <p>Awarded to Ponder Stibbons by Archchancellor Mustrum Ridcully</p>
+                <a href="bachelor-thaumatology.html">View Certificate →</a>
+            </li>
 
-            <div class="card">
-                <h3>Food Safety Equipment <span class="badge">VERIFIED</span></h3>
-                <p>Practice scanning a food safety equipment certification. This example shows NSF/ANSI Standard 8 compliance for commercial kitchen equipment.</p>
-                <a href="food-safety-equipment.html">Open Training Page →</a>
-            </div>
+            <li class="cert-item">
+                <h3>Master of Applied Anthropics</h3>
+                <p>Awarded to Esk Weatherwax by the Faculty of Anthropics</p>
+                <a href="master-applied-anthropics.html">View Certificate →</a>
+            </li>
 
-            <div class="card">
-                <h3>Electronics Safety <span class="badge">VERIFIED</span></h3>
-                <p>Practice scanning an electronics safety certification. This example demonstrates UL certification for power supply units.</p>
-                <a href="electronics-safety.html">Open Training Page →</a>
-            </div>
-        </div>
+            <li class="cert-item">
+                <h3>Doctorate in High Energy Magic</h3>
+                <p>Awarded to Adrian Turnipseed, specializing in Octarine Resonance</p>
+                <a href="doctorate-high-energy-magic.html">View Certificate →</a>
+            </li>
+        </ul>
 
-        <div class="footer">
-            <p>These are training examples for the <a href="https://paul-hammant.github.io/verific/">Verific OCR-to-hash verification system</a></p>
-            <p>All certifications are verified in the hash database and will return positive verification results.</p>
-        </div>
+        <footer>
+            <p>Part of the <a href="https://paul-hammant.github.io/verific/">Verific</a> project</p>
+            <p style="margin-top: 5px;">Characters and setting © Terry Pratchett Estate</p>
+        </footer>
     </div>
 </body>
 </html>

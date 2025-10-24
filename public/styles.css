@@ -71,12 +71,15 @@ main {
     background: #000;
     border-radius: 12px;
     overflow: hidden;
+    aspect-ratio: 2 / 1;
 }
 
 #video {
     width: 100%;
     height: auto;
     display: block;
+    object-fit: cover;
+    object-position: top;
 }
 
 #overlay {

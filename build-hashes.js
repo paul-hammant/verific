@@ -103,38 +103,42 @@ Valid until: 2025-12-31`,
         'CE marked surgical gloves'
     );
 
-    // Training page certifications
+    // Training page certifications - Unseen University
     addCertification(database,
-        `Certified Medical Gloves
-Manufacturer: SafeMed Industries
-Standard: ASTM D6319-19
-Batch: 2024-B-8847
-Tested: January 15, 2024
-Certified by: TÜV SÜD`,
+        `Unseen University
+Ankh-Morpork
+Bachelor of Thaumatology
+Awarded to: Ponder Stibbons
+Date: Grune 23, A.M. 2024
+Archchancellor: Mustrum Ridcully
+Registrar: Rincewind (Wizzard)`,
         'verified',
-        'Training example: Medical PPE Gloves'
+        'Training example: Bachelor of Thaumatology'
     );
 
     addCertification(database,
-        `Commercial Food Slicer
-Model: FS-2000 Pro Series
-NSF/ANSI Standard 8
-Certified: October 2024
-Manufacturer: ChefTech Ltd
-Serial: CT-24-0891`,
+        `Unseen University
+Faculty of Anthropics
+Master of Applied Anthropics
+Awarded to: Esk Weatherwax
+Date: Offle 12, A.M. 2024
+Dean of Anthropics: Modo
+Seal of the Eight Orders`,
         'verified',
-        'Training example: Food Safety Equipment'
+        'Training example: Master of Applied Anthropics'
     );
 
     addCertification(database,
-        `Power Supply Unit Certification
-Model: PSU-500W-80Plus
-UL 62368-1 Compliant
-Efficiency: 80 PLUS Gold
-Manufacturer: PowerCore Systems
-Certificate: UL-2024-87623`,
+        `Unseen University
+College of High Energy Magic
+Doctor of Philosophy
+Specialization: Octarine Resonance
+Awarded to: Adrian Turnipseed
+Date: Ember 8, A.M. 2024
+Chair of High Energy Magic: Hex
+Thesis: "On theMalleability of L-Space"`,
         'verified',
-        'Training example: Electronics Safety'
+        'Training example: Doctorate in High Energy Magic'
     );
 
     // Revoked example
