@@ -54,9 +54,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Inject build timestamp
-        run: node build-hashes.js
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

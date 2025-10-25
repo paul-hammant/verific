@@ -485,10 +485,12 @@ async function verifyAgainstClaimedUrl(claimedUrl, computedHash) {
 
         // Check body contains "OK"
         if (!body.includes('OK')) {
-            verificationStatus.textContent = '❌ INVALID - URL does not contain "OK"';
+            // Show the actual status from the server (e.g., "REVOKED")
+            const status = body.trim().toUpperCase().substring(0, 50); // Limit to 50 chars
+            verificationStatus.textContent = `❌ ${status}`;
             verificationStatus.classList.add('not-found');
-            console.log('Verification failed: response does not contain "OK"');
-            showOverlay('red', 'FAILS VERIFICATION');
+            console.log(`Verification failed: response status is "${status}"`);
+            showOverlay('red', status);
             return;
         }
 

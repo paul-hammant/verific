@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bachelor of Thaumatology - Square Training Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .instructions {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .instructions h2 {
+            color: #1976d2;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        .certification-box {
+            position: relative;
+            padding: 40px;
+            background: white;
+            margin: 30px 0;
+            display: flex;
+        }
+
+        /* Left side decoy text that should NOT be scanned */
+        .decoy-text {
+            width: 200px;
+            margin-left: 20%;
+            padding-right: 5px;
+            font-size: 18px;
+            color: black;
+            line-height: 1.4;
+        }
+
+        .cert-container {
+            position: relative;
+            flex: 1;
+        }
+
+        /* Thicker, more square registration marks */
+        .registration-marks {
+            position: absolute;
+            top: 5%;
+            left: 15%;
+            right: 15%;
+            bottom: 5%;
+            border: 10px solid black;
+            pointer-events: none;
+        }
+
+        .cert-content {
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            margin-left: 15px;
+            padding: 60px 80px;
+        }
+
+        .cert-content span {
+            display: block;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 800px) {
+            .certification-box {
+                flex-direction: column;
+            }
+
+            .decoy-text {
+                width: 100%;
+                margin-bottom: 20px;
+                padding-right: 0;
+            }
+
+            .cert-content {
+                font-size: 14px;
+                padding: 40px;
+            }
+        }
+
+        .verify-url {
+            font-family: monospace;
+            font-size: 14px;
+            color: black;
+            word-break: break-all;
+            text-align: center;
+        }
+
+        .info {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .info strong {
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bachelor of Thaumatology (Square Format)</h1>
+
+        <div class="instructions">
+            <h2>📱 How to Use This Training Page</h2>
+            <ol>
+                <li>Open the <a href="https://paul-hammant.github.io/verific/" target="_blank">Verific webapp</a> on your phone</li>
+                <li>Display this page on your computer screen</li>
+                <li>Use your phone camera to scan the certification box below</li>
+                <li>Align the thick black border (10px) on your phone - it should be more square-shaped</li>
+                <li>Note: Text on the LEFT should be IGNORED by the scanner</li>
+                <li>Click "Capture & Verify" to verify the certification</li>
+            </ol>
+        </div>
+
+        <div class="certification-box">
+            <!-- Decoy text on the left that should NOT be scanned -->
+            <div class="decoy-text">
+                <strong>NOT PART OF CERTIFICATE:</strong><br>
+                This text on the left should be ignored by the scanner.
+                Only the content within the thick black border is part of the certification.
+                Registration number: XYZ-9999.
+                Invalid data.
+                Do not scan this area.
+                The black border marks the boundary.
+            </div>
+
+            <div class="cert-container">
+                <div class="registration-marks"></div>
+
+                <div class="cert-content">
+                    <span>Unseen University</span>
+                    <span>Ankh-Morpork</span>
+                    <span>Bachelor of Thaumatology</span>
+                    <span>Awarded to: Ponder Stibbons</span>
+                    <span>Date: Grune 23, A.M. 2024</span>
+                    <span>Archchancellor: Mustrum Ridcully</span>
+                    <span>Registrar: Rincewind (Wizzard)</span>
+                    <br/>
+                    <span style="font-size: 80%">https://paul-hammant.github.io/verific/c</span>
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="info">
+            <strong>Expected Result:</strong> When scanned correctly, the app should compute hash
+            <code>1cddfbb2adfa13e4...</code> and verify it against the certification database.
+            The text on the LEFT should be completely ignored.
+        </div>
+    </div>
+</body>
+</html>

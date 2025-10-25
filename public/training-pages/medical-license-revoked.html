@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical License (REVOKED) - Training Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .instructions {
+            background: #ffe3e3;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #dc3545;
+        }
+
+        .instructions h2 {
+            color: #c82333;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        .certification-box {
+            position: relative;
+            padding: 40px;
+            background: white;
+            margin: 30px 0;
+        }
+
+        .registration-marks {
+            position: absolute;
+            top: 8%;
+            left: 2%;
+            right: 10%;
+            bottom: 5%;
+            border: 3px solid black;
+            pointer-events: none;
+        }
+
+        .cert-content {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .cert-content span {
+            display: block;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 600px) {
+            .cert-content {
+                font-size: 14px;
+            }
+        }
+
+        .verify-url {
+            font-family: monospace;
+            font-size: 14px;
+            color: black;
+            word-break: break-all;
+        }
+
+        .info {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .info strong {
+            color: #856404;
+        }
+
+        .warning {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Medical License (REVOKED) ❌</h1>
+
+        <div class="instructions">
+            <h2>⚠️ REVOKED Status Training Page</h2>
+            <ol>
+                <li>Open the <a href="https://paul-hammant.github.io/verific/" target="_blank">Verific webapp</a> on your phone</li>
+                <li>Display this page on your computer screen</li>
+                <li>Use your phone camera to scan the certification box below</li>
+                <li>Align the black border on your phone to frame the certification text</li>
+                <li>Click "Capture & Verify"</li>
+                <li><strong>Expected: RED "FAILS VERIFICATION" overlay</strong> - even though the hash matches!</li>
+            </ol>
+        </div>
+
+        <div class="certification-box">
+            <div class="registration-marks"></div>
+
+            <div class="cert-content">
+                <span>Medical Council of Ankh-Morpork</span>
+                <span>License to Practice Medicine</span>
+                <span>Physician: Dr. Mossy Lawn</span>
+                <span>License Number: MC-2024-0891</span>
+                <span>Issued: Offle 3, A.M. 2024</span>
+                <span>Specialization: General Practice</span>
+                <span>Authority: Guild of Doctors and Barber-Surgeons</span>
+            </div>
+
+            <div class="verify-url">https://paul-hammant.github.io/verific/c</div>
+        </div>
+
+        <div class="info">
+            <strong>Expected Result:</strong> When scanned correctly, the app should compute hash
+            <code>b767b0558ebff1c2...</code> and fetch the verification URL.
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ REVOKED STATUS:</strong> The verification endpoint will return "REVOKED" instead of "OK".
+            This demonstrates that even when the hash matches perfectly, the certification can still fail
+            verification if it has been revoked by the issuing authority.
+            The app should show a RED "FAILS VERIFICATION" overlay.
+        </div>
+    </div>
+</body>
+</html>
