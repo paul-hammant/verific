@@ -18,7 +18,7 @@
 const Tesseract = require('tesseract.js');
 const path = require('path');
 const fs = require('fs');
-const { normalizeText, sha256 } = require('./build-hashes.js');
+const { normalizeText, sha256 } = require('./public/normalize.js');
 const sharp = require('sharp');
 
 describe('OCR Hash Verification - Full Pipeline with ocr-hash2.png', () => {
