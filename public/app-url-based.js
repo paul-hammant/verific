@@ -289,14 +289,22 @@ captureBtn.addEventListener('click', async () => {
         captureMethodEl.textContent = `Capture method: ${usedMethod}`;
         captureResolutionEl.textContent = `Resolution: ${canvas.width} x ${canvas.height}`;
 
-        // Display the cropped image immediately
-        croppedImage.src = canvas.toDataURL();
+        // Run OpenCV-based detection (always-on, no silent fallback)
+        updateStatus('🧭', 'Detecting registration square...', '#ed8936');
+        await (window.cvReady || Promise.reject(new Error('Computer vision not ready')));
+        const detection = await window.detectSquaresFromCanvas(canvas);
+        if (!detection.ok) {
+            throw new Error('Could not detect registration marks; adjust framing and retry.');
+        }
+        const cropped = detection.croppedCanvas;
+        // Display the cropped image
+        croppedImage.src = cropped.toDataURL();
         textResult.style.display = 'block';
 
-        // Perform OCR
+        // Perform OCR on cropped region
         updateStatus('🔍', 'Performing OCR...', '#ed8936');
         const result = await Tesseract.recognize(
-            canvas.toDataURL(),
+            cropped.toDataURL(),
             'eng',
             {
                 logger: m => {
@@ -317,8 +325,15 @@ captureBtn.addEventListener('click', async () => {
         const urls = extractUrls(rawText);
         console.log('Found URLs:', urls);
 
+        // Enforce: bottom line inside the marks should be a URL for verification
+        const rawLines = rawText.split('\n').map(l=>l.trim());
+        const lastNonEmpty = (()=>{ for (let i=rawLines.length-1;i>=0;i--){ if (rawLines[i]) return rawLines[i]; } return ''; })();
+        const urlLike = /^https?:\/\//i.test(lastNonEmpty);
+        if (!urlLike) {
+            throw new Error('Bottom line inside the marks must be a verification URL.');
+        }
         if (urls.length === 0) {
-            throw new Error('No verification URL found in the scanned text. Make sure the URL is visible within the registration marks.');
+            throw new Error('No verification URL found in the scanned text.');
         }
 
         // Use the first URL found and clean up trailing characters like ] or |

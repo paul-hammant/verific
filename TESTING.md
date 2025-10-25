@@ -6,6 +6,27 @@
 npm test
 ```
 
+Fixtures
+- PNG fixtures and matching .txt files under `test/fixtures/` are checked in.
+- .txt must contain normalized inside text only:
+  - Per line: trim leading/trailing whitespace and collapse internal spaces to one
+  - Preserve line breaks
+- Contributions welcome via PRs; no generator is required.
+
+### Node OpenCV tests
+
+This repo uses `@u4/opencv4nodejs@5.6.0` for Node-based detection tests. It requires OpenCV installed or prebuilt binaries according to that package's documentation.
+
+If installation fails, either:
+- Install OpenCV system-wide (e.g., Ubuntu: `sudo apt-get install -y libopencv-dev`), or
+- Use the prebuilt binary route described in `@u4/opencv4nodejs` README.
+
+Add PNG fixtures under `test/fixtures/`:
+- `should-detect-*.png` — images with a clear registration square
+- `should-not-detect-*.png` — images without a proper square
+
+The test suite auto-skips a case if its fixtures are not found.
+
 ## Test Coverage
 
 The test suite (`ocr-hash.test.js`) validates:

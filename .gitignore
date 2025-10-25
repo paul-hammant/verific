@@ -4,3 +4,5 @@ node_modules/
 *.log
 npm-debug.log*
 _site/
+test-results/
+.idea/
