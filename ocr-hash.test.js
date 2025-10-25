@@ -15,8 +15,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-const crypto = require('crypto');
-const { normalizeText, sha256 } = require('./build-hashes.js');
+const { normalizeText, sha256 } = require('./public/normalize.js');
 
 describe('OCR Hash Verification', () => {
   describe('Text Normalization', () => {
@@ -38,9 +37,9 @@ describe('OCR Hash Verification', () => {
       expect(normalizeText(input)).toBe(expected);
     });
 
-    it('should preserve blank lines', () => {
+    it('should remove blank lines', () => {
       const input = 'Line 1\n\nLine 2';
-      const expected = 'Line 1\n\nLine 2';
+      const expected = 'Line 1\nLine 2';
       expect(normalizeText(input)).toBe(expected);
     });
 
@@ -48,9 +47,37 @@ describe('OCR Hash Verification', () => {
       const input = `  Hello World
 
   Test  Line  `;
-      const expected = `Hello World
+      const expected = `Hello World\nTest Line`;
+      expect(normalizeText(input)).toBe(expected);
+    });
 
-Test Line`;
+    it('should normalize curly double quotes to straight quotes', () => {
+      const input = 'Thesis: "On theMalleability of L-Space"';
+      const expected = 'Thesis: "On theMalleability of L-Space"';
+      expect(normalizeText(input)).toBe(expected);
+    });
+
+    it('should normalize curly single quotes to straight quotes', () => {
+      const input = `It${String.fromCharCode(0x2019)}s a nice day`; // 0x2019 is right single quote '
+      const expected = `It${String.fromCharCode(0x0027)}s a nice day`; // 0x0027 is straight apostrophe
+      expect(normalizeText(input)).toBe(expected);
+    });
+
+    it('should normalize en-dash and em-dash to hyphen', () => {
+      const input = 'Date: 2020–2024 — present';
+      const expected = 'Date: 2020-2024 - present';
+      expect(normalizeText(input)).toBe(expected);
+    });
+
+    it('should normalize non-breaking spaces to regular spaces', () => {
+      const input = 'Hello\u00A0World';
+      const expected = 'Hello World';
+      expect(normalizeText(input)).toBe(expected);
+    });
+
+    it('should normalize ellipsis to three periods', () => {
+      const input = 'To be continued…';
+      const expected = 'To be continued...';
       expect(normalizeText(input)).toBe(expected);
     });
   });

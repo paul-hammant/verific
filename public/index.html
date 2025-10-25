@@ -43,11 +43,12 @@
                 <div class="video-container">
                     <video id="video" autoplay playsinline></video>
                     <canvas id="overlay"></canvas>
+                    <button id="captureBtn" class="shutter-btn" style="display: none;" title="Capture & Verify">⭘</button>
+                    <div id="debugConsole" style="display: none;"></div>
                 </div>
 
                 <div class="controls">
-                    <button id="startCamera" class="btn btn-primary">Start Camera</button>
-                    <button id="captureBtn" class="btn btn-success" disabled>Capture & Verify</button>
+                    <button id="startCamera" class="btn btn-primary">Enable Camera</button>
                     <button id="stopCamera" class="btn btn-secondary" disabled>Stop Camera</button>
                 </div>
             </div>
@@ -76,6 +77,7 @@
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab-captured">
                             <img id="croppedImage" style="max-width: 100%; border: 1px solid #e2e8f0; border-radius: 8px;" />
+                            <button id="copyImage" class="btn btn-small" style="margin-top: 15px;">📋 Copy Image to Clipboard</button>
                         </div>
                         <div class="tab-pane" id="tab-extracted">
                             <pre id="extractedText"></pre>
@@ -113,6 +115,7 @@
             </details>
             <p style="margin-top: 15px; text-align: center; font-size: 0.9rem; color: #666;">
                 <a href="https://paul-hammant.github.io/verific/training-pages/" target="_blank" style="color: #667eea; text-decoration: none;">Training Pages</a> ·
+                <a href="https://paul-hammant.github.io/verific/test-normalization.html" target="_blank" style="color: #667eea; text-decoration: none;">Test Page</a> ·
                 <a href="https://github.com/paul-hammant/verific/tree/main/public" target="_blank" style="color: #667eea; text-decoration: none;">View Source Code</a> ·
                 Licensed under AGPL-3.0-or-later
             </p>
@@ -121,6 +124,8 @@
 
     <script src="cv/geometry.js"></script>
     <script src="cv/detectSquares.js"></script>
+    <script src="normalize.js"></script>
+    <script src="app-logic.js"></script>
     <script src="app-url-based.js"></script>
 </body>
 </html>

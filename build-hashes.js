@@ -27,13 +27,22 @@ const path = require('path');
 
 // Helper function to normalize text
 function normalizeText(text) {
+    // Normalize Unicode characters that OCR might produce
+    text = text.replace(/[\u201C\u201D\u201E]/g, '"');  // Curly double quotes → straight
+    text = text.replace(/[\u2018\u2019]/g, "'");        // Curly single quotes → straight
+    text = text.replace(/[\u00AB\u00BB]/g, '"');        // Angle quotes → straight double
+    text = text.replace(/[\u2013\u2014]/g, '-');        // En/em dash → hyphen
+    text = text.replace(/\u00A0/g, ' ');                // Non-breaking space → space
+    text = text.replace(/\u2026/g, '...');              // Ellipsis → three periods
+
     const lines = text.split('\n');
     const normalizedLines = lines.map(line => {
         line = line.replace(/^\s+/, '');  // Remove leading spaces
         line = line.replace(/\s+$/, '');  // Remove trailing spaces
         line = line.replace(/\s+/g, ' '); // Collapse multiple spaces
         return line;
-    });
+    })
+    .filter(line => line.length > 0);     // Remove blank lines
     return normalizedLines.join('\n');
 }
 

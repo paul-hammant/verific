@@ -25,7 +25,7 @@ const statusIndicator = document.getElementById('statusIndicator');
 const progressBar = document.getElementById('progressBar');
 
 // Build timestamp easter egg
-const BUILD_TIMESTAMP = '2025-10-24T06:44:30.457Z';
+const BUILD_TIMESTAMP = '2025-10-25T16:45:43.080Z';
 const appTitle = document.getElementById('appTitle');
 const buildTimestamp = document.getElementById('buildTimestamp');
 
@@ -65,6 +65,19 @@ const captureMethodEl = document.getElementById('captureMethod');
 const captureResolutionEl = document.getElementById('captureResolution');
 
 let stream = null;
+let deviceOrientation = { alpha: 0, beta: 0, gamma: 0 };
+
+// Debug console for mobile
+const debugConsole = document.getElementById('debugConsole');
+const debugLogs = [];
+function debugLog(msg) {
+    const timestamp = new Date().toLocaleTimeString();
+    debugLogs.push(`${timestamp}: ${msg}`);
+    if (debugLogs.length > 10) debugLogs.shift();
+    debugConsole.textContent = debugLogs.join('\n');
+    debugConsole.style.display = 'block';
+    console.log(msg); // Also log to real console
+}
 
 async function startStreamWithConstraintsSequence() {
     const attempts = [
@@ -143,17 +156,55 @@ function updateStatus(icon, text, color = '#4a5568') {
 function resetCameraUI() {
     startCameraBtn.style.display = '';
     startCameraBtn.disabled = false;
+    captureBtn.style.display = 'none';
     captureBtn.disabled = true;
     stopCameraBtn.disabled = true;
-    updateStatus('📷', 'Camera stopped - click Start Camera to resume', '#4a5568');
+    updateStatus('📷', 'Ready to scan', '#4a5568');
+}
+
+// Track device orientation for rotation detection
+if (window.DeviceOrientationEvent) {
+    // iOS 13+ requires permission
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        // Don't request yet - will request when camera starts
+    } else {
+        window.addEventListener('deviceorientation', (event) => {
+            deviceOrientation = {
+                alpha: event.alpha || 0,
+                beta: event.beta || 0,
+                gamma: event.gamma || 0
+            };
+        });
+    }
 }
 
 // Start Camera
 startCameraBtn.addEventListener('click', async () => {
     try {
-        updateStatus('📷', 'Starting camera...', '#667eea');
+        updateStatus('📷', 'Enabling camera...', '#667eea');
 
         stream = await startStreamWithConstraintsSequence();
+
+        // Request DeviceOrientation permission on iOS 13+
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+            try {
+                const permission = await DeviceOrientationEvent.requestPermission();
+                if (permission === 'granted') {
+                    window.addEventListener('deviceorientation', (event) => {
+                        deviceOrientation = {
+                            alpha: event.alpha || 0,
+                            beta: event.beta || 0,
+                            gamma: event.gamma || 0
+                        };
+                    });
+                    console.log('DeviceOrientation permission granted');
+                } else {
+                    console.warn('DeviceOrientation permission denied');
+                }
+            } catch (e) {
+                console.warn('DeviceOrientation permission request failed:', e);
+            }
+        }
 
         // Attach stream to video (viewfinder), but treat it as optional UI now
         video.srcObject = stream;
@@ -179,6 +230,7 @@ startCameraBtn.addEventListener('click', async () => {
         });
 
         startCameraBtn.style.display = 'none';
+        captureBtn.style.display = 'flex';
         captureBtn.disabled = false;
         stopCameraBtn.disabled = false;
 
@@ -198,49 +250,19 @@ stopCameraBtn.addEventListener('click', () => {
         stream = null;
     }
 
+    // Hide results when stopping camera
+    textResult.style.display = 'none';
+    hashResult.style.display = 'none';
+    verificationResult.style.display = 'none';
+    debugConsole.style.display = 'none';
+
     resetCameraUI();
 });
-
-// Extract URLs from text
-function extractUrls(text) {
-    // Match http:// or https:// URLs
-    const urlRegex = /https?:\/\/[^\s]+/gi;
-    return text.match(urlRegex) || [];
-}
-
-// Extract text between registration marks (removing the URL line and blank line before it)
-function extractTextWithoutUrl(fullText) {
-    const lines = fullText.split('\n');
-    const urlRegex = /https?:\/\//i;
-
-    // Find the URL line index
-    const urlLineIndex = lines.findIndex(line => urlRegex.test(line));
-
-    if (urlLineIndex === -1) {
-        // No URL found, return all text
-        return fullText;
-    }
-
-    // Take all lines before the URL line
-    let textLines = lines.slice(0, urlLineIndex);
-
-    // Remove trailing blank line (the separator before the URL)
-    while (textLines.length > 0 && textLines[textLines.length - 1].trim() === '') {
-        textLines.pop();
-    }
-
-    return textLines.join('\n');
-}
 
 // Capture and process
 captureBtn.addEventListener('click', async () => {
     try {
-        captureBtn.disabled = true;
-        updateStatus('⏳', 'Processing...', '#ed8936');
-        progressBar.style.display = 'block';
-
-        // Scroll to the processing section
-        progressBar.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        captureBtn.style.display = 'none'; // Hide button during processing
 
         // Hide previous results and reset to cropped image tab
         textResult.style.display = 'none';
@@ -252,6 +274,9 @@ captureBtn.addEventListener('click', async () => {
         document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
         document.querySelector('[data-tab="captured"]').classList.add('active');
         document.getElementById('tab-captured').classList.add('active');
+
+        // Capture the image FIRST (shutter action)
+        updateStatus('📸', 'Capturing...', '#667eea');
 
         // Prefer high-res still photo via ImageCapture API
         const track = stream.getVideoTracks()[0];
@@ -289,63 +314,100 @@ captureBtn.addEventListener('click', async () => {
         captureMethodEl.textContent = `Capture method: ${usedMethod}`;
         captureResolutionEl.textContent = `Resolution: ${canvas.width} x ${canvas.height}`;
 
+        // NOW show processing status and progress bar
+        updateStatus('⏳', 'Processing...', '#ed8936');
+        progressBar.style.display = 'block';
+
+        // Scroll to the processing section
+        progressBar.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
         // Run OpenCV-based detection (always-on, no silent fallback)
         updateStatus('🧭', 'Detecting registration square...', '#ed8936');
         await (window.cvReady || Promise.reject(new Error('Computer vision not ready')));
         const detection = await window.detectSquaresFromCanvas(canvas);
+
         if (!detection.ok) {
-            throw new Error('Could not detect registration marks; adjust framing and retry.');
+            // Show the full captured image even if detection failed
+            croppedImage.src = canvas.toDataURL();
+            textResult.style.display = 'block';
+            throw new Error('Could not detect framing rectangle; adjust framing and retry.');
         }
-        const cropped = detection.croppedCanvas;
-        // Display the cropped image
+
+        let cropped = detection.croppedCanvas;
+
+        // Try OCR at multiple orientations and pick the best one
+        // Order by likelihood: 0° most common, 90°/270° sideways, 180° very unlikely
+        updateStatus('🔄', 'Detecting text orientation...', '#ed8936');
+        debugLog('Trying orientations (0°, 90°, 270°, 180°)...');
+
+        const orientations = [
+            { rotation: 0, canvas: cropped },
+            { rotation: 90, canvas: rotateCanvas(cropped, 90) },
+            { rotation: 270, canvas: rotateCanvas(cropped, 270) },
+            { rotation: 180, canvas: rotateCanvas(cropped, 180) }
+        ];
+
+        let bestResult = null;
+        let bestConfidence = 0;
+        let bestRotation = 0;
+
+        for (const { rotation, canvas } of orientations) {
+            try {
+                const result = await Tesseract.recognize(canvas.toDataURL(), 'eng', {
+                    logger: m => {
+                        if (m.status === 'recognizing text') {
+                            debugLog(`OCR ${rotation}°: ${Math.round(m.progress * 100)}%`);
+                        }
+                    }
+                });
+
+                const confidence = result.data.confidence || 0;
+                debugLog(`${rotation}°: confidence ${confidence.toFixed(1)}`);
+
+                if (confidence > bestConfidence) {
+                    bestConfidence = confidence;
+                    bestResult = result;
+                    bestRotation = rotation;
+                }
+            } catch (e) {
+                debugLog(`${rotation}° failed: ${e.message}`);
+            }
+        }
+
+        if (!bestResult) {
+            throw new Error('OCR failed at all orientations');
+        }
+
+        debugLog(`Best: ${bestRotation}° (conf: ${bestConfidence.toFixed(1)})`);
+
+        // Use the best orientation
+        if (bestRotation !== 0) {
+            cropped = rotateCanvas(cropped, bestRotation);
+        }
+
+        // Display the correctly oriented cropped image
         croppedImage.src = cropped.toDataURL();
         textResult.style.display = 'block';
 
-        // Perform OCR on cropped region
-        updateStatus('🔍', 'Performing OCR...', '#ed8936');
-        const result = await Tesseract.recognize(
-            cropped.toDataURL(),
-            'eng',
-            {
-                logger: m => {
-                    if (m.status === 'recognizing text') {
-                        console.log(`OCR Progress: ${Math.round(m.progress * 100)}%`);
-                    }
-                }
-            }
-        );
-
-        const rawText = result.data.text;
+        const rawText = bestResult.data.text;
         console.log('Raw OCR Text:', rawText);
 
         // Display extracted text
         extractedText.textContent = rawText;
 
-        // Extract URLs from the text
-        const urls = extractUrls(rawText);
-        console.log('Found URLs:', urls);
-
-        // Enforce: bottom line inside the marks should be a URL for verification
-        const rawLines = rawText.split('\n').map(l=>l.trim());
-        const lastNonEmpty = (()=>{ for (let i=rawLines.length-1;i>=0;i--){ if (rawLines[i]) return rawLines[i]; } return ''; })();
-        const urlLike = /^https?:\/\//i.test(lastNonEmpty);
-        if (!urlLike) {
-            throw new Error('Bottom line inside the marks must be a verification URL.');
-        }
-        if (urls.length === 0) {
-            throw new Error('No verification URL found in the scanned text.');
-        }
-
-        // Use the first URL found and clean up trailing characters like ] or |
-        const baseUrl = urls[0].trim().replace(/[\]|]+$/, '');
+        // Extract verification URL (using app-logic.js)
+        const { url: baseUrl, urlLineIndex } = extractVerificationUrl(rawText);
+        debugLog(`Base URL: ${baseUrl.substring(0, 40)}...`);
         console.log('Base URL:', baseUrl);
 
-        // Extract the certification text (without the URL line)
-        const certText = extractTextWithoutUrl(rawText);
+        // Extract certification text (using app-logic.js)
+        const certText = extractCertText(rawText, urlLineIndex);
+        debugLog(`Cert text: ${certText.substring(0, 50)}...`);
 
         // Normalize text according to the rules
         updateStatus('🔧', 'Normalizing text...', '#ed8936');
         const normalized = normalizeText(certText);
+        debugLog(`Normalized: ${normalized.length} chars`);
         console.log('Normalized Text:', normalized);
 
         normalizedText.textContent = normalized;
@@ -367,8 +429,7 @@ captureBtn.addEventListener('click', async () => {
         await verifyAgainstClaimedUrl(fullVerificationUrl, hash);
 
         progressBar.style.display = 'none';
-        updateStatus('✅', 'Verification complete', '#48bb78');
-        captureBtn.disabled = false;
+        updateStatus('✅', 'Verification complete - tap Stop Camera to capture again', '#48bb78');
 
         // Scroll to bottom to show verification result
         verificationResult.scrollIntoView({ behavior: 'smooth', block: 'end' });
@@ -378,39 +439,12 @@ captureBtn.addEventListener('click', async () => {
         progressBar.style.display = 'none';
         updateStatus('❌', 'Processing failed: ' + error.message, '#f56565');
         alert(error.message);
-        captureBtn.disabled = false;
+        // Don't show button - user needs to stop/restart camera
     }
 });
 
-// Text normalization function (as per the document rules)
-function normalizeText(text) {
-    // Split into lines
-    const lines = text.split('\n');
-
-    // Apply normalization rules to each line
-    const normalizedLines = lines.map(line => {
-        // Remove leading spaces
-        line = line.replace(/^\s+/, '');
-        // Remove trailing spaces
-        line = line.replace(/\s+$/, '');
-        // Collapse multiple spaces into single space
-        line = line.replace(/\s+/g, ' ');
-        return line;
-    });
-
-    // Join back with newlines (preserve blank lines)
-    return normalizedLines.join('\n');
-}
-
-// SHA-256 hash function
-async function sha256(text) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(text);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    return hashHex;
-}
+// rotateCanvas(), extractVerificationUrl(), extractCertText(), hashMatchesUrl() are loaded from app-logic.js
+// normalizeText() and sha256() are loaded from normalize.js
 
 // Verify against the claimed URL
 async function verifyAgainstClaimedUrl(claimedUrl, computedHash) {
@@ -419,8 +453,8 @@ async function verifyAgainstClaimedUrl(claimedUrl, computedHash) {
     // Clear previous status classes
     verificationStatus.className = 'verification-status';
 
-    // Check if the URL contains the hash
-    if (!claimedUrl.includes(computedHash)) {
+    // Check if the URL contains the hash (using app-logic.js)
+    if (!hashMatchesUrl(claimedUrl, computedHash)) {
         verificationStatus.textContent = `❌ Hash not found at claimed URL: ${claimedUrl}`;
         verificationUrl.textContent = '';
         verificationStatus.classList.add('not-found');
@@ -517,5 +551,33 @@ copyHashBtn.addEventListener('click', async () => {
     } catch (error) {
         console.error('Failed to copy:', error);
         alert('Failed to copy hash to clipboard');
+    }
+});
+
+// Copy image to clipboard
+const copyImageBtn = document.getElementById('copyImage');
+copyImageBtn.addEventListener('click', async () => {
+    try {
+        const img = document.getElementById('croppedImage');
+
+        // Convert data URL to blob
+        const response = await fetch(img.src);
+        const blob = await response.blob();
+
+        // Copy to clipboard
+        await navigator.clipboard.write([
+            new ClipboardItem({
+                [blob.type]: blob
+            })
+        ]);
+
+        const originalText = copyImageBtn.textContent;
+        copyImageBtn.textContent = '✓ Copied!';
+        setTimeout(() => {
+            copyImageBtn.textContent = originalText;
+        }, 2000);
+    } catch (error) {
+        console.error('Failed to copy image:', error);
+        alert('Failed to copy image to clipboard. Try downloading instead.');
     }
 });

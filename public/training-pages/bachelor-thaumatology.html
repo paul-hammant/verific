@@ -64,53 +64,31 @@
             left: 2%;
             right: 10%;
             bottom: 5%;
+            border: 3px solid black;
             pointer-events: none;
-        }
-
-        .corner {
-            position: absolute;
-            background: black;
-        }
-
-        .corner.top-left {
-            top: 0;
-            left: 0;
-            width: 15px;
-            height: 15px;
-        }
-
-        .corner.top-right {
-            top: 0;
-            right: 0;
-            width: 18px;
-            height: 15px;
-        }
-
-        .corner.bottom-left {
-            bottom: 0;
-            left: 0;
-            width: 15px;
-            height: 18px;
-        }
-
-        .corner.bottom-right {
-            bottom: 0;
-            right: 0;
-            width: 18px;
-            height: 18px;
         }
 
         .cert-content {
             font-size: 18px;
             line-height: 1.6;
-            white-space: pre-line;
             margin-bottom: 20px;
+        }
+
+        .cert-content span {
+            display: block;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 600px) {
+            .cert-content {
+                font-size: 14px;
+            }
         }
 
         .verify-url {
             font-family: monospace;
             font-size: 14px;
-            color: #666;
+            color: black;
             word-break: break-all;
         }
 
@@ -137,26 +115,23 @@
                 <li>Open the <a href="https://paul-hammant.github.io/verific/" target="_blank">Verific webapp</a> on your phone</li>
                 <li>Display this page on your computer screen</li>
                 <li>Use your phone camera to scan the certification box below</li>
-                <li>Align the registration marks (black squares) on your phone with the marks in the box</li>
+                <li>Align the black border on your phone to frame the certification text</li>
                 <li>Click "Capture & Verify" to verify the certification</li>
             </ol>
         </div>
 
         <div class="certification-box">
-            <div class="registration-marks">
-                <div class="corner top-left"></div>
-                <div class="corner top-right"></div>
-                <div class="corner bottom-left"></div>
-                <div class="corner bottom-right"></div>
-            </div>
+            <div class="registration-marks"></div>
 
-            <div class="cert-content">Unseen University
-Ankh-Morpork
-Bachelor of Thaumatology
-Awarded to: Ponder Stibbons
-Date: Grune 23, A.M. 2024
-Archchancellor: Mustrum Ridcully
-Registrar: Rincewind (Wizzard)</div>
+            <div class="cert-content">
+                <span>Unseen University</span>
+                <span>Ankh-Morpork</span>
+                <span>Bachelor of Thaumatology</span>
+                <span>Awarded to: Ponder Stibbons</span>
+                <span>Date: Grune 23, A.M. 2024</span>
+                <span>Archchancellor: Mustrum Ridcully</span>
+                <span>Registrar: Rincewind (Wizzard)</span>
+            </div>
 
             <div class="verify-url">https://paul-hammant.github.io/verific/c</div>
         </div>

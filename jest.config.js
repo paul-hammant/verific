@@ -3,7 +3,8 @@ module.exports = {
   testMatch: [
     '**/ocr-hash.test.js',
     '**/cv-geometry.test.js',
-    '**/detectSquares.node.test.js'
+    '**/detectSquares.node.test.js',
+    '**/app-logic.test.js'
   ],
   testPathIgnorePatterns: [
     '/node_modules/',
