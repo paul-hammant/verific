@@ -370,7 +370,7 @@
         // Create badge
         const badge = document.createElement('div');
         badge.className = 'liveverify-badge';
-        badge.innerHTML = '🔍 Verify';
+        badge.innerHTML = `🔍 ${chrome.i18n.getMessage('badgeVerify')}`;
         badge.dataset.regionId = region.id;
         badge.addEventListener('click', () => verifyRegion(region, badge));
 
@@ -418,7 +418,7 @@
 
         region.status = 'pending';
         badge.className = 'liveverify-badge pending';
-        badge.innerHTML = '⏳ Verifying...';
+        badge.innerHTML = `⏳ ${chrome.i18n.getMessage('badgeVerifying')}`;
         region.container.classList.remove('verified', 'failed');
         region.container.classList.add('pending');
 
@@ -436,8 +436,8 @@
             if (result.success) {
                 region.status = 'verified';
                 badge.className = 'liveverify-badge verified';
-                badge.innerHTML = '✓ Verified';
-                badge.title = `Verified by ${result.domain}`;
+                badge.innerHTML = `✓ ${chrome.i18n.getMessage('badgeVerified')}`;
+                badge.title = chrome.i18n.getMessage('badgeVerifiedByTitle', [result.domain]);
                 region.container.classList.remove('pending');
                 region.container.classList.add('verified');
 
@@ -456,7 +456,7 @@
                         let chainHtml = result.domain;
                         if (result.issuerDescription) chainHtml += ' <span style="opacity:0.85;">(' + result.issuerDescription + ')</span>';
                         for (const c of chain) {
-                            chainHtml += '<br>\u00a0\u00a0authorised by <strong>' + c.authorizer + '</strong>';
+                            chainHtml += '<br>\u00a0\u00a0' + chrome.i18n.getMessage('badgeAuthorisedBy', ['<strong>' + c.authorizer + '</strong>']);
                             if (c.description) chainHtml += ' <span style="opacity:0.85;">(' + c.description + ')</span>';
                         }
                         inner += `<div>${chainHtml}</div>`;
@@ -482,12 +482,13 @@
                 region.status = 'failed';
                 badge.className = 'liveverify-badge failed';
                 const reason = result.status || result.error || '';
+                const notVerifiedLabel = chrome.i18n.getMessage('badgeNotVerified');
                 if (reason && reason !== 'Not verified' && !reason.includes('does not verify')) {
-                    badge.innerHTML = `✗ Not Verified <span style="font-size:0.8em; opacity:0.85;">(${reason})</span>`;
+                    badge.innerHTML = `✗ ${notVerifiedLabel} <span style="font-size:0.8em; opacity:0.85;">(${reason})</span>`;
                 } else {
-                    badge.innerHTML = '✗ Not Verified';
+                    badge.innerHTML = `✗ ${notVerifiedLabel}`;
                 }
-                badge.title = reason || 'Not verified';
+                badge.title = reason || chrome.i18n.getMessage('badgeNotVerifiedTitle');
 
                 // Expand outline to include verify line if it's outside the container
                 if (region.verifyLineEl && !region.container.contains(region.verifyLineEl)) {
@@ -513,7 +514,7 @@
         } catch (error) {
             region.status = 'failed';
             badge.className = 'liveverify-badge failed';
-            badge.innerHTML = '✗ Error';
+            badge.innerHTML = `✗ ${chrome.i18n.getMessage('badgeError')}`;
             badge.title = error.message;
             region.container.classList.remove('pending');
             region.container.classList.add('failed');
@@ -599,7 +600,7 @@
     function showScanButton(count) {
         const btn = document.createElement('button');
         btn.className = 'liveverify-scan-btn';
-        btn.innerHTML = `🔍 Scan ${count} verifiable region${count > 1 ? 's' : ''}`;
+        btn.innerHTML = `🔍 ${chrome.i18n.getMessage('badgeScanRegions', [String(count)])}`;
         btn.addEventListener('click', async () => {
             btn.classList.add('hidden');
             const regions = scanPage();

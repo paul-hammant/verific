@@ -27,6 +27,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { i18nStub } = require('./helpers/i18n-stub');
 
 const contentScriptSource = fs.readFileSync(
     path.resolve(__dirname, '../apps/browser-extension/content.js'),
@@ -58,7 +59,8 @@ function setupChromeApi(verifyResponder) {
         },
         scripting: {
             executeScript: jest.fn()
-        }
+        },
+        i18n: i18nStub
     };
 }
 

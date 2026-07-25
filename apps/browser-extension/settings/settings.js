@@ -14,21 +14,40 @@
     limitations under the License.
 */
 
+import { initI18n, activeLocale, localizeDocument } from '../shared/i18n.js';
+
 const DEFAULT_SETTINGS = {
     intrusiveness: 'maximum',
     autoScanPages: false,
     autoVerify: false,
-    hideVerifyQuasiUrls: false
+    hideVerifyQuasiUrls: false,
+    language: 'auto'
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
+    // Resolve language (browser default or user override) before localizing.
+    await initI18n();
+    document.documentElement.lang = activeLocale();
+    localizeDocument();
+
     const options = document.querySelectorAll('.option');
     const radios = document.querySelectorAll('input[name="intrusiveness"]');
     const checkboxOptions = document.querySelectorAll('.checkbox-option');
     const savedMessage = document.getElementById('savedMessage');
+    const languageSelect = document.getElementById('languageSelect');
 
     // Load current settings
     const settings = await loadSettings();
+
+    // Reflect the stored language choice, and re-localize live when changed.
+    languageSelect.value = settings.language || 'auto';
+    languageSelect.addEventListener('change', async () => {
+        await saveSettings({ language: languageSelect.value });
+        await initI18n();
+        document.documentElement.lang = activeLocale();
+        localizeDocument();
+        showSavedMessage();
+    });
 
     // Set radio button state
     selectOption(settings.intrusiveness);

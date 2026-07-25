@@ -14,7 +14,14 @@
     limitations under the License.
 */
 
+import { initI18n, t, activeLocale, localizeDocument } from '../shared/i18n.js';
+
 document.addEventListener('DOMContentLoaded', async () => {
+    // Resolve language (browser default or user override) before any UI text.
+    await initI18n();
+    document.documentElement.lang = activeLocale();
+    localizeDocument();
+
     const content = document.getElementById('content');
     const settingsLink = document.getElementById('settingsLink');
     const debugLink = document.getElementById('debugLink');
@@ -50,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Add clear history link
         html += `
             <div class="clear-history">
-                <a href="#" id="clearHistory">Clear history</a>
+                <a href="#" id="clearHistory">${t('popupClearHistory')}</a>
             </div>
         `;
 
@@ -61,7 +68,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             toggle.addEventListener('click', () => {
                 const details = toggle.nextElementSibling;
                 const isVisible = details.classList.toggle('visible');
-                toggle.innerHTML = isVisible ? '▼ Hide details' : '▶ Show details';
+                toggle.innerHTML = isVisible ? `▼ ${t('popupHideDetails')}` : `▶ ${t('popupShowDetails')}`;
             });
         });
 
@@ -72,7 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const text = btn.dataset.text;
                 await navigator.clipboard.writeText(text);
                 const original = btn.textContent;
-                btn.textContent = 'Copied!';
+                btn.textContent = t('popupCopied');
                 setTimeout(() => btn.textContent = original, 1500);
             });
         });
@@ -94,8 +101,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                         window.close();
                     } catch (err) {
                         console.error('Show me error:', err);
-                        btn.textContent = 'Not found';
-                        setTimeout(() => btn.textContent = 'Show me', 1500);
+                        btn.textContent = t('popupNotFound');
+                        setTimeout(() => btn.textContent = t('popupShowMe'), 1500);
                     }
                 }
             });
@@ -107,9 +114,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             await chrome.runtime.sendMessage({ type: 'clearHistory' });
             content.innerHTML = `
                 <div class="no-results">
-                    <h2>No verifications yet</h2>
-                    <p>Select text containing a verify: URL,<br>then right-click → "Verify Selection"</p>
-                    <div class="shortcut">Cmd+Shift+V / Ctrl+Shift+V</div>
+                    <h2>${t('popupNoResultsTitle')}</h2>
+                    <p>${t('popupNoResultsBody')}</p>
+                    <div class="shortcut">${t('popupShortcut')}</div>
                 </div>
             `;
         });
@@ -118,9 +125,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Failed to get history:', error);
         content.innerHTML = `
             <div class="no-results">
-                <h2>Connection Error</h2>
-                <p>Could not connect to extension background.<br>
-                Try reloading the extension in chrome://extensions</p>
+                <h2>${t('popupConnectionErrorTitle')}</h2>
+                <p>${t('popupConnectionErrorBody')}</p>
                 <div class="error-detail">${escapeHtml(error.message)}</div>
             </div>
         `;
@@ -135,13 +141,13 @@ function renderResultCard(result) {
     let badgeClass, badgeText;
     if (isVerified) {
         badgeClass = 'verified';
-        badgeText = 'Verified';
+        badgeText = t('popupBadgeVerified');
     } else if (isError) {
         badgeClass = 'error';
-        badgeText = 'Error';
+        badgeText = t('popupBadgeError');
     } else {
         badgeClass = 'failed';
-        badgeText = 'Not Verified';
+        badgeText = t('popupBadgeNotVerified');
     }
 
     // Format timestamp
@@ -153,7 +159,7 @@ function renderResultCard(result) {
     if (result.error) {
         statusText = getReadableError(result.error);
     } else if (result.status) {
-        statusText = result.success ? `Verified by issuer` : result.status;
+        statusText = result.success ? t('popupVerifiedByIssuer') : result.status;
     }
 
     // Build HTML
@@ -173,47 +179,50 @@ function renderResultCard(result) {
             <div style="display: flex; gap: 15px; margin-bottom: 12px; align-items: center; background: #f0f7ff; padding: 10px; border-radius: 8px; border: 1px solid #d0e7ff;">
                 <img src="${result.payload.headshot}" style="width: 60px; height: 75px; object-fit: cover; border-radius: 4px; border: 1px solid #accbee;">
                 <div>
-                    <div style="font-weight: 600; color: #002d62;">Verification Result</div>
-                    <div style="font-size: 12px; color: #444;">${escapeHtml(result.payload.message || 'Authenticated')}</div>
+                    <div style="font-weight: 600; color: #002d62;">${t('popupVerificationResult')}</div>
+                    <div style="font-size: 12px; color: #444;">${escapeHtml(result.payload.message || t('popupAuthenticated'))}</div>
                 </div>
             </div>
         `;
     }
 
-    // Show authorization status if available
+    // Show authorization status if available. Message text is localized; the
+    // authorizer/issuer is wrapped in <strong> and passed as the substitution.
     if (result.success && !result.authorization) {
         html += `
             <div class="authorization-row authorization-self">
-                Self-verified (no authority chain)
+                ${t('popupSelfVerified')}
             </div>
         `;
     } else if (result.authorization && result.authorization.authorizer) {
         const a = result.authorization;
+        const authorizerBold = `<strong>${escapeHtml(a.authorizer)}</strong>`;
         let authClass, authHtml;
         if (a.expired) {
             authClass = 'authorization-expired';
-            authHtml = `Verification authorization by <strong>${escapeHtml(a.authorizer)}</strong> \u2014 expired`;
+            authHtml = t('authByExpired', authorizerBold);
             if (a.successor) {
-                authHtml += `. Successor: ${escapeHtml(a.successor)}`;
+                authHtml += `. ${t('authSuccessor', escapeHtml(a.successor))}`;
             }
         } else if (a.confirmed) {
             authClass = 'authorization-confirmed';
             const desc = a.description ? ` (${escapeHtml(a.description)})` : '';
-            authHtml = `Verification authorized by <strong>${escapeHtml(a.authorizer)}</strong>${desc}`;
+            authHtml = t('authByConfirmed', authorizerBold) + desc;
             // Show chain entries
             if (a.chain && a.chain.length > 1) {
                 for (let i = 1; i < a.chain.length; i++) {
                     const c = a.chain[i];
                     const cDesc = c.description ? ` (${escapeHtml(c.description)})` : '';
-                    authHtml += `<div class="authorization-chain-entry">Authorized by <strong>${escapeHtml(c.authorizer)}</strong>${cDesc}</div>`;
+                    authHtml += `<div class="authorization-chain-entry">${t('authChainEntry', `<strong>${escapeHtml(c.authorizer)}</strong>`)}${cDesc}</div>`;
                 }
             }
         } else if (a.checked) {
             authClass = 'authorization-missing';
-            authHtml = `Verification authorization by <strong>${escapeHtml(a.authorizer)}</strong> \u2014 not confirmed`;
+            authHtml = t('authByNotConfirmed', authorizerBold);
         } else {
             authClass = 'authorization-unavailable';
-            authHtml = `${formatDomainEmphasis(result.domain, result.registrableDomain) || 'Issuer'} claims verification authorization by <strong>${escapeHtml(a.authorizer)}</strong> \u2014 missing`;
+            const issuer = formatDomainEmphasis(result.domain, result.registrableDomain) || t('authIssuerFallback');
+            authHtml = t('authClaimsMissing', [issuer, authorizerBold]);
         }
         html += `
             <div class="authorization-row ${authClass}">
@@ -227,9 +236,9 @@ function renderResultCard(result) {
         html += `
             <div class="claim-section">
                 <div class="label">
-                    Claim Text
-                    <span class="copy-btn" data-text="${escapeAttr(result.certText)}">Copy</span>
-                    <span class="show-btn" data-text="${escapeAttr(result.certText)}">Show me</span>
+                    ${t('popupClaimText')}
+                    <span class="copy-btn" data-text="${escapeAttr(result.certText)}">${t('popupCopy')}</span>
+                    <span class="show-btn" data-text="${escapeAttr(result.certText)}">${t('popupShowMe')}</span>
                 </div>
                 <div class="claim-text">${escapeHtml(result.certText)}</div>
             </div>
@@ -239,14 +248,14 @@ function renderResultCard(result) {
     // Details toggle (for power users)
     if (result.hash || result.verificationUrl || result.normalizedText) {
         html += `
-            <div class="details-toggle">▶ Show details</div>
+            <div class="details-toggle">▶ ${t('popupShowDetails')}</div>
             <div class="details-content">
         `;
 
         if (result.hash) {
             html += `
                 <div class="detail-row">
-                    <div class="label">SHA-256 Hash</div>
+                    <div class="label">${t('popupHashLabel')}</div>
                     <div class="value mono">${result.hash}</div>
                 </div>
             `;
@@ -255,7 +264,7 @@ function renderResultCard(result) {
         if (result.verificationUrl) {
             html += `
                 <div class="detail-row">
-                    <div class="label">Verification URL</div>
+                    <div class="label">${t('popupVerificationUrlLabel')}</div>
                     <div class="value mono">${escapeHtml(result.verificationUrl)}</div>
                 </div>
             `;
@@ -264,7 +273,7 @@ function renderResultCard(result) {
         if (result.normalizedText && result.normalizedText !== result.certText) {
             html += `
                 <div class="detail-row">
-                    <div class="label">Normalized Text (hashed)</div>
+                    <div class="label">${t('popupNormalizedTextLabel')}</div>
                     <div class="value mono" style="white-space: pre-wrap; max-height: 100px; overflow-y: auto;">${escapeHtml(result.normalizedText)}</div>
                 </div>
             `;
@@ -273,7 +282,7 @@ function renderResultCard(result) {
         if (result.elapsed) {
             html += `
                 <div class="detail-row">
-                    <div class="label">Verification Time</div>
+                    <div class="label">${t('popupVerificationTimeLabel')}</div>
                     <div class="value">${result.elapsed}ms</div>
                 </div>
             `;
@@ -288,16 +297,16 @@ function renderResultCard(result) {
 
 function getReadableError(error) {
     if (error.includes('No verify:') || error.includes('No vfy:')) {
-        return 'No verify: URL found in selection';
+        return t('errNoVerifyUrl');
     }
     if (error.includes('No certification text')) {
-        return 'No text found before the verify: URL. Select the full claim including content.';
+        return t('errNoCertText');
     }
     if (error.includes('Network error') || error.includes('fetch')) {
-        return 'Network error - could not reach verification server';
+        return t('errNetwork');
     }
     if (error.includes('CORS')) {
-        return 'Server blocked the request (CORS). The issuer may not support browser verification.';
+        return t('errCors');
     }
     return error;
 }

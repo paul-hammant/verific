@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "LiveVerify",
+  "name": "__MSG_extName__",
   "version": "1.0.0",
-  "description": "Verify selected text against issuer endpoints using SHA-256 hashing",
+  "default_locale": "en",
+  "description": "__MSG_extDescription__",
   "permissions": [
     "contextMenus",
     "storage",
@@ -49,7 +50,13 @@
         "default": "Ctrl+Shift+V",
         "mac": "Command+Shift+V"
       },
-      "description": "Verify selected text"
+      "description": "__MSG_commandVerifyDescription__"
     }
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["_locales/*/messages.json"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

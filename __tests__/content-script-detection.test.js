@@ -28,6 +28,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { i18nStub } = require('./helpers/i18n-stub');
 
 // Load content.js source for evaluation in jsdom
 const contentScriptSource = fs.readFileSync(
@@ -43,7 +44,8 @@ function setupChromeApi() {
             onMessage: {
                 addListener: jest.fn()
             }
-        }
+        },
+        i18n: i18nStub
     };
 }
 
@@ -119,7 +121,7 @@ describe('Content script: Style 1 — start/end span pairs', () => {
 
         const btn = document.querySelector('.liveverify-scan-btn');
         expect(btn).not.toBeNull();
-        expect(btn.textContent).toContain('2 verifiable regions');
+        expect(btn.textContent).toContain('2 verifiable region(s)');
     });
 
     test('ignores start marker without matching end marker', async () => {
@@ -209,6 +211,6 @@ describe('Content script: Mixed styles on same page', () => {
 
         const btn = document.querySelector('.liveverify-scan-btn');
         expect(btn).not.toBeNull();
-        expect(btn.textContent).toContain('2 verifiable regions');
+        expect(btn.textContent).toContain('2 verifiable region(s)');
     });
 });

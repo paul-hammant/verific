@@ -201,17 +201,27 @@
     </style>
 </head>
 <body>
-    <h1>LiveVerify Settings</h1>
-    <p class="subtitle">Configure verification behavior and notifications</p>
+    <h1 data-i18n="settingsTitle">LiveVerify Settings</h1>
+    <p class="subtitle" data-i18n="settingsSubtitle">Configure verification behavior and notifications</p>
 
     <div class="section">
-        <h2>Page Scanning</h2>
+        <h2 data-i18n="settingsLanguageSection">Language</h2>
+        <select id="languageSelect" style="width: 100%; padding: 10px 12px; font-size: 14px; border: 1px solid #d1d5db; border-radius: 8px; background: #fff; color: #1a1a1a;">
+            <option value="auto" data-i18n="settingsLanguageAuto">Match browser</option>
+            <option value="en" data-i18n="settingsLanguageEnglish">English</option>
+            <option value="es" data-i18n="settingsLanguageSpanish">Español (Spanish)</option>
+            <option value="de" data-i18n="settingsLanguageGerman">Deutsch (German)</option>
+        </select>
+    </div>
+
+    <div class="section">
+        <h2 data-i18n="settingsPageScanningSection">Page Scanning</h2>
 
         <label class="checkbox-option" data-setting="autoScanPages">
             <input type="checkbox" name="autoScanPages">
             <div class="checkbox-content">
-                <div class="checkbox-title">Auto-scan pages for verifiable content</div>
-                <div class="checkbox-description">
+                <div class="checkbox-title" data-i18n="settingsAutoScanTitle">Auto-scan pages for verifiable content</div>
+                <div class="checkbox-description" data-i18n="settingsAutoScanDesc">
                     Automatically detect and highlight regions marked with verification attributes
                 </div>
             </div>
@@ -220,8 +230,8 @@
         <label class="checkbox-option" data-setting="autoVerify">
             <input type="checkbox" name="autoVerify">
             <div class="checkbox-content">
-                <div class="checkbox-title">Auto-verify detected regions</div>
-                <div class="checkbox-description">
+                <div class="checkbox-title" data-i18n="settingsAutoVerifyTitle">Auto-verify detected regions</div>
+                <div class="checkbox-description" data-i18n="settingsAutoVerifyDesc">
                     Automatically verify all detected regions (requires auto-scan to be enabled)
                 </div>
             </div>
@@ -230,32 +240,32 @@
         <label class="checkbox-option" data-setting="hideVerifyQuasiUrls">
             <input type="checkbox" name="hideVerifyQuasiUrls">
             <div class="checkbox-content">
-                <div class="checkbox-title">Hide verify: URLs on scanned pages</div>
-                <div class="checkbox-description">
+                <div class="checkbox-title" data-i18n="settingsHideUrlsTitle">Hide verify: URLs on scanned pages</div>
+                <div class="checkbox-description" data-i18n="settingsHideUrlsDesc">
                     Hide the <code>verify:</code> endpoint lines from the page when verifiable regions are detected
                 </div>
             </div>
         </label>
 
-        <div class="info-box">
+        <div class="info-box" data-i18n="settingsScanInfo">
             Pages with verifiable content use markers in HTML elements to indicate verifiable claims. Divs with <code>verifiable-text</code> attributes (and start or stop). Or <code>verifiable-text-element=true</code> for the whole element. When scanning is disabled, a floating button appears on pages with verifiable regions.
         </div>
     </div>
 
     <div class="section">
-        <h2>Notification Level</h2>
+        <h2 data-i18n="settingsNotificationSection">Notification Level</h2>
 
         <label class="option" data-value="maximum">
             <input type="radio" name="intrusiveness" value="maximum">
             <div class="option-content">
-                <div class="option-title">Maximum (Recommended)</div>
-                <div class="option-description">
+                <div class="option-title" data-i18n="settingsMaximumTitle">Maximum (Recommended)</div>
+                <div class="option-description" data-i18n="settingsMaximumDesc">
                     Most visible - ensures you never miss a verification result
                 </div>
                 <ul class="option-features">
-                    <li>System notification with sound</li>
-                    <li>Notification stays until dismissed</li>
-                    <li>Badge on extension icon</li>
+                    <li data-i18n="settingsMaximumFeat1">System notification with sound</li>
+                    <li data-i18n="settingsMaximumFeat2">Notification stays until dismissed</li>
+                    <li data-i18n="settingsBadgeFeature">Badge on extension icon</li>
                 </ul>
             </div>
         </label>
@@ -263,13 +273,13 @@
         <label class="option" data-value="standard">
             <input type="radio" name="intrusiveness" value="standard">
             <div class="option-content">
-                <div class="option-title">Standard</div>
-                <div class="option-description">
+                <div class="option-title" data-i18n="settingsStandardTitle">Standard</div>
+                <div class="option-description" data-i18n="settingsStandardDesc">
                     Balanced - notification appears briefly
                 </div>
                 <ul class="option-features">
-                    <li>System notification (auto-dismiss)</li>
-                    <li>Badge on extension icon</li>
+                    <li data-i18n="settingsStandardFeat1">System notification (auto-dismiss)</li>
+                    <li data-i18n="settingsBadgeFeature">Badge on extension icon</li>
                 </ul>
             </div>
         </label>
@@ -277,30 +287,30 @@
         <label class="option" data-value="minimal">
             <input type="radio" name="intrusiveness" value="minimal">
             <div class="option-content">
-                <div class="option-title">Minimal</div>
-                <div class="option-description">
+                <div class="option-title" data-i18n="settingsMinimalTitle">Minimal</div>
+                <div class="option-description" data-i18n="settingsMinimalDesc">
                     Quiet - only updates the extension icon
                 </div>
                 <ul class="option-features">
-                    <li>Badge on extension icon only</li>
-                    <li>Click icon to see details</li>
+                    <li data-i18n="settingsMinimalFeat1">Badge on extension icon only</li>
+                    <li data-i18n="settingsMinimalFeat2">Click icon to see details</li>
                 </ul>
             </div>
         </label>
     </div>
 
     <div class="keyboard-shortcut">
-        <h3>Keyboard Shortcut</h3>
+        <h3 data-i18n="settingsKeyboardShortcut">Keyboard Shortcut</h3>
         <p>
             <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> (or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> on Mac)
         </p>
-        <p style="margin-top: 8px; font-size: 12px; color: #6b7280;">
+        <p style="margin-top: 8px; font-size: 12px; color: #6b7280;" data-i18n="settingsKeyboardHint">
             Select text with a verify: URL, then use this shortcut to verify
         </p>
     </div>
 
-    <div class="saved-message" id="savedMessage">Settings saved</div>
+    <div class="saved-message" id="savedMessage" data-i18n="settingsSaved">Settings saved</div>
 
-    <script src="settings.js"></script>
+    <script src="settings.js" type="module"></script>
 </body>
 </html>

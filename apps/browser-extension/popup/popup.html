@@ -368,19 +368,19 @@
             <h1>LiveVerify</h1>
         </div>
         <div class="header-actions">
-            <a href="#" id="debugLink">Debug</a>
-            <a href="#" id="settingsLink">Settings</a>
+            <a href="#" id="debugLink" data-i18n="popupDebug">Debug</a>
+            <a href="#" id="settingsLink" data-i18n="popupSettings">Settings</a>
         </div>
     </div>
 
     <div id="content">
         <div class="no-results">
-            <h2>No verifications yet</h2>
-            <p>Select text containing a verify: URL,<br>then right-click → "Verify Selection"</p>
-            <div class="shortcut">Cmd+Shift+V / Ctrl+Shift+V</div>
+            <h2 data-i18n="popupNoResultsTitle">No verifications yet</h2>
+            <p data-i18n="popupNoResultsBody">Select text containing a verify: URL, then right-click → "Verify Selection"</p>
+            <div class="shortcut" data-i18n="popupShortcut">Cmd+Shift+V / Ctrl+Shift+V</div>
         </div>
     </div>
 
-    <script src="popup.js"></script>
+    <script src="popup.js" type="module"></script>
 </body>
 </html>

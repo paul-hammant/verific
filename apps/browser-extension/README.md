@@ -77,17 +77,43 @@ Then visit:
 browser-extension/
 ├── manifest.json        # Extension manifest (v3)
 ├── background.js        # Service worker
+├── _locales/
+│   ├── en/messages.json # English UI strings (default_locale)
+│   ├── es/messages.json # Spanish UI strings
+│   └── de/messages.json # German UI strings
 ├── shared/
 │   ├── normalize.js     # Text normalization + hashing
-│   └── verify.js        # URL extraction + verification
+│   ├── verify.js        # URL extraction + verification
+│   ├── i18n.js          # Runtime language resolution + t() helper
+│   └── notification-message.js  # Notification/banner text (i18n-aware)
 ├── popup/
 │   ├── popup.html       # Results popup
 │   └── popup.js
 ├── settings/
-│   ├── settings.html    # Settings page
+│   ├── settings.html    # Settings page (incl. Language selector)
 │   └── settings.js
 └── icons/               # Extension icons
 ```
+
+## Language
+
+The extension UI is available in **English**, **Spanish**, and **German**.
+
+By default it follows the **browser's** UI language (Chrome's native `_locales`
+i18n). A **Language** selector in Settings lets the user override this — pick
+`Match browser`, `English`, or `Español` — and the choice is saved to
+`chrome.storage.sync`.
+
+- **Popup, Settings, OS notifications, context menu** honour the manual override.
+- **In-page scan badges** (`content.js`) follow the browser language only. Content
+  scripts run in the page context and aren't ES modules, so wiring the override
+  through them would mean async messaging on every badge render; the browser
+  language is the conventional behaviour for content-script UI.
+
+Adding a language: create `_locales/<lang>/messages.json` with the same keys as
+`_locales/en/messages.json`, add the base locale to `SUPPORTED_LOCALES` in
+`shared/i18n.js`, and add an `<option>` to the Language selector in
+`settings/settings.html`.
 
 ## Result Display Mode
 

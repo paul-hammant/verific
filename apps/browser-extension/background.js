@@ -33,7 +33,8 @@ import {
     checkAuthorization
 } from './shared/verify.js';
 import { extractDomainAuthority } from './shared/domain-authority.js';
-import { buildNotificationMessage } from './shared/notification-message.js';
+import { buildNotificationMessage, buildAuthLine } from './shared/notification-message.js';
+import { initI18n, t } from './shared/i18n.js';
 
 console.log('[LiveVerify] Service worker started');
 
@@ -64,15 +65,32 @@ chrome.storage.session.get('verificationHistory').then(result => {
     }
 });
 
-// Create context menu (runs on every service worker start)
-chrome.contextMenus.removeAll().then(() => {
-    chrome.contextMenus.create({
-        id: 'verify-selection',
-        title: 'Verify this claim',
-        type: 'normal',
-        contexts: ['selection']
+// Create context menu (runs on every service worker start). initI18n() resolves
+// the active language (browser default, or the user's override) before we read
+// the localized title.
+chrome.contextMenus.removeAll()
+    .then(() => initI18n())
+    .then(() => {
+        chrome.contextMenus.create({
+            id: 'verify-selection',
+            title: t('contextMenuVerify'),
+            type: 'normal',
+            contexts: ['selection']
+        });
+        console.log('[LiveVerify] Context menu created');
     });
-    console.log('[LiveVerify] Context menu created');
+
+// Rebuild the context menu when the language override changes, so its title
+// tracks the user's chosen language rather than only the browser language.
+chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'sync' && changes.settings) {
+        (async () => {
+            await initI18n();
+            await chrome.contextMenus.update('verify-selection', {
+                title: t('contextMenuVerify')
+            }).catch(() => {});
+        })();
+    }
 });
 
 // Handle context menu click
@@ -276,13 +294,33 @@ async function showResult(result, tab, skipBadge = false) {
     }
 
     if (RESULT_DISPLAY === 'banner') {
-        // Inject result banner into the active tab
+        // Inject result banner into the active tab. The injected function runs
+        // in the page context where chrome.i18n is unavailable, so pre-translate
+        // its strings here and pass them in.
         if (tab?.id) {
             try {
+                await initI18n();
+                const bannerStrings = {
+                    verified: t('bannerVerified'),
+                    error: t('bannerError'),
+                    notVerified: t('bannerNotVerified'),
+                    verifiedBy: t('bannerVerifiedBy', result.domain || ''),
+                    doesNotVerify: result.domain ? t('bannerDoesNotVerify', result.domain) : '',
+                    selfVerified: t('notifSelfVerified'),
+                    issuerFallback: t('authIssuerFallback'),
+                    extractedText: t('bannerExtractedText'),
+                    normalizedText: t('bannerNormalizedText'),
+                    details: t('bannerDetails'),
+                    footer: t('bannerFooter'),
+                    // Pre-built, fully-translated authorization line (plain
+                    // text; the banner shows it as-is). Built here because
+                    // chrome.i18n is unavailable in the injected page context.
+                    authLine: buildAuthLine(result, t)
+                };
                 await chrome.scripting.executeScript({
                     target: { tabId: tab.id },
                     func: showResultBanner,
-                    args: [result]
+                    args: [result, bannerStrings]
                 });
             } catch (error) {
                 console.error('[LiveVerify] Failed to inject result banner:', error);
@@ -294,7 +332,8 @@ async function showResult(result, tab, skipBadge = false) {
 
         if (settings.intrusiveness === 'minimal') return;
 
-        const { title, message } = buildNotificationMessage(result);
+        await initI18n();
+        const { title, message } = buildNotificationMessage(result, t);
 
         const notificationOptions = {
             type: 'basic',
@@ -316,8 +355,9 @@ async function showResult(result, tab, skipBadge = false) {
     }
 }
 
-// This function is injected into the page — it must be self-contained
-function showResultBanner(result) {
+// This function is injected into the page — it must be self-contained.
+// `strings` carries the pre-translated UI text (page context has no chrome.i18n).
+function showResultBanner(result, strings) {
     // Remove any existing banner
     const existing = document.getElementById('liveverify-result-banner');
     if (existing) existing.remove();
@@ -337,14 +377,14 @@ function showResultBanner(result) {
     // Build status text
     let statusText, statusDetail;
     if (isVerified) {
-        statusText = 'VERIFIED';
-        statusDetail = `by ${emph(result.domain)}`;
+        statusText = strings.verified;
+        statusDetail = strings.verifiedBy.replace(result.domain, emph(result.domain));
     } else if (isError) {
-        statusText = 'ERROR';
+        statusText = strings.error;
         statusDetail = result.error;
     } else {
-        statusText = result.status || 'NOT VERIFIED';
-        statusDetail = result.domain ? `${emph(result.domain)} does not verify this claim` : (result.error || '');
+        statusText = result.status || strings.notVerified;
+        statusDetail = result.domain ? strings.doesNotVerify.replace(result.domain, emph(result.domain)) : (result.error || '');
     }
 
     // Colours
@@ -374,35 +414,14 @@ function showResultBanner(result) {
     // Build authorization HTML
     let authorizationHtml = '';
     if (isVerified && !result.authorization) {
-        authorizationHtml = '<div style="font-size: 12px; color: #ffb74d; margin-top: 2px;">Self-verified (no authority chain)</div>';
-    } else if (result.authorization && result.authorization.authorizer) {
+        authorizationHtml = `<div style="font-size: 12px; color: #ffb74d; margin-top: 2px;">${strings.selfVerified}</div>`;
+    } else if (strings.authLine) {
+        // authLine is pre-translated in the service worker (chrome.i18n is not
+        // available in this injected page context). Green when the chain is
+        // confirmed, amber otherwise.
         const a = result.authorization;
-        const authorizerBold = `<strong>${a.authorizer}</strong>`;
-        let aColor, aText;
-        if (a.expired) {
-            aColor = '#ffb74d';
-            aText = `Verification authorization by ${authorizerBold} \u2014 expired`;
-            if (a.successor) aText += `. Successor: ${a.successor}`;
-        } else if (a.confirmed) {
-            aColor = '#c8e6c9';
-            const issuerDesc = result.issuerDescription ? ` (${result.issuerDescription})` : '';
-            aText = `${emph(result.domain) || 'Issuer'}${issuerDesc} \u2190 authorized by ${authorizerBold}`;
-            if (a.description) aText += ` (${a.description})`;
-            if (a.chain && a.chain.length > 1) {
-                for (let i = 1; i < a.chain.length; i++) {
-                    const c = a.chain[i];
-                    aText += ` \u2190 <strong>${c.authorizer}</strong>`;
-                    if (c.description) aText += ` (${c.description})`;
-                }
-            }
-        } else if (a.checked) {
-            aColor = '#ffb74d';
-            aText = `Verification authorization by ${authorizerBold} \u2014 not confirmed`;
-        } else {
-            aColor = '#ffb74d';
-            aText = `${emph(result.domain) || 'Issuer'} claims verification authorization by ${authorizerBold} \u2014 missing`;
-        }
-        authorizationHtml = `<div style="font-size: 12px; color: ${aColor}; margin-top: 2px;">${aText}</div>`;
+        const aColor = (a && a.confirmed) ? '#c8e6c9' : '#ffb74d';
+        authorizationHtml = `<div style="font-size: 12px; color: ${aColor}; margin-top: 2px;">${strings.authLine}</div>`;
     }
 
     // Build details section (extracted text, normalized text, SHA-256)
@@ -414,10 +433,10 @@ function showResultBanner(result) {
 
         let items = '';
         if (result.certText) {
-            items += `<div style="${itemStyle}"><div style="${labelStyle}">Extracted Text</div><div style="${monoStyle}">${result.certText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`;
+            items += `<div style="${itemStyle}"><div style="${labelStyle}">${strings.extractedText}</div><div style="${monoStyle}">${result.certText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`;
         }
         if (result.normalizedText) {
-            items += `<div style="${itemStyle}"><div style="${labelStyle}">Normalized Text</div><div style="${monoStyle}">${result.normalizedText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`;
+            items += `<div style="${itemStyle}"><div style="${labelStyle}">${strings.normalizedText}</div><div style="${monoStyle}">${result.normalizedText.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div></div>`;
         }
         if (result.hash) {
             items += `<div style="${itemStyle}"><div style="${labelStyle}">SHA-256</div><div style="${monoStyle}">${result.hash}</div></div>`;
@@ -425,7 +444,7 @@ function showResultBanner(result) {
 
         detailsHtml = `
             <div id="liveverify-details-toggle" style="padding: 0 20px 8px; cursor: pointer; font-size: 11px; opacity: 0.8; user-select: none;">
-                \u25B6 Details
+                \u25B6 ${strings.details}
             </div>
             <div id="liveverify-details-content" style="display: none; padding: 0 20px 12px;">
                 ${items}
@@ -450,7 +469,7 @@ function showResultBanner(result) {
         </div>
         ${detailsHtml}
         <div style="padding: 4px 20px 6px; background: rgba(0,0,0,0.15); font-size: 11px; opacity: 0.8; text-align: center;">
-            LiveVerify browser extension \u2014 screencaps of this are not proof of anything
+            ${strings.footer}
         </div>
     `;
 
@@ -481,7 +500,7 @@ function showResultBanner(result) {
         detailsToggle.addEventListener('click', () => {
             const visible = detailsContent.style.display !== 'none';
             detailsContent.style.display = visible ? 'none' : 'block';
-            detailsToggle.innerHTML = visible ? '\u25B6 Details' : '\u25BC Details';
+            detailsToggle.innerHTML = visible ? `\u25B6 ${strings.details}` : `\u25BC ${strings.details}`;
         });
     }
 
