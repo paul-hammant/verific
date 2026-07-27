@@ -235,9 +235,9 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## See Also
 
-- [National/State/Province ID Cards](view.html?slug=national-state-province-id-cards) — Identity verification with photo return
-- [Driver's Licenses](view.html?slug=drivers-licenses) — Licence validity and categories
-- [Vehicle Registration](view.html?slug=vehicle-registration) — Registration, insurance status, and plate verification
+- [National/State/Province ID Cards](view.html?doc=national-state-province-id-cards) — Identity verification with photo return
+- [Driver's Licenses](view.html?doc=drivers-licenses) — Licence validity and categories
+- [Vehicle Registration](view.html?doc=vehicle-registration) — Registration, insurance status, and plate verification
 
 
 ## Jurisdictional Witnessing (Optional)

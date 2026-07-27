@@ -267,9 +267,9 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## See Also
 
-- [Property Title Deeds](view.html?slug=property-deeds) — Ownership transfer documents
-- [Authorized Agent Confirmations](view.html?slug=authorized-agent-confirmations) — How locksmiths verify their own authorization
-- [Estate Clearance Authorizations](view.html?slug=estate-clearance-authorizations) — Property clearance with site notices
+- [Property Title Deeds](view.html?doc=property-deeds) — Ownership transfer documents
+- [Authorized Agent Confirmations](view.html?doc=authorized-agent-confirmations) — How locksmiths verify their own authorization
+- [Estate Clearance Authorizations](view.html?doc=estate-clearance-authorizations) — Property clearance with site notices
 
 
 ## Jurisdictional Witnessing (Optional)

@@ -152,7 +152,7 @@ Patient:     J.R.C.
 **How navigation works:** The patient taps "Navigate to this appointment." The app needs to know where they are now. Two options:
 
 1. **GPS/cellular location** — works for getting to the right building on a multi-building campus, but useless inside a concrete hospital.
-2. **Scan a wayfinding sign** — the patient scans a [corridor wayfinding posting](view.html?slug=hospital-wayfinding-postings) at the nearest junction. The app now knows both where they are (from the sign) and where they need to be (from the appointment letter). It calculates the route.
+2. **Scan a wayfinding sign** — the patient scans a [corridor wayfinding posting](view.html?doc=hospital-wayfinding-postings) at the nearest junction. The app now knows both where they are (from the sign) and where they need to be (from the appointment letter). It calculates the route.
 
 This pairs the appointment letter with the wayfinding signs. The letter is the destination; the corridor sign is the current position. Together they produce indoor navigation without beacons, Wi-Fi triangulation, or any infrastructure beyond printed text and a verification endpoint.
 

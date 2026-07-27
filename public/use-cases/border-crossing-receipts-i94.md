@@ -148,5 +148,5 @@ If a witness layer exists, it may periodically commit rollups to a public blockc
 
 ## See Also
 
-- [Advance Parole and Re-Entry Permits](view.html?slug=advance-parole-reentry-permits) — Similar “official system primary, artifact bridge secondary” pattern
-- [Work Permits & Work Visas](view.html?slug=work-permits) — Broader right-to-work framing across jurisdictions
+- [Advance Parole and Re-Entry Permits](view.html?doc=advance-parole-reentry-permits) — Similar “official system primary, artifact bridge secondary” pattern
+- [Work Permits & Work Visas](view.html?doc=work-permits) — Broader right-to-work framing across jurisdictions

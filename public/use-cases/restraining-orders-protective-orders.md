@@ -182,7 +182,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## See Also
 
-- [Search Warrants](view.html?slug=search-warrants) — Similar court-order pattern where the affected civilian is outside official systems
+- [Search Warrants](view.html?doc=search-warrants) — Similar court-order pattern where the affected civilian is outside official systems
 
 ## Jurisdictional Witnessing (Optional)
 

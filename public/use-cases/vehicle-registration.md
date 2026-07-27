@@ -89,7 +89,7 @@ Disputing a toll charge? The registration verification confirms the plate-to-own
 Verifying that a vehicle is currently registered (and in which state) when processing claims. Catches "garage" fraud — insuring a car at a suburban address for lower rates when it's actually garaged in the city.
 
 **Used Car Buyers**
-Before buying a car, confirming the registration is current, the seller is the registered owner, and there are no holds. Complements [Vehicle Title](view.html?slug=vehicle-titles) verification — title proves ownership, registration proves the car is currently road-legal.
+Before buying a car, confirming the registration is current, the seller is the registered owner, and there are no holds. Complements [Vehicle Title](view.html?doc=vehicle-titles) verification — title proves ownership, registration proves the car is currently road-legal.
 
 **Fleet Managers**
 Monitoring registration status across hundreds of vehicles. A single expired registration in a commercial fleet can result in an out-of-service order for the vehicle and fines for the company. Automated verification of QR codes on fleet registration cards catches lapses before enforcement does.
@@ -173,5 +173,5 @@ If a witness layer exists, it may periodically commit rollups to a public blockc
 
 ## See Also
 
-- [Vehicle Display Postings](view.html?slug=vehicle-display-postings) — Stronger as visible safety/authority surfaces than as standalone core artifacts
-- [Auto Insurance Documents](view.html?slug=auto-insurance-documents) — Similar split between stronger portable claims and weaker card/status artifacts
+- [Vehicle Display Postings](view.html?doc=vehicle-display-postings) — Stronger as visible safety/authority surfaces than as standalone core artifacts
+- [Auto Insurance Documents](view.html?doc=auto-insurance-documents) — Similar split between stronger portable claims and weaker card/status artifacts

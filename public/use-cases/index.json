@@ -1,6 +1,6 @@
 {
-  "generated": "2026-07-23T07:21:19.474Z",
-  "totalUseCases": 609,
+  "generated": "2026-07-27T22:37:27.939Z",
+  "totalUseCases": 611,
   "totalFurtherDerivations": 934,
   "categories": {
     "Real Estate & Property": 45,
@@ -14,12 +14,12 @@
     "Notary Services": 7,
     "Immigration & Visa Documents": 18,
     "Legal & Court Documents": 26,
-    "Identity & Authority Verification": 59,
+    "Identity & Authority Verification": 60,
     "Insurance Claims & Operations": 15,
     "Chain of Custody & Logistics": 18,
     "Travel & Hospitality": 22,
     "Healthcare & Medical Records": 16,
-    "Professional & Educational Qualifications": 25,
+    "Professional & Educational Qualifications": 26,
     "Art, Media & Publishing": 8,
     "Customs & Trade Compliance": 8,
     "Sports & Athletics": 6,
@@ -1492,6 +1492,28 @@
         "traceability",
         "compliance",
         "testing-equipment"
+      ]
+    },
+    {
+      "slug": "candidate-work-sample-provenance",
+      "title": "Candidate Work-Sample & Assignment Provenance",
+      "category": "Professional & Educational Qualifications",
+      "volume": "Large",
+      "retention": "Hiring cycle + 1-2 years (dispute/audit window)",
+      "verificationMode": "clip",
+      "furtherDerivations": 0,
+      "snippet": "- Issuer — who operates the endpoint and stands behind the seal (an assessment platform, a",
+      "tags": [
+        "hiring",
+        "recruitment",
+        "take-home-assignment",
+        "work-sample",
+        "portfolio",
+        "ai-provenance",
+        "authentic-work",
+        "assessment",
+        "screening",
+        "self-attested"
       ]
     },
     {
@@ -5425,6 +5447,28 @@
         "kyc",
         "edd",
         "safe-harbor"
+      ]
+    },
+    {
+      "slug": "idv-completed-attestation",
+      "title": "Identity-Verification-Completed Attestation",
+      "category": "Identity & Authority Verification",
+      "volume": "Large",
+      "retention": "Check validity window + audit period (typically 30-90 days live, 1-7 years for the audit record)",
+      "verificationMode": "clip",
+      "furtherDerivations": 0,
+      "snippet": "- Verifier — the IDV vendor or relying party that ran the check and operates the endpoint",
+      "tags": [
+        "identity-verification",
+        "idv",
+        "liveness",
+        "kyc",
+        "hiring",
+        "deepfake",
+        "staffing",
+        "portable-attestation",
+        "vendor-attestation",
+        "insider-risk"
       ]
     },
     {
@@ -12552,7 +12596,7 @@
   "categoriesList": [
     {
       "name": "Identity & Authority Verification",
-      "count": 59
+      "count": 60
     },
     {
       "name": "Real Estate & Property",
@@ -12575,12 +12619,12 @@
       "count": 26
     },
     {
-      "name": "Financial Compliance",
+      "name": "Professional & Educational Qualifications",
       "count": 26
     },
     {
-      "name": "Professional & Educational Qualifications",
-      "count": 25
+      "name": "Financial Compliance",
+      "count": 26
     },
     {
       "name": "Specialty Insurance",

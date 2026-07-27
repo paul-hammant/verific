@@ -156,5 +156,5 @@ If a witness layer exists, it may periodically commit rollups to a public blockc
 
 ## See Also
 
-- [Passports & Visa Documents](view.html?slug=passports-visa-documents) — Similar “copied/portable artifact outside native system” framing
-- [Probate Documents](view.html?slug=probate-documents) — Death-related authority workflows downstream of the vital record
+- [Passports & Visa Documents](view.html?doc=passports-visa-documents) — Similar “copied/portable artifact outside native system” framing
+- [Probate Documents](view.html?doc=probate-documents) — Death-related authority workflows downstream of the vital record

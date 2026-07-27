@@ -17,9 +17,10 @@ These results currently arrive as paper certificates, PDF score reports, or scre
 
 This is distinct from:
 
-- **[Course Transcripts](view.html?slug=course-transcripts)** — ongoing academic records and grades from a university over multiple terms
-- **[University Degrees](view.html?slug=university-degrees)** — the final degree award from an institution
-- **[Language Proficiency Certificates](view.html?slug=language-proficiency-certificates)** — IELTS/TOEFL score reports (there is overlap; language proficiency tests are a subset of the broader exam results category, with their own dedicated page covering that specific testing ecosystem)
+- **[Course Transcripts](view.html?doc=course-transcripts)** — ongoing academic records and grades from a university over multiple terms
+- **[University Degrees](view.html?doc=university-degrees)** — the final degree award from an institution
+- **[Language Proficiency Certificates](view.html?doc=language-proficiency-certificates)** — IELTS/TOEFL score reports (there is overlap; language proficiency tests are a subset of the broader exam results category, with their own dedicated page covering that specific testing ecosystem)
+- **[Candidate Work-Sample & Assignment Provenance](view.html?doc=candidate-work-sample-provenance)** — the *work artifact* a candidate submits in hiring (a take-home, a code sample, a portfolio piece), as opposed to a graded score from an examining body
 
 This page covers the **score report from the examining body after a specific sitting** — the artifact that proves the candidate achieved a particular result on a particular date.
 

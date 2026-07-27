@@ -61,14 +61,14 @@ Full name, date of birth, physical descriptors (Height/Eye Color), license numbe
 | Expiry date | Disqualification history |
 | Revoked/suspended status | Endorsement codes and dates |
 
-The card proves identity and basic validity. For points/violations, see [Authority-Issued Driving Records](view.html?slug=driving-records).
+The card proves identity and basic validity. For points/violations, see [Authority-Issued Driving Records](view.html?doc=driving-records).
 
 **Document Types:**
 - **Driver's License:** The foundational ID card.
 - **Interim License:** 30-day paper proof for new drivers.
 - **Learner's Permit / Provisional License:** Restricted driving privileges for new drivers.
 
-For vehicle registration verification, see [Vehicle Registration](view.html?slug=vehicle-registration).
+For vehicle registration verification, see [Vehicle Registration](view.html?doc=vehicle-registration).
 
 ## Data Visible After Verification
 

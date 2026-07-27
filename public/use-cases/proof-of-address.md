@@ -163,4 +163,4 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## See Also
 
-- [Social Security Benefit Statements](view.html?slug=social-security-benefit-statements) — Another proof document often shared in onboarding workflows
+- [Social Security Benefit Statements](view.html?doc=social-security-benefit-statements) — Another proof document often shared in onboarding workflows

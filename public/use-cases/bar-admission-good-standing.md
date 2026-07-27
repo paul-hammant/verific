@@ -167,5 +167,5 @@ If a witness layer exists, it may periodically commit rollups to a public blockc
 
 ## See Also
 
-- [Professional Licenses](view.html?slug=professional-licenses) — Broader registry-primary framing
-- [University Degrees and Transcripts](view.html?slug=university-degrees) — Another credential family where the portable artifact is useful but not dominant
+- [Professional Licenses](view.html?doc=professional-licenses) — Broader registry-primary framing
+- [University Degrees and Transcripts](view.html?doc=university-degrees) — Another credential family where the portable artifact is useful but not dominant

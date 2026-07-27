@@ -11,7 +11,7 @@ furtherDerivations: 1
 
 ## What is a Retraction Notice?
 
-A retraction notice is a formal statement by a journal that a previously published paper has been withdrawn from the scientific record. Unlike a pre-publication rejection (covered in [Peer Review Reports](view.html?slug=peer-review-reports)), a retraction happens *after* the paper has been published, cited, and potentially influenced policy, medical practice, or further research.
+A retraction notice is a formal statement by a journal that a previously published paper has been withdrawn from the scientific record. Unlike a pre-publication rejection (covered in [Peer Review Reports](view.html?doc=peer-review-reports)), a retraction happens *after* the paper has been published, cited, and potentially influenced policy, medical practice, or further research.
 
 Retractions matter because the retracted paper doesn't disappear. It stays in library databases, in other papers' reference lists, in PhD theses, in drug approval dossiers, and in news articles that cited it. The retraction notice is the only mechanism that says "stop trusting this."
 

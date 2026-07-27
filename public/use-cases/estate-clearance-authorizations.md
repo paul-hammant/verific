@@ -380,8 +380,8 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 ## See Also
 
 Other authorized agent confirmations:
-- [Authorized Agent Confirmations](view.html?slug=authorized-agent-confirmations) — Repo agents, bailiffs, tow operators, locksmiths
-- [Security Testing Authorizations](view.html?slug=security-testing-authorizations) — Pentest, bug bounty, red team authorizations
+- [Authorized Agent Confirmations](view.html?doc=authorized-agent-confirmations) — Repo agents, bailiffs, tow operators, locksmiths
+- [Security Testing Authorizations](view.html?doc=security-testing-authorizations) — Pentest, bug bounty, red team authorizations
 
 
 ## Jurisdictional Witnessing (Optional)

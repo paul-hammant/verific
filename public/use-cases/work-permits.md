@@ -195,6 +195,6 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## See Also
 
-- [Passports & Visa Documents](view.html?slug=passports-visa-documents) — Narrowed to copied-document workflows outside native state systems
-- [Advance Parole and Re-Entry Permits](view.html?slug=advance-parole-reentry-permits) — Another immigration-status artifact where official systems remain primary
-- [Border Crossing Receipts (I-94)](view.html?slug=border-crossing-receipts-i94) — Direct DHS/CBP systems should remain the main current-status path
+- [Passports & Visa Documents](view.html?doc=passports-visa-documents) — Narrowed to copied-document workflows outside native state systems
+- [Advance Parole and Re-Entry Permits](view.html?doc=advance-parole-reentry-permits) — Another immigration-status artifact where official systems remain primary
+- [Border Crossing Receipts (I-94)](view.html?doc=border-crossing-receipts-i94) — Direct DHS/CBP systems should remain the main current-status path

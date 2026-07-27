@@ -176,5 +176,5 @@ If a witness layer exists, it may periodically commit rollups to a public blockc
 
 ## See Also
 
-- [Vehicle Registration](view.html?slug=vehicle-registration) — Related vehicle-state artifact where issuer QR/direct lookup is often primary
-- [Vehicle Inspection Reports (DOT, MOT, TÜV)](view.html?slug=vehicle-inspection-reports-dot) — Another vehicle document family where official authority lookup may already dominate
+- [Vehicle Registration](view.html?doc=vehicle-registration) — Related vehicle-state artifact where issuer QR/direct lookup is often primary
+- [Vehicle Inspection Reports (DOT, MOT, TÜV)](view.html?doc=vehicle-inspection-reports-dot) — Another vehicle document family where official authority lookup may already dominate

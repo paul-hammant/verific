@@ -167,6 +167,6 @@ If a witness layer exists, it may periodically commit rollups to a public blockc
 
 ## See Also
 
-- [Work Permits & Work Visas](view.html?slug=work-permits) — Broader international framing with official systems kept primary
-- [Border Crossing Receipts (I-94)](view.html?slug=border-crossing-receipts-i94) — Similar “artifact bridge, official system primary” pattern
-- [Advance Parole and Re-Entry Permits](view.html?slug=advance-parole-reentry-permits) — Another immigration-status edge-case bridge
+- [Work Permits & Work Visas](view.html?doc=work-permits) — Broader international framing with official systems kept primary
+- [Border Crossing Receipts (I-94)](view.html?doc=border-crossing-receipts-i94) — Similar “artifact bridge, official system primary” pattern
+- [Advance Parole and Re-Entry Permits](view.html?doc=advance-parole-reentry-permits) — Another immigration-status edge-case bridge

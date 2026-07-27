@@ -196,7 +196,7 @@ The issuer-generated random salt line (printed on the warrant but not derivable 
 
 ## See Also
 
-- [Restraining Orders and Protective Orders](view.html?slug=restraining-orders-protective-orders) — Another court-order family where civilian verifiers are outside the native justice systems
+- [Restraining Orders and Protective Orders](view.html?doc=restraining-orders-protective-orders) — Another court-order family where civilian verifiers are outside the native justice systems
 
 ## Jurisdictional Witnessing (Optional)
 

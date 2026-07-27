@@ -134,8 +134,8 @@ Pest control is a "toxic trust" domain. The risk is not abstract credential infl
 
 ## See Also
 
-- [Home Service Provider Verification](view.html?slug=home-service-provider-verification) — Broader doorstep company/assignment verification for trades
-- [Cold-Caller Credentials](view.html?slug=cold-caller-credentials) — Doorstep verification before opening the door
+- [Home Service Provider Verification](view.html?doc=home-service-provider-verification) — Broader doorstep company/assignment verification for trades
+- [Cold-Caller Credentials](view.html?doc=cold-caller-credentials) — Doorstep verification before opening the door
 - [Trades and Home-Visit Cluster](../../trades-home-visit-cluster.md) — Cluster note for threshold-decision cases
 
 ## Jurisdictional Witnessing (Optional)

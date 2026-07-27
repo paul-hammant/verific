@@ -212,8 +212,8 @@ Driver endorsements are the "permission slips" of the sharing economy. The stron
 
 ## See Also
 
-- [Auto Insurance Documents](view.html?slug=auto-insurance-documents) — Broader split between stronger portable claims and weaker card/status artifacts
-- [Proof of Insurance Status](view.html?slug=proof-of-insurance-status) — Stronger certificate/excerpt case where no central motor-status system exists
+- [Auto Insurance Documents](view.html?doc=auto-insurance-documents) — Broader split between stronger portable claims and weaker card/status artifacts
+- [Proof of Insurance Status](view.html?doc=proof-of-insurance-status) — Stronger certificate/excerpt case where no central motor-status system exists
 
 ## Jurisdictional Witnessing (Optional)
 

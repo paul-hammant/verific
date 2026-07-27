@@ -153,6 +153,6 @@ If a witness layer exists, it may periodically commit rollups to a public blockc
 
 ## See Also
 
-- [Passports & Visa Documents](view.html?slug=passports-visa-documents) — Complementary only outside native travel-document systems
-- [Work Permits & Work Visas](view.html?slug=work-permits) — Similar “official system primary, copied artifact secondary” pattern
-- [Border Crossing Receipts (I-94)](view.html?slug=border-crossing-receipts-i94) — Another DHS/CBP status artifact
+- [Passports & Visa Documents](view.html?doc=passports-visa-documents) — Complementary only outside native travel-document systems
+- [Work Permits & Work Visas](view.html?doc=work-permits) — Similar “official system primary, copied artifact secondary” pattern
+- [Border Crossing Receipts (I-94)](view.html?doc=border-crossing-receipts-i94) — Another DHS/CBP status artifact

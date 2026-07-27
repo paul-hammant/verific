@@ -160,8 +160,8 @@ If a witness layer exists, it may periodically commit rollups to a public blockc
 
 ## See Also
 
-- [Professional Licenses](view.html?slug=professional-licenses) — Similar split between public registry primacy and portable artifact usefulness
-- [Bar Admission and Good-Standing Letters](view.html?slug=bar-admission-good-standing) — Another credential family where the portable status letter is stronger than a decorative certificate
+- [Professional Licenses](view.html?doc=professional-licenses) — Similar split between public registry primacy and portable artifact usefulness
+- [Bar Admission and Good-Standing Letters](view.html?doc=bar-admission-good-standing) — Another credential family where the portable status letter is stronger than a decorative certificate
 
 ## Further Reading
 

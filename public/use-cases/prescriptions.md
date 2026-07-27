@@ -195,4 +195,4 @@ If a witness layer exists, it may periodically commit rollups to a public blockc
 
 ## See Also
 
-- [Proof of Insurance (Policyholder Confirmation)](view.html?slug=proof-of-insurance-status) — Another strong portable-claim case for relying parties outside the source system
+- [Proof of Insurance (Policyholder Confirmation)](view.html?doc=proof-of-insurance-status) — Another strong portable-claim case for relying parties outside the source system

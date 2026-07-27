@@ -149,7 +149,7 @@ If a witness layer exists, it may periodically commit rollups to a public blockc
 
 ## See Also
 
-- [Authority-Issued Driving Records](view.html?slug=driving-records) — Before adding a named driver, insurers should verify their points/endorsements
-- [Driver's Licenses](view.html?slug=drivers-licenses) — License card verification
-- [Vehicle Registration](view.html?slug=vehicle-registration) — Registration and insurance status
-- [Additional Driver Endorsements](view.html?slug=additional-driver-endorsements) — Temporary driver coverage
+- [Authority-Issued Driving Records](view.html?doc=driving-records) — Before adding a named driver, insurers should verify their points/endorsements
+- [Driver's Licenses](view.html?doc=drivers-licenses) — License card verification
+- [Vehicle Registration](view.html?doc=vehicle-registration) — Registration and insurance status
+- [Additional Driver Endorsements](view.html?doc=additional-driver-endorsements) — Temporary driver coverage

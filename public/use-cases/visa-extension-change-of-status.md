@@ -131,6 +131,6 @@ If a witness layer exists, it may periodically commit rollups to a public blockc
 
 ## See Also
 
-- [Employment Authorization Documents (EAD)](view.html?slug=employment-authorization-ead) — Similar “artifact bridge, official workflow primary” pattern
-- [Border Crossing Receipts (I-94)](view.html?slug=border-crossing-receipts-i94) — Direct DHS/CBP systems should remain the main current-status path
-- [Advance Parole and Re-Entry Permits](view.html?slug=advance-parole-reentry-permits) — Another immigration-status edge-case bridge
+- [Employment Authorization Documents (EAD)](view.html?doc=employment-authorization-ead) — Similar “artifact bridge, official workflow primary” pattern
+- [Border Crossing Receipts (I-94)](view.html?doc=border-crossing-receipts-i94) — Direct DHS/CBP systems should remain the main current-status path
+- [Advance Parole and Re-Entry Permits](view.html?doc=advance-parole-reentry-permits) — Another immigration-status edge-case bridge

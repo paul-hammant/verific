@@ -370,9 +370,9 @@ If a witness layer exists, it may periodically commit rollups to a public blockc
 
 ## See Also
 
-- [Property Access Rights](view.html?slug=property-access-rights) — Proving you have right to access a property (the other side of the verification)
-- [Authorized Agent Confirmations](view.html?slug=authorized-agent-confirmations) — Agents with legal authority to enter/seize
-- [Estate Clearance Authorizations](view.html?slug=estate-clearance-authorizations) — Authorized work at a property with posted notices
-- [Home Service Provider Verification](view.html?slug=home-service-provider-verification) — Scheduled contractor and tradesperson visits
+- [Property Access Rights](view.html?doc=property-access-rights) — Proving you have right to access a property (the other side of the verification)
+- [Authorized Agent Confirmations](view.html?doc=authorized-agent-confirmations) — Agents with legal authority to enter/seize
+- [Estate Clearance Authorizations](view.html?doc=estate-clearance-authorizations) — Authorized work at a property with posted notices
+- [Home Service Provider Verification](view.html?doc=home-service-provider-verification) — Scheduled contractor and tradesperson visits
 - [Trades and Home-Visit Cluster](../../trades-home-visit-cluster.md) — Cluster note for threshold-decision cases
 - [Anti-Vishing: Real-Time Call Verification](../../docs/anti-vishing-real-time-call-verification.md) — extends the cold-caller credential concept to phone calls using RCS-delivered verification with one-time code words

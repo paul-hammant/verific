@@ -157,4 +157,4 @@ If a witness layer exists, it may periodically commit rollups to a public blockc
 
 ## See Also
 
-- [Professional Licenses](view.html?slug=professional-licenses) — Another case where a wall document is stronger as a visible surface than as the core artifact
+- [Professional Licenses](view.html?doc=professional-licenses) — Another case where a wall document is stronger as a visible surface than as the core artifact

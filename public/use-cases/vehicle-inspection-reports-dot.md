@@ -260,5 +260,5 @@ All follow the same narrow verification model:
 
 ## See Also
 
-- [Vehicle Registration](view.html?slug=vehicle-registration) — A related vehicle-state use case where direct lookup or issuer QR is often primary
-- [Vehicle Display Postings](view.html?slug=vehicle-display-postings) — Visible roadside/parking surfaces bridging to live status
+- [Vehicle Registration](view.html?doc=vehicle-registration) — A related vehicle-state use case where direct lookup or issuer QR is often primary
+- [Vehicle Display Postings](view.html?doc=vehicle-display-postings) — Visible roadside/parking surfaces bridging to live status

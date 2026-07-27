@@ -163,6 +163,6 @@ If a witness layer exists, it may periodically commit rollups to a public blockc
 
 ## See Also
 
-- [Home Service Provider Verification](view.html?slug=home-service-provider-verification) — Broader company/assignment verification for doorstep trades
-- [Cold-Caller Credentials](view.html?slug=cold-caller-credentials) — Pre-entry identity checks for unexpected visitors
+- [Home Service Provider Verification](view.html?doc=home-service-provider-verification) — Broader company/assignment verification for doorstep trades
+- [Cold-Caller Credentials](view.html?doc=cold-caller-credentials) — Pre-entry identity checks for unexpected visitors
 - [Trades and Home-Visit Cluster](../../trades-home-visit-cluster.md) — Cluster note for doorstep and threshold verification

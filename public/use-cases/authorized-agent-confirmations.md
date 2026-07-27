@@ -148,7 +148,7 @@ For locksmiths and tree surgeons, the authorizing party is an individual homeown
 - Their professional reputation is on the line
 - They can be held liable for negligent verification
 
-**The other half:** The locksmith should also ask the claimed homeowner to prove their right to the property. See [Property Access Rights Verification](view.html?slug=property-access-rights) for on-demand proof that owners, tenants, and guests can present.
+**The other half:** The locksmith should also ask the claimed homeowner to prove their right to the property. See [Property Access Rights Verification](view.html?doc=property-access-rights) for on-demand proof that owners, tenants, and guests can present.
 
 ### Tree Surgery Authorization
 
@@ -356,8 +356,8 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## See Also
 
-- [Estate Clearance Authorizations](view.html?slug=estate-clearance-authorizations) — Detailed system for probate and property clearance
-- [Security Testing Authorizations](view.html?slug=security-testing-authorizations) — Pentest, bug bounty, red team authorizations
+- [Estate Clearance Authorizations](view.html?doc=estate-clearance-authorizations) — Detailed system for probate and property clearance
+- [Security Testing Authorizations](view.html?doc=security-testing-authorizations) — Pentest, bug bounty, red team authorizations
 
 
 ## Jurisdictional Witnessing (Optional)

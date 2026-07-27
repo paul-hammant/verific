@@ -49,7 +49,7 @@ The insured issues a verifiable claim confirming the broker's appointment:
   </div>
 </div>
 
-The verify line points to the **insured's** domain, not the broker's. The insured is the party granting authority; they control whether the claim remains valid. This is the same principle as [Corporate Signing Authority](view.html?slug=contract-signing-authority) — the company declares who is authorized.
+The verify line points to the **insured's** domain, not the broker's. The insured is the party granting authority; they control whether the claim remains valid. This is the same principle as [Corporate Signing Authority](view.html?doc=contract-signing-authority) — the company declares who is authorized.
 
 ## The Scope Boundary
 
@@ -205,7 +205,7 @@ EU member states implement IDD through national regulators (BaFin in Germany, AC
 
 Other delegated authority use cases:
 
-- [Corporate Signing Authority](view.html?slug=contract-signing-authority) — The foundational pattern for verifiable delegation
-- [Insurance Panel Membership](view.html?slug=insurance-panel-membership) — Provider-insurer network verification
-- [Professional Indemnity Live Status](view.html?slug=professional-indemnity-live-status) — Insurance cover verification
-- [Insurance Claims Adjuster Reports](view.html?slug=insurance-claims-adjuster-reports) — Adjuster authority and report verification
+- [Corporate Signing Authority](view.html?doc=contract-signing-authority) — The foundational pattern for verifiable delegation
+- [Insurance Panel Membership](view.html?doc=insurance-panel-membership) — Provider-insurer network verification
+- [Professional Indemnity Live Status](view.html?doc=professional-indemnity-live-status) — Insurance cover verification
+- [Insurance Claims Adjuster Reports](view.html?doc=insurance-claims-adjuster-reports) — Adjuster authority and report verification

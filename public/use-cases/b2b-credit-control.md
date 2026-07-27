@@ -205,11 +205,11 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 ## See Also
 
 Other delegated authority confirmations:
-- [Contract Signing Authority](view.html?slug=contract-signing-authority) — Who can sign contracts binding the company
-- [Employment Authority](view.html?slug=employment-authority-confirmations) — Job offers, terminations, salary decisions
-- [Operational Authority](view.html?slug=operational-authority-confirmations) — Vendor selection, project approvals, SLA commitments
-- [Regulatory Filing Authority](view.html?slug=regulatory-filing-authority) — Companies House, tax filings, audit letters
-- [Security Testing Authorizations](view.html?slug=security-testing-authorizations) — Pentest, bug bounty, red team authorizations
+- [Contract Signing Authority](view.html?doc=contract-signing-authority) — Who can sign contracts binding the company
+- [Employment Authority](view.html?doc=employment-authority-confirmations) — Job offers, terminations, salary decisions
+- [Operational Authority](view.html?doc=operational-authority-confirmations) — Vendor selection, project approvals, SLA commitments
+- [Regulatory Filing Authority](view.html?doc=regulatory-filing-authority) — Companies House, tax filings, audit letters
+- [Security Testing Authorizations](view.html?doc=security-testing-authorizations) — Pentest, bug bounty, red team authorizations
 
 
 ## Jurisdictional Witnessing (Optional)

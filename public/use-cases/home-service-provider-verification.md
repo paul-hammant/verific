@@ -206,6 +206,6 @@ If a witness layer exists, it may periodically commit rollups to a public blockc
 
 ## See Also
 
-- [Locksmith Licenses](view.html?slug=locksmith-licenses) — Another threshold-decision trade with company and dispatch checks
-- [Pest Control Operator Licenses](view.html?slug=pest-control-operator-licenses) — Task-scope and chemical-category variant
+- [Locksmith Licenses](view.html?doc=locksmith-licenses) — Another threshold-decision trade with company and dispatch checks
+- [Pest Control Operator Licenses](view.html?doc=pest-control-operator-licenses) — Task-scope and chemical-category variant
 - [Trades and Home-Visit Cluster](../../trades-home-visit-cluster.md) — Cluster note for doorstep and threshold verification
