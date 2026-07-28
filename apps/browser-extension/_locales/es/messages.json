@@ -4,7 +4,7 @@
     "description": "Nombre de la extensión."
   },
   "extDescription": {
-    "message": "Verifica el texto seleccionado contra los puntos de verificación del emisor mediante hash SHA-256",
+    "message": "Comprueba el texto seleccionado con los puntos de verificación del emisor mediante hash SHA-256",
     "description": "Descripción de la extensión."
   },
   "contextMenuVerify": {
@@ -19,7 +19,7 @@
   "popupDebug": { "message": "Depuración" },
   "popupSettings": { "message": "Ajustes" },
   "popupNoResultsTitle": { "message": "Aún no hay verificaciones" },
-  "popupNoResultsBody": { "message": "Selecciona un texto que contenga una URL verify:, luego haz clic derecho → «Verificar selección»" },
+  "popupNoResultsBody": { "message": "Selecciona un texto que contenga una URL verify: y haz clic con el botón derecho → «Verificar selección»" },
   "popupShortcut": { "message": "Cmd+Mayús+V / Ctrl+Mayús+V" },
   "popupClearHistory": { "message": "Borrar historial" },
   "popupConnectionErrorTitle": { "message": "Error de conexión" },
