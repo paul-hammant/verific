@@ -50,10 +50,36 @@ It answers: *is this document the one the issuer actually issued, unmodified?*
 |---|---|---|
 | Layer | *Inside* an AI pipeline, per-claim | *Between* organizations, per-artifact |
 | Mechanism | Graded reputation registry + Bayesian evidence loop | Cryptographic hash + domain endpoint |
-| Trust root | Accumulated narrator track record | Issuer's control of a domain |
+| Trust root | Accumulated narrator track record | An `authorizedBy` chain terminating at a jurisdiction's root namespace (e.g. `gov.uk/verifiers`) |
 | Output | serve / review / quarantine | verified / not-verified + status |
 | Truth stance | Probabilistic (how reliable) | Binary (unaltered vs. altered) |
 | Handles | Distortion *by AI transformers* | Forgery/tampering *of documents* |
+
+## A subtlety: Live Verify has a chain too — but a different kind of chain
+
+It is tempting to reduce Live Verify's trust root to "the issuer controls a domain." That is only the
+leaf. Control of the issuing domain proves the artifact came from *that* domain — it does not, on its
+own, prove the domain is a *legitimate authority* for the claim. Live Verify closes that gap with an
+**authority chain** (see [authority-chain-spec.md](./authority-chain-spec.md)): a relying party walks
+`authorizedBy` links from the issuer up to a regulator and, where one exists, to a jurisdiction's
+**root government namespace** — `gov.uk/verifiers`, `usa.gov/verifiers` (CISA-controlled `.gov`), and
+per-country equivalents. HSBC → HMRC → `gov.uk` is the canonical worked example: the employer attests
+the fact, HMRC attests HSBC is a real PAYE employer, and the root namespace attests HMRC is a genuine
+government service.
+
+This is worth stating precisely, because it changes the shape of the comparison. **Both frameworks
+are chain-based, but the chains carry different things:**
+
+- **Isnad's isnād is a *transmission* chain** — the ordered list of hands a claim *passed through*
+  (source → scraper → model → model). Each hand is graded on how reliably it forwards claims.
+- **Live Verify's authority chain is a *vouching* chain** — not who relayed the artifact, but who
+  *vouches the issuer is entitled to issue it*. It terminates not at a track record but at statute /
+  a sovereign root namespace.
+
+So where Isnad answers "how trustworthy is this *path of transmitters*?", Live Verify's authority
+chain answers "is this issuer a *legitimate authority*, all the way up to a government root?" Both
+refuse to stop at the leaf; they just walk in different directions — Isnad backwards through
+*transmission*, Live Verify upwards through *authorization*.
 
 ## Why they compose rather than compete
 
@@ -62,10 +88,11 @@ cryptographic proof at a domain boundary. These are different trust primitives o
 positions in the stack, and they slot together cleanly:
 
 - **A Live Verify seal is an ideal high-trust narrator input to an Isnad chain.** A
-  cryptographically-anchored, domain-attested source is exactly the kind of link that deserves a top
-  narrator grade. Isnad already has a `NarratorType` for `source`; a hash-verified Live Verify
-  artifact is a *strong* narrator — its integrity axis (ʿadālah) is anchored by cryptography rather
-  than by accumulated track record.
+  cryptographically-anchored, authority-chained source is exactly the kind of link that deserves a
+  top narrator grade. Isnad already has a `NarratorType` for `source`; a hash-verified Live Verify
+  artifact is a *strong* narrator — its integrity axis (ʿadālah) is anchored by cryptography *and* by
+  an authority chain to a sovereign root, rather than by accumulated track record. A Live Verify seal
+  can thus bootstrap a narrator to a high grade on day one, before any evidence history exists.
 - **Conversely, Isnad's honest-limit ethos and its "grade the chain, not the content" framing is
   essentially the same design philosophy the Live Verify use-case corpus already applies** — the two
   projects independently arrived at the same discipline of refusing to over-claim.
