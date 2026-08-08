@@ -30,6 +30,22 @@ e-ink panel, about $30**. A cheap, low-power, reflective e-ink module is exactly
 laser-printed paper. Low contrast, a slightly tinted background, and a matte reflective finish are the
 normal texture of this medium.
 
+Two things about this panel are worth saying plainly, because they shape where the idea goes. First,
+**$30 is today's price, and it will fall.** E-ink has followed the usual trajectory of a maturing
+display technology — steadily cheaper per unit as volumes grow — and a credential-sized panel that
+costs $30 now is on a path to a few dollars. A re-writable, low-power card you can update in the field
+only makes sense as a mass-market credential once the panel is cheap enough to be almost disposable,
+and that is the direction of travel.
+
+Second, and honestly, **this particular panel is both too small and too slow to update over NFC.** The
+display area barely fits the six lines of this prop; a real credential wants more room for the claim
+plus a scannable code. And refreshing an e-ink panel is slow — a full redraw is measured in hundreds
+of milliseconds to seconds, and pushing new content over an NFC tap (itself bandwidth-limited, and
+needing the card held in the field for the duration) makes the "tap to re-issue this credential"
+gesture feel sluggish today. Neither is a dead end — bigger, faster-refresh e-ink and better
+NFC-to-display paths both exist — but as of this card, updating the display over NFC is not yet a
+smooth experience, and it would be dishonest to imply otherwise.
+
 I pointed the iOS app at it and got a red banner:
 
 > **FAILED: Hash not found** — by bbc.co.uk
