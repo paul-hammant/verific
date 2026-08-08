@@ -1,0 +1,200 @@
+<!--
+    Copyright (C) 2026, Paul Hammant
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog — Live Verify</title>
+    <style>
+        :root {
+            --bg: #f6f8fb;
+            --bg-grad-top: #eef2f9;
+            --surface: #ffffff;
+            --ink: #0f172a;
+            --ink-soft: #475569;
+            --ink-faint: #64748b;
+            --line: #e2e8f0;
+            --accent: #2563eb;
+            --accent-dark: #1d4ed8;
+            --accent-soft: #eff4ff;
+            --radius: 16px;
+            --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.08);
+            --shadow-md: 0 6px 18px rgba(15, 23, 42, 0.08);
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            background-image: radial-gradient(1200px 500px at 50% -120px, var(--bg-grad-top) 0%, var(--bg) 70%);
+            min-height: 100vh;
+            padding: 28px 20px 56px;
+            color: var(--ink);
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+        .container { max-width: 760px; margin: 0 auto; }
+        .breadcrumbs {
+            font-size: 0.9em;
+            color: var(--ink-faint);
+            margin-bottom: 20px;
+        }
+        .breadcrumbs a { color: var(--accent-dark); text-decoration: none; }
+        .breadcrumbs a:hover { text-decoration: underline; }
+        h1 {
+            font-size: clamp(2em, 5vw, 2.6em);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            margin-bottom: 8px;
+        }
+        .lede {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: var(--ink-soft);
+            margin-bottom: 32px;
+        }
+        .post-list { list-style: none; display: flex; flex-direction: column; gap: 18px; }
+        .post-card {
+            display: block;
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            padding: 22px 24px;
+            text-decoration: none;
+            color: inherit;
+            transition: box-shadow 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+        }
+        .post-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+            border-color: #cdd8ea;
+        }
+        .post-date {
+            font-size: 0.82em;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+            color: var(--ink-faint);
+            margin-bottom: 6px;
+        }
+        .post-title {
+            font-size: 1.28em;
+            font-weight: 750;
+            letter-spacing: -0.01em;
+            line-height: 1.25;
+            color: var(--ink);
+            margin-bottom: 8px;
+        }
+        .post-summary { font-size: 1em; line-height: 1.55; color: var(--ink-soft); }
+        .empty, .error {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 24px;
+            color: var(--ink-soft);
+        }
+        .error { border-color: #f3c2c2; background: #fef4f4; color: #a13b3b; }
+        footer {
+            margin-top: 40px;
+            font-size: 0.9em;
+            color: var(--ink-faint);
+            text-align: center;
+        }
+        footer a { color: var(--accent-dark); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+            <a href="../index.html">Live Verify</a> &rsaquo; Blog
+        </nav>
+
+        <h1>Blog</h1>
+        <p class="lede">Notes from building Live Verify — design decisions, honest failures, and what
+        the field teaches that the whiteboard doesn't.</p>
+
+        <ul class="post-list" id="postList"></ul>
+
+        <footer>
+            <a href="../index.html">&larr; Back to Live Verify</a>
+        </footer>
+    </div>
+
+    <script>
+        // Fail loudly: if the manifest can't load, say so — do not render a
+        // silently-empty blog as though there were no posts.
+        fetch('posts.json')
+            .then(function (res) {
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return res.json();
+            })
+            .then(function (posts) {
+                var list = document.getElementById('postList');
+                if (!Array.isArray(posts) || posts.length === 0) {
+                    list.innerHTML = '<li class="empty">No posts yet.</li>';
+                    return;
+                }
+                // Newest first by date string (ISO YYYY-MM-DD sorts lexicographically).
+                posts.sort(function (a, b) { return (b.date || '').localeCompare(a.date || ''); });
+                posts.forEach(function (post) {
+                    var a = document.createElement('a');
+                    a.className = 'post-card';
+                    a.href = post.slug + '.html';
+
+                    var d = document.createElement('div');
+                    d.className = 'post-date';
+                    d.textContent = formatDate(post.date);
+
+                    var t = document.createElement('div');
+                    t.className = 'post-title';
+                    t.textContent = post.title;
+
+                    var s = document.createElement('div');
+                    s.className = 'post-summary';
+                    s.textContent = post.summary || '';
+
+                    a.appendChild(d);
+                    a.appendChild(t);
+                    a.appendChild(s);
+                    list.appendChild(a);
+                });
+            })
+            .catch(function (err) {
+                var list = document.getElementById('postList');
+                list.innerHTML = '<li class="error">Could not load the post list (' +
+                    (err && err.message ? err.message : 'unknown error') +
+                    '). The blog manifest (posts.json) failed to load.</li>';
+            });
+
+        function formatDate(iso) {
+            if (!iso) return '';
+            var parts = iso.split('-');
+            if (parts.length !== 3) return iso;
+            var months = ['January','February','March','April','May','June','July',
+                'August','September','October','November','December'];
+            var y = parts[0], m = parseInt(parts[1], 10), day = parseInt(parts[2], 10);
+            if (!months[m - 1]) return iso;
+            return months[m - 1] + ' ' + day + ', ' + y;
+        }
+    </script>
+</body>
+</html>

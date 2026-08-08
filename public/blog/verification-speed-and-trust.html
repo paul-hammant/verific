@@ -1,0 +1,145 @@
+<!--
+    Copyright (C) 2026, Paul Hammant
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Speed and Trust — Live Verify Blog</title>
+    <style>
+        :root {
+            --bg: #f6f8fb;
+            --bg-grad-top: #eef2f9;
+            --surface: #ffffff;
+            --ink: #0f172a;
+            --ink-soft: #475569;
+            --ink-faint: #64748b;
+            --line: #e2e8f0;
+            --accent: #2563eb;
+            --accent-dark: #1d4ed8;
+            --accent-soft: #eff4ff;
+            --radius: 16px;
+            --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.08);
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            background-image: radial-gradient(1200px 500px at 50% -120px, var(--bg-grad-top) 0%, var(--bg) 70%);
+            min-height: 100vh;
+            padding: 28px 20px 56px;
+            color: var(--ink);
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+        .container { max-width: 720px; margin: 0 auto; }
+        .breadcrumbs { font-size: 0.9em; color: var(--ink-faint); margin-bottom: 22px; }
+        .breadcrumbs a { color: var(--accent-dark); text-decoration: none; }
+        .breadcrumbs a:hover { text-decoration: underline; }
+        article { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: clamp(24px, 5vw, 48px); }
+        .post-date { font-size: 0.82em; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
+        h1 { font-size: clamp(1.7em, 4.5vw, 2.3em); font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 24px; }
+        h2 { font-size: 1.35em; font-weight: 750; letter-spacing: -0.01em; margin: 34px 0 12px; }
+        p { font-size: 1.05em; line-height: 1.68; color: var(--ink); margin-bottom: 16px; }
+        a { color: var(--accent-dark); }
+        strong { font-weight: 700; }
+        code { font-family: var(--mono); font-size: 0.9em; background: #eef2f8; padding: 1px 5px; border-radius: 5px; }
+        hr { border: none; border-top: 1px solid var(--line); margin: 32px 0; }
+        .post-nav { margin-top: 28px; font-size: 0.95em; }
+        .post-nav a { color: var(--accent-dark); text-decoration: none; }
+        .post-nav a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+            <a href="../index.html">Live Verify</a> &rsaquo; <a href="index.html">Blog</a> &rsaquo; Verification Speed and Trust
+        </nav>
+
+        <article>
+            <div class="post-date">January 26, 2025</div>
+            <h1>Verification Speed and Trust in Document Authentication</h1>
+
+            <p>Live Verify as it exists today uses computer vision to detect registration marks on a
+            physical document, crops to that region, performs OCR on the text within, normalizes that
+            text according to specific rules, computes a SHA-256 hash, and then makes an HTTP GET
+            request to a verification endpoint. The entire process takes several seconds from camera
+            capture to final verification result.</p>
+
+            <p>The multi-second delay is actually acceptable for certain classes of printed claims.
+            Consider a till receipt claiming a transaction occurred: the customer has already walked
+            away from the point of sale, there is no time pressure, and a few seconds to verify
+            authenticity is perfectly reasonable. Similarly, employment verification letters, academic
+            transcripts, safety certifications, and other documents where the verification happens after
+            the initial presentation can tolerate this latency without issue.</p>
+
+            <p>The situation changes dramatically if verification were built into an online application
+            where the claim already exists as text in the page. Instead of capturing an image, detecting
+            registration marks, and performing OCR, the browser could pre-verify claims as soon as the
+            page loads. The text is already available in the DOM, normalization and hashing can happen
+            instantly in JavaScript, and the verification endpoint can be fetched asynchronously before
+            the user even scrolls to that section of the page. By the time a user looks at a claim,
+            verification could already be complete and displayed.</p>
+
+            <p>Building this as a JavaScript library that web applications could include seems like the
+            obvious next step. The library would scan the page for specially-marked claim elements,
+            normalize their text content, compute hashes, and fetch verification endpoints. However,
+            this introduces a significant trust problem: a malicious web application could include fake
+            claim elements with fake verification results. The library running in the page context has
+            no way to prove that its verification badges are genuine rather than spoofed by the page
+            author.</p>
+
+            <p>The solution would be browser-native verification where the browser itself, not
+            page-loaded JavaScript, performs the verification process. When a user taps or clicks a
+            verified claim, the browser UI chrome (the area that web pages cannot write to or style)
+            could briefly display "VERIFIED" or show verification details in a popup that is provably
+            from the browser. This is similar to how browsers show SSL certificate information: the page
+            cannot fake the padlock icon or the certificate viewer because those live in browser chrome,
+            not page content.</p>
+
+            <p>QR codes offer an interesting middle ground for handheld phone verification scenarios. A
+            QR code containing just the verification base URL (like
+            <code>https://example.com/employment-verifications/</code>) would be quite small, perhaps
+            Version 2 or 3, requiring only 1-2 cm square. However, this still requires OCR of the claim
+            text to compute the hash that gets appended to the base URL, so it does not eliminate the
+            multi-second delay.</p>
+
+            <p>Alternatively, a QR code could contain the entire claim text itself. For a typical
+            employment verification of around 150-200 characters, this would require a Version 6 or 7 QR
+            code, approximately 3-4 cm square. The receiving application would scan the QR code to get
+            the full text, normalize it, compute the SHA-256 hash locally, and then fetch the
+            verification endpoint. This approach has an advantage: the claim data is preserved even if
+            the verification server goes offline, and verification can happen in two stages (immediate
+            hash computation to show the claim, followed by network verification to confirm the issuer
+            has not revoked it).</p>
+
+            <p>If you choose the QR code containing the full claim approach, you would still want the
+            human-readable text printed on the document alongside the QR code. This serves multiple
+            purposes: accessibility for people who cannot scan QR codes, transparency so humans can read
+            what is being verified without needing to decode the QR, and redundancy in case the QR code
+            is damaged. The layout would show the claim text with registration marks for OCR-based
+            verification, and a QR code adjacent to or below that text containing the same claim data for
+            faster scanning.</p>
+
+            <hr>
+            <div class="post-nav"><a href="index.html">&larr; All posts</a></div>
+        </article>
+    </div>
+</body>
+</html>

@@ -1,0 +1,14 @@
+[
+  {
+    "slug": "two-ocr-failures-on-one-eink-card",
+    "title": "Two OCR Failures on One e-Ink Card — and Why Showing Your Working Beats Hiding It",
+    "date": "2026-08-08",
+    "summary": "A mock e-ink credential fails to verify for two reasons: Apple's OCR reads 'Wolf' as 'wolf', and two whole lines go missing before the hash. One bug I understand, one I don't — and the app's transparency is what surfaced both."
+  },
+  {
+    "slug": "verification-speed-and-trust",
+    "title": "Verification Speed and Trust in Document Authentication",
+    "date": "2025-01-26",
+    "summary": "Camera-and-OCR verification takes a few seconds — fine for a receipt, wrong for an urgent claim. In-page, QR, and browser-native verification each trade latency against a different trust problem."
+  }
+]

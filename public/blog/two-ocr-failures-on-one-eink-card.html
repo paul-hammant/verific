@@ -1,0 +1,278 @@
+<!--
+    Copyright (C) 2026, Paul Hammant
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two OCR Failures on One e-Ink Card — Live Verify Blog</title>
+    <style>
+        :root {
+            --bg: #f6f8fb;
+            --bg-grad-top: #eef2f9;
+            --surface: #ffffff;
+            --ink: #0f172a;
+            --ink-soft: #475569;
+            --ink-faint: #64748b;
+            --line: #e2e8f0;
+            --accent: #2563eb;
+            --accent-dark: #1d4ed8;
+            --accent-soft: #eff4ff;
+            --radius: 16px;
+            --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.08);
+            --shadow-md: 0 6px 18px rgba(15, 23, 42, 0.08);
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            background-image: radial-gradient(1200px 500px at 50% -120px, var(--bg-grad-top) 0%, var(--bg) 70%);
+            min-height: 100vh;
+            padding: 28px 20px 56px;
+            color: var(--ink);
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+        .container { max-width: 720px; margin: 0 auto; }
+        .breadcrumbs { font-size: 0.9em; color: var(--ink-faint); margin-bottom: 22px; }
+        .breadcrumbs a { color: var(--accent-dark); text-decoration: none; }
+        .breadcrumbs a:hover { text-decoration: underline; }
+        article { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: clamp(24px, 5vw, 48px); }
+        .post-date { font-size: 0.82em; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
+        h1 { font-size: clamp(1.7em, 4.5vw, 2.3em); font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 24px; }
+        h2 { font-size: 1.35em; font-weight: 750; letter-spacing: -0.01em; margin: 34px 0 12px; }
+        p { font-size: 1.05em; line-height: 1.68; color: var(--ink); margin-bottom: 16px; }
+        ul, ol { margin: 0 0 16px 1.3em; }
+        li { font-size: 1.05em; line-height: 1.6; margin-bottom: 10px; }
+        a { color: var(--accent-dark); }
+        strong { font-weight: 700; }
+        code { font-family: var(--mono); font-size: 0.9em; background: #eef2f8; padding: 1px 5px; border-radius: 5px; }
+        pre {
+            font-family: var(--mono); font-size: 0.86em; line-height: 1.55;
+            background: #0f1b33; color: #e6edf7; padding: 16px 18px;
+            border-radius: 12px; overflow-x: auto; margin: 0 0 18px;
+        }
+        pre code { background: none; padding: 0; color: inherit; font-size: 1em; }
+        blockquote {
+            border-left: 4px solid var(--accent); background: var(--accent-soft);
+            padding: 12px 18px; border-radius: 0 10px 10px 0; margin: 0 0 18px;
+            color: var(--ink); font-weight: 600;
+        }
+        figure { margin: 22px 0; }
+        figure img { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow-sm); }
+        figcaption { font-size: 0.9em; color: var(--ink-faint); margin-top: 8px; text-align: center; line-height: 1.45; }
+        .screens { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin: 22px 0; }
+        .screens figure { margin: 0; }
+        .callout { border: 1px solid #f0d9a8; background: #fdf6e7; border-radius: 12px; padding: 14px 18px; margin: 0 0 18px; font-size: 1em; line-height: 1.6; color: #6b5320; }
+        hr { border: none; border-top: 1px solid var(--line); margin: 32px 0; }
+        .post-nav { margin-top: 28px; font-size: 0.95em; }
+        .post-nav a { color: var(--accent-dark); text-decoration: none; }
+        .post-nav a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+            <a href="../index.html">Live Verify</a> &rsaquo; <a href="index.html">Blog</a> &rsaquo; Two OCR Failures
+        </nav>
+
+        <article>
+            <div class="post-date">August 8, 2026</div>
+            <h1>Two OCR Failures on One e-Ink Card — and Why Showing Your Working Beats Hiding It</h1>
+
+            <p>Here is a small verification failure that says something large about how Live Verify is
+            built. It contains <em>two</em> separate bugs — one I understand completely, and one I
+            don't — and the honest thing to do is show you both, because the whole design of the app is
+            about not hiding either.</p>
+
+            <h2>The setup</h2>
+
+            <p>I printed a prop credential onto an e-ink card — a mock BBC role-access pass reading:</p>
+
+            <pre><code>Paul James Hammant
+16th Doctor Who
+Series 16 (2027)
+Roath Lock Studios access
+Wolf Studios access
+verify:bbc.co.uk/roles</code></pre>
+
+            <figure>
+                <img src="images/eink-card.jpeg" alt="A small white e-ink card resting on lined paper, displaying the prop credential text with two lines highlighted.">
+                <figcaption>The prop credential on a ~$30 Vidabay e-ink panel. Low contrast, tinted
+                background, matte finish — a genuinely harder thing to OCR than laser print.</figcaption>
+            </figure>
+
+            <div class="callout">To be clear: <code>bbc.co.uk/roles</code> is <strong>fiction</strong>,
+            a showcase prop — there is no such endpoint. The card is a demonstration object, not a real
+            BBC credential.</div>
+
+            <p>The hardware is worth naming because it matters to the story: the display is a
+            <a href="https://vidabay.net">Vidabay</a> e-ink panel, <strong>about $30</strong>. A cheap,
+            low-power, reflective e-ink module is exactly the kind of surface a real-world "smart
+            credential" might use — and it is a genuinely <em>harder</em> thing to photograph and OCR
+            than crisp laser-printed paper. Low contrast, a slightly tinted background, and a matte
+            reflective finish are the normal texture of this medium.</p>
+
+            <p>I pointed the iOS app at it and got a red banner:</p>
+
+            <blockquote>FAILED: Hash not found — by bbc.co.uk</blockquote>
+
+            <p>Here is why — twice over.</p>
+
+            <h2>Bug one (understood): Apple's OCR read "Wolf" as "wolf"</h2>
+
+            <p>Live Verify works by hashing the <em>exact</em> text of a claim and asking the issuer's
+            domain whether that hash is one it stands behind. SHA-256 is deliberately brittle: change a
+            single byte of input and the output is a completely different hash. That brittleness is the
+            <em>point</em> — it is what makes tampering detectable — but it cuts both ways. If the text
+            the app feeds into the hash differs from the registered text by even one character, the
+            lookup fails. Not "close." Failed.</p>
+
+            <p>The app's <strong>Extracted</strong> tab shows exactly what Apple's Vision OCR pulled off
+            the image, and there it is on the fifth line — a lowercase <code>w</code>:</p>
+
+            <figure>
+                <img src="images/tab-extracted.png" alt="The app's Extracted tab showing raw OCR text. All six lines are present, but 'Wolf Studios access' has been read as 'wolf Studios access' with a lowercase w.">
+                <figcaption>Extracted tab: all six lines present, but OCR read "Wolf" as "wolf".</figcaption>
+            </figure>
+
+            <p>The card says <strong>"Wolf"</strong> (capital W); OCR read <strong>"wolf"</strong>.
+            <code>W</code> (0x57) and <code>w</code> (0x77) are different bytes, so the hash of the
+            lowercase version is nothing like the hash the capital-W original would produce.</p>
+
+            <p>This isn't Apple being bad at OCR — Vision is excellent. It's that <strong>case is
+            genuinely ambiguous at small sizes</strong>, especially for letters whose upper- and
+            lowercase forms differ only in scale (c/C, o/O, s/S, w/W, x/X). Photograph those off a
+            low-contrast e-ink panel at a slight angle and a recogniser will occasionally hedge toward
+            the more common lowercase form. "Wolf"/"wolf" is a textbook instance. This bug is real, it
+            is understood, and — crucially — it is <strong>recoverable by a human</strong>, as we'll see
+            below.</p>
+
+            <h2>Bug two (unexplained): two whole lines went missing before the hash</h2>
+
+            <p>This is the more interesting failure, and I am going to be honest that <strong>I do not
+            fully know why it happened.</strong></p>
+
+            <p>Compare the two tabs. The <strong>Extracted</strong> tab (raw OCR) has all six lines,
+            including both <em>"Roath Lock Studios access"</em> and <em>"Wolf Studios access."</em> But
+            the <strong>Normalized</strong> tab — the text that actually gets hashed — shows only
+            three:</p>
+
+            <div class="screens">
+                <figure>
+                    <img src="images/tab-extracted.png" alt="Extracted tab: six lines including both studio-access lines.">
+                    <figcaption>Extracted — six lines.</figcaption>
+                </figure>
+                <figure>
+                    <img src="images/tab-normalized.png" alt="Normalized tab: only three lines — name, title, series. Both studio-access lines and the verify line are gone.">
+                    <figcaption>Normalized — only three. Two claims gone.</figcaption>
+                </figure>
+            </div>
+
+            <p>Some of that is <em>correct</em>: the <code>verify:</code> line is deliberately excluded
+            from the hashed text by design. But the two <strong>studio-access lines vanishing is not
+            correct</strong> — those are substantive claims (what this person is authorised to access),
+            and they should have been hashed.</p>
+
+            <p>I traced the pipeline that produces the normalized text — URL extraction, cert-text
+            extraction, normalization — and on the clean six-line text as shown, none of those steps
+            <em>should</em> drop a non-blank content line. (The one path that legitimately <em>could</em>
+            rewrite content — issuer-supplied <code>ocrNormalizationRules</code> fetched from a
+            <code>verification-meta.json</code> — is a no-op here, precisely because the endpoint is
+            fictional and no metadata was fetched.) So the honest conclusion is that the raw text the
+            pipeline actually received differed, in some way I can't see from a screenshot, from the
+            tidy six lines the Extracted tab rendered — perhaps a wrapped line, a stray character, or a
+            line-index off-by that mis-split the text. <strong>Without the exact raw OCR string from
+            that run, I won't pretend to know which.</strong> Diagnosing it properly means capturing
+            that literal string (a device log line, or a unit test that feeds the six lines through the
+            pipeline and asserts all five content lines survive) — which is the right next step, and a
+            good regression guard regardless.</p>
+
+            <p>That uncertainty is itself the point of the next section.</p>
+
+            <h2>Why the app fails loudly and shows its working</h2>
+
+            <p>The tempting "fix" for bug one is the wrong one. We could silently lowercase everything
+            before hashing, or fuzzy-match, or "try a few variants" until something verifies. Every one
+            of those would have made <em>this</em> card pass — and quietly destroyed the guarantee. A
+            system that massages input until it matches is no longer telling you a document is
+            authentic; it is telling you it found <em>something close enough</em>, which is exactly the
+            ambiguity Live Verify exists to remove. Silent correction turns a verifier into a rubber
+            stamp.</p>
+
+            <p>So the app does the opposite. It <strong>fails loudly and shows every stage of its
+            working</strong> in three tabs:</p>
+
+            <ul>
+                <li><strong>Captured</strong> — the raw image (here, "No image captured", since this
+                run was fed text).</li>
+                <li><strong>Extracted</strong> — precisely what OCR produced, character for character.
+                <em>This is where you can see the lowercase "wolf" with your own eyes</em>, and where
+                you can see that both studio lines were read correctly at this stage.</li>
+                <li><strong>Normalized</strong> — the text after normalization, which is the actual
+                input to the hash. It is <strong>editable</strong>, with a <strong>Re-verify</strong>
+                button and the note <em>"Edit above to fix OCR errors."</em></li>
+            </ul>
+
+            <p>This transparency is what let me <em>find both bugs at all.</em> Bug one is visible
+            because Extracted shows the exact characters. Bug two is visible because you can hold
+            Extracted and Normalized side by side and see two lines present in one and absent in the
+            other. A system that only showed you a green or red badge would have hidden both.
+            <strong>The failure is legible, and legibility is the feature.</strong></p>
+
+            <p>For bug one, the editable Normalized pane is the whole philosophy in one control: the app
+            is not asking you to trust it, it is showing you the exact bytes it is about to hash, and
+            letting you fix the one letter and re-verify. The human stays in the loop, and the loop is
+            <em>visible</em>.</p>
+
+            <p>Bug two is a reminder that legibility also surfaces defects in the tool itself — and
+            that's good. A transparent pipeline is one you can debug in the field; an opaque one hides
+            its own bugs behind a confident result.</p>
+
+            <h2>The lessons that generalise</h2>
+
+            <ol>
+                <li><strong>The hash is unforgiving on purpose, so the input pipeline must be
+                inspectable.</strong> You cannot make SHA-256 tolerant without making it useless. The
+                only honest place to absorb OCR imperfection is <em>before</em> the hash, in the open,
+                with a human able to see and correct what the machine read.</li>
+                <li><strong>"It failed" is a feature when the failure is legible.</strong> A red banner
+                with a visible cause is far more trustworthy than a green banner you can't audit. The
+                worst outcome would be a system that <em>passed</em> this card by guessing.</li>
+                <li><strong>Transparency catches the tool's own bugs, not just the document's.</strong>
+                The missing-lines defect was findable only because the app shows intermediate state.
+                That's an argument for building every verification tool this way.</li>
+                <li><strong>Cheap hardware is a first-class test case, not an edge case.</strong> A ~$30
+                <a href="https://vidabay.net">Vidabay</a> e-ink panel is representative of where
+                credentials are actually heading. If the pipeline only works on pristine laser print, it
+                doesn't work.</li>
+            </ol>
+
+            <p>The failure in those screenshots is not an embarrassment to bury. One half of it is the
+            system behaving exactly as designed — brittle where it must be, transparent everywhere, and
+            honest that it cannot always read an ambiguous capital <em>W</em> off an angled e-ink card
+            in one shot. The other half is a real bug in the tool that the same transparency made
+            visible. Both belong in the open.</p>
+
+            <hr>
+            <div class="post-nav"><a href="index.html">&larr; All posts</a></div>
+        </article>
+    </div>
+</body>
+</html>
