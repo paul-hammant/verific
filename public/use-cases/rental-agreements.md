@@ -36,13 +36,48 @@ renders this document void.
 <span data-verify-line="rental">verify:hertz.com/v</span> <span verifiable-text="end" data-for="rental"></span></pre>
 </div>
 
+## The Pre-Rental Condition Report
+
+The condition report is where damage disputes are won or lost, so it must record **each defect
+individually — panel location, damage type, and measured size** — not a vague "existing
+scratches/dents." A seal over "some scratches" proves nothing; a seal over *"4 cm scratch, left rear
+door"* is what defeats a fabricated return charge, because the exact defect either was, or was not, on
+the sealed pickup record.
+
+<div style="max-width: 650px; margin: 24px auto; border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+  <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: 0.85em; white-space: pre; color: #000; line-height: 1.6;"><span verifiable-text="start" data-for="condition"></span>Hertz
+PRE-RENTAL CONDITION REPORT                       Ref: RA-99228877-XJ
+═══════════════════════════════════════════════════════════════════
+
+Vehicle:   2025 Tesla Model Y          Unit #:  42-XJ
+VIN:       1ABC-9922-8877-Z            Inspected: 15 MAR 2026 09:14
+
+PRE-EXISTING DAMAGE (recorded at pickup)
+───────────────────────────────────────────────────────────────────
+#  Location                       Type            Size
+1  Left rear door                 Scratch         4 cm
+2  Front bumper, driver side      Scuff           8 cm
+3  Rear bumper, center            Dent            ~2 cm dia.
+4  Windshield, lower passenger    Chip            <5 mm
+
+No other damage recorded. Any defect not listed above is the
+renter's responsibility on return.
+
+<span data-verify-line="condition">verify:hertz.com/v</span> <span verifiable-text="end" data-for="condition"></span></pre>
+</div>
+
+At return, a claimed defect is checked against this list: if it is not on the sealed pickup record, it
+is new; if it *is* on the record (same location, same or smaller size), the renter is not liable. The
+size field matters — a "4 cm scratch" that returns as a "20 cm scratch" in the same location is a
+*worsening*, a genuine new-damage claim the report supports rather than defeats.
+
 ## Data Verified
 
-Rental Agreement (RA) number, renter name, vehicle VIN/Plate, unit number, pickup location/time, return location/time, starting odometer, fuel/charge level, accepted coverage options (LDW, PAI, SLI), daily rate, mileage limits, deposit amount, date of issuance.
+Rental Agreement (RA) number, renter name, vehicle VIN/Plate, unit number, pickup location/time, return location/time, starting odometer, fuel/charge level, accepted coverage options (LDW, PAI, SLI), daily rate, mileage limits, deposit amount, date of issuance. On the condition report specifically: **each pre-existing defect itemised by location, type, and measured size.**
 
 **Document Types:**
 - **Rental Record:** The primary contract given at the counter.
-- **Pre-Rental Condition Report:** Showing existing scratches/dents.
+- **Pre-Rental Condition Report:** Each pre-existing defect itemised by location, type, and measured size (see mockup above).
 - **Final Return Receipt:** (Linked hash) showing actual charges.
 - **Accident Report Supplement:** Proof of damage reporting.
 
@@ -60,7 +95,7 @@ Shows the issuer domain (`hertz.com`, `enterprise.com`, `turo.com`) and the rent
 
 The **Renter (Customer)** benefits from verification.
 
-**Damage Claim Defense:** If a rental company sends a $2,000 bill for a "dent" 3 weeks after the rental, the customer can scan the verified hash of their "Pre-Rental Condition Report." If the hash returns **"VERIFIED - DENT RECORDED AT PICKUP,"** the customer has the cryptographic proof needed to stop the fraudulent claim instantly.
+**Damage Claim Defense:** If a rental company sends a $2,000 bill 3 weeks after the rental for a "dent on the rear bumper," the customer scans the verified hash of their "Pre-Rental Condition Report." Because the report itemises defect #3 as *"Rear bumper, center — Dent — ~2 cm dia."*, the customer has cryptographic proof the damage was recorded at pickup, at that location and size, and stops the fraudulent claim instantly. The itemised, measured list is what makes this defense work — a report that said only "some existing damage" would not.
 
 **Expense Reimbursement:** A business traveler can provide the verified hash of their "Final Receipt" to their employer. "Verified by Hertz" ensures the finance department that the "Fuel Service Charge" or "Upgrade Fee" was an actual corporate cost and not a manual edit to the PDF.
 
