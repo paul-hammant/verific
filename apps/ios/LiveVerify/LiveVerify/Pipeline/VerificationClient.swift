@@ -230,7 +230,12 @@ class VerificationClient {
     ///   - meta: The issuer's verification-meta.json
     ///   - metaUrl: URL from which meta was fetched (for re-fetch and canonicalization)
     /// - Returns: AuthorizationResult with chain
-    func checkAuthorization(meta: [String: Any], metaUrl: String) async -> AuthorizationResult {
+    /// - Parameters:
+    ///   - meta: The issuer's parsed verification-meta.json
+    ///   - metaUrl: URL that meta was fetched from (re-fetched here for canonical hashing)
+    ///   - claimUrl: The verification URL for the claim itself, threaded upward in the
+    ///     X-Verification-URLs header so endorsers can walk the chain backward
+    func checkAuthorization(meta: [String: Any], metaUrl: String, claimUrl: String? = nil) async -> AuthorizationResult {
         guard let authorizedBy = meta["authorizedBy"] as? String, !authorizedBy.isEmpty else {
             return .unchecked
         }
@@ -285,10 +290,14 @@ class VerificationClient {
 
             Log.d("Verify", "Authorization URL: \(authorizationUrl)")
 
-            // Fetch authorization endpoint
+            // Fetch authorization endpoint, passing the chain of URLs used so far
+            // so the endorser can walk backward for safety
+            let priorUrls = claimUrl.map { [$0] } ?? []
             var confirmed = false
             if let authURL = URL(string: authorizationUrl) {
-                let (authData, authResponse) = try await session.data(from: authURL)
+                let (authData, authResponse) = try await session.data(
+                    for: chainRequest(url: authURL, priorUrls: priorUrls)
+                )
                 if let httpAuth = authResponse as? HTTPURLResponse {
                     if (200...299).contains(httpAuth.statusCode) {
                         let body = String(data: authData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
@@ -298,8 +307,14 @@ class VerificationClient {
                 }
             }
 
-            // Walk the authorization chain
-            let chain = await walkAuthorizationChain(authorizedByUrl: authorizedBy, primaryConfirmed: confirmed, depth: 0)
+            // Walk the authorization chain, threading accumulated URLs for endorser safety
+            let chainSoFar = priorUrls + [authorizationUrl]
+            let chain = await walkAuthorizationChain(
+                authorizedByUrl: authorizedBy,
+                primaryConfirmed: confirmed,
+                depth: 0,
+                chainUrls: chainSoFar
+            )
 
             return AuthorizationResult(
                 checked: true,
@@ -320,7 +335,13 @@ class VerificationClient {
     }
 
     /// Walk the authorization chain recursively (max 3 levels)
-    private func walkAuthorizationChain(authorizedByUrl: String, primaryConfirmed: Bool, depth: Int) async -> [AuthorizationChainEntry] {
+    /// - Parameter chainUrls: Verification URLs from the levels below, sent as X-Verification-URLs
+    private func walkAuthorizationChain(
+        authorizedByUrl: String,
+        primaryConfirmed: Bool,
+        depth: Int,
+        chainUrls: [String] = []
+    ) async -> [AuthorizationChainEntry] {
         let maxDepth = 3
         guard depth < maxDepth else { return [] }
 
@@ -334,7 +355,9 @@ class VerificationClient {
                 return [AuthorizationChainEntry(authorizer: authorizer, description: nil, formalName: nil, confirmed: primaryConfirmed)]
             }
 
-            let (data, response) = try await session.data(from: url)
+            let (data, response) = try await session.data(
+                for: chainRequest(url: url, priorUrls: chainUrls)
+            )
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
                 return [AuthorizationChainEntry(authorizer: authorizer, description: nil, formalName: nil, confirmed: primaryConfirmed)]
             }
@@ -347,9 +370,14 @@ class VerificationClient {
             let formalName = authorizerMeta["formalName"] as? String ?? authorizerMeta["issuer"] as? String
             let entry = AuthorizationChainEntry(authorizer: authorizer, description: description, formalName: formalName, confirmed: primaryConfirmed)
 
-            // If authorizer itself has authorizedBy, recurse
+            // If authorizer itself has authorizedBy, recurse with accumulated URLs
             if let subEndorsedBy = authorizerMeta["authorizedBy"] as? String, !subEndorsedBy.isEmpty {
-                let subChain = await walkAuthorizationChain(authorizedByUrl: subEndorsedBy, primaryConfirmed: true, depth: depth + 1)
+                let subChain = await walkAuthorizationChain(
+                    authorizedByUrl: subEndorsedBy,
+                    primaryConfirmed: true,
+                    depth: depth + 1,
+                    chainUrls: chainUrls + [authorizerMetaUrl]
+                )
                 return [entry] + subChain
             }
 
@@ -357,6 +385,22 @@ class VerificationClient {
         } catch {
             return [AuthorizationChainEntry(authorizer: authorizer, description: nil, formalName: nil, confirmed: primaryConfirmed)]
         }
+    }
+
+    /// Build a GET request carrying the verification URLs used at levels *below* this one.
+    ///
+    /// Lets an endorser walk the claimed chain backward to check the request is legitimate, and
+    /// rate-limit per originating issuer. See docs/authority-chain-spec.md.
+    ///
+    /// The header is omitted entirely when there are no prior URLs rather than sent empty -
+    /// matching `checkAuthorization`/`walkAuthorizationChain` in public/app-logic.js, which is
+    /// canonical for every platform.
+    private func chainRequest(url: URL, priorUrls: [String]) -> URLRequest {
+        var request = URLRequest(url: url)
+        if !priorUrls.isEmpty {
+            request.setValue(priorUrls.joined(separator: ", "), forHTTPHeaderField: "X-Verification-URLs")
+        }
+        return request
     }
 
     /// Parse simple date string like "2023-01-01"

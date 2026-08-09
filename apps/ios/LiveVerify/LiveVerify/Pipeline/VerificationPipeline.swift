@@ -455,7 +455,7 @@ class VerificationPipeline: ObservableObject {
                 baseURL.lowercased().hasPrefix("vfy:") ? "https://" + String(baseURL.dropFirst(4)) :
                 baseURL.lowercased().hasPrefix("https://") ? baseURL : "https://" + baseURL
             let metaUrl = "\(httpsBase)/verification-meta.json"
-            authorization = await verificationClient.checkAuthorization(meta: meta, metaUrl: metaUrl)
+            authorization = await verificationClient.checkAuthorization(meta: meta, metaUrl: metaUrl, claimUrl: verificationURL)
         }
 
         await MainActor.run {
@@ -592,7 +592,7 @@ class VerificationPipeline: ObservableObject {
                 baseURL.lowercased().hasPrefix("vfy:") ? "https://" + String(baseURL.dropFirst(4)) :
                 baseURL.lowercased().hasPrefix("https://") ? baseURL : "https://" + baseURL
             let metaUrl = "\(httpsBase)/verification-meta.json"
-            authorization = await verificationClient.checkAuthorization(meta: meta, metaUrl: metaUrl)
+            authorization = await verificationClient.checkAuthorization(meta: meta, metaUrl: metaUrl, claimUrl: verificationURL)
         }
 
         await MainActor.run {
@@ -660,7 +660,7 @@ class VerificationPipeline: ObservableObject {
                 baseURL.lowercased().hasPrefix("vfy:") ? "https://" + String(baseURL.dropFirst(4)) :
                 baseURL.lowercased().hasPrefix("https://") ? baseURL : "https://" + baseURL
             let metaUrl = "\(httpsBase)/verification-meta.json"
-            authorization = await verificationClient.checkAuthorization(meta: meta, metaUrl: metaUrl)
+            authorization = await verificationClient.checkAuthorization(meta: meta, metaUrl: metaUrl, claimUrl: verificationURL)
         }
 
         await MainActor.run {

@@ -271,6 +271,117 @@ final class VerificationClientTests: XCTestCase {
         }
     }
 
+    // MARK: - X-Verification-URLs Tests
+    //
+    // Endorsers use this header to walk the claimed chain backward and to rate-limit per
+    // originating issuer (docs/authority-chain-spec.md). Behaviour must match
+    // checkAuthorization/walkAuthorizationChain in public/app-logic.js, which is canonical.
+
+    /// Record every request the client makes, so the header can be asserted per URL
+    private func recordingHandler(
+        metaJSON: String,
+        authorizerMetaJSON: String,
+        record: @escaping (URLRequest) -> Void
+    ) -> (URLRequest) throws -> (HTTPURLResponse, Data) {
+        return { request in
+            record(request)
+            let url = request.url!.absoluteString
+            let body: String
+            if url.hasSuffix("issuer.example.com/verification-meta.json") {
+                body = metaJSON
+            } else if url.contains("verification-meta.json") {
+                body = authorizerMetaJSON
+            } else {
+                body = "{\"status\":\"verified\"}"
+            }
+            let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+            return (response, body.data(using: .utf8)!)
+        }
+    }
+
+    func testCheckAuthorization_sendsClaimUrlInHeader() async {
+        var requests: [URLRequest] = []
+        MockURLProtocol.requestHandler = recordingHandler(
+            metaJSON: "{\"authorizedBy\":\"authorizer.example.com\"}",
+            authorizerMetaJSON: "{\"description\":\"An authorizer\"}",
+            record: { requests.append($0) }
+        )
+
+        let meta: [String: Any] = ["authorizedBy": "authorizer.example.com"]
+        _ = await client.checkAuthorization(
+            meta: meta,
+            metaUrl: "https://issuer.example.com/verification-meta.json",
+            claimUrl: "https://issuer.example.com/c/abc123"
+        )
+
+        // The meta re-fetch carries no header - it is not part of the chain walk
+        let metaRefetch = requests.first { $0.url?.absoluteString == "https://issuer.example.com/verification-meta.json" }
+        XCTAssertNil(metaRefetch?.value(forHTTPHeaderField: "X-Verification-URLs"))
+
+        // The authorization endpoint gets the claim URL
+        let authRequest = requests.first { !($0.url?.absoluteString.contains("verification-meta.json") ?? true) }
+        XCTAssertEqual(authRequest?.value(forHTTPHeaderField: "X-Verification-URLs"),
+                       "https://issuer.example.com/c/abc123")
+    }
+
+    func testWalkAuthorizationChain_accumulatesUrlsUpTheChain() async {
+        var requests: [URLRequest] = []
+        MockURLProtocol.requestHandler = recordingHandler(
+            metaJSON: "{\"authorizedBy\":\"authorizer.example.com\"}",
+            // The authorizer is itself authorized, forcing a second level
+            authorizerMetaJSON: "{\"description\":\"An authorizer\",\"authorizedBy\":\"root.example.com\"}",
+            record: { requests.append($0) }
+        )
+
+        let meta: [String: Any] = ["authorizedBy": "authorizer.example.com"]
+        _ = await client.checkAuthorization(
+            meta: meta,
+            metaUrl: "https://issuer.example.com/verification-meta.json",
+            claimUrl: "https://issuer.example.com/c/abc123"
+        )
+
+        // Level 1: claim URL + the authorization URL just checked
+        let level1 = requests.first { $0.url?.absoluteString == "https://authorizer.example.com/verification-meta.json" }
+        let level1Header = level1?.value(forHTTPHeaderField: "X-Verification-URLs")
+        XCTAssertNotNil(level1Header)
+        XCTAssertTrue(level1Header?.hasPrefix("https://issuer.example.com/c/abc123, ") ?? false,
+                      "Claim URL must come first. Got: \(level1Header ?? "nil")")
+
+        // Level 2: the level-1 meta URL is appended, and the header grows
+        let level2 = requests.first { $0.url?.absoluteString == "https://root.example.com/verification-meta.json" }
+        let level2Header = level2?.value(forHTTPHeaderField: "X-Verification-URLs")
+        XCTAssertNotNil(level2Header)
+        XCTAssertTrue(level2Header?.hasSuffix(", https://authorizer.example.com/verification-meta.json") ?? false,
+                      "Each level appends the meta URL it just used. Got: \(level2Header ?? "nil")")
+        XCTAssertGreaterThan((level2Header ?? "").count, (level1Header ?? "").count,
+                             "The header grows as the chain is walked upward")
+    }
+
+    /// No claim URL means nothing to declare - send no header rather than an empty one,
+    /// matching the JS, which omits the whole fetch option when the list is empty.
+    func testCheckAuthorization_omitsHeaderWhenNoClaimUrl() async {
+        var requests: [URLRequest] = []
+        MockURLProtocol.requestHandler = recordingHandler(
+            metaJSON: "{\"authorizedBy\":\"authorizer.example.com\"}",
+            authorizerMetaJSON: "{\"description\":\"An authorizer\"}",
+            record: { requests.append($0) }
+        )
+
+        let meta: [String: Any] = ["authorizedBy": "authorizer.example.com"]
+        _ = await client.checkAuthorization(
+            meta: meta,
+            metaUrl: "https://issuer.example.com/verification-meta.json"
+        )
+
+        let authRequest = requests.first { !($0.url?.absoluteString.contains("verification-meta.json") ?? true) }
+        XCTAssertNotNil(authRequest, "Expected an authorization endpoint request")
+        XCTAssertNil(authRequest?.value(forHTTPHeaderField: "X-Verification-URLs"))
+
+        // The walk still declares the authorization URL it used
+        let level1 = requests.first { $0.url?.absoluteString == "https://authorizer.example.com/verification-meta.json" }
+        XCTAssertNotNil(level1?.value(forHTTPHeaderField: "X-Verification-URLs"))
+    }
+
     func testVerify_customResponseType_denying() async {
         let jsonData = """
         {"status": "SUSPENDED"}
