@@ -9,14 +9,25 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
 
-    <TextView
-        android:id="@+id/diagnosticText"
+    <!-- These panes show exactly what OCR read and exactly what was hashed, so the text
+         must NOT wrap: a wrapped line reads as a line break that is not in the bytes behind
+         the hash. wrap_content inside a HorizontalScrollView keeps the real lines and lets
+         long ones scroll sideways instead. -->
+    <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:textColor="@color/text_primary"
-        android:textSize="14sp"
-        android:fontFamily="monospace"
-        android:textIsSelectable="true" />
+        android:fillViewport="true">
+
+        <TextView
+            android:id="@+id/diagnosticText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            android:fontFamily="monospace"
+            android:textIsSelectable="true" />
+
+    </HorizontalScrollView>
 
 </ScrollView>

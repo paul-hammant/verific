@@ -596,6 +596,24 @@ class MainActivity : AppCompatActivity() {
      * Broken chains show ✗ NOT CONFIRMED at the failed node.
      * Tap any line to see formalName in a toast.
      */
+    /**
+     * Show the issuer's own one-line statement of the authority behind this verification.
+     *
+     * "Claimed", because with no authorizedBy nobody has endorsed the wording — it is the
+     * issuer describing itself. Shown regardless of whether a chain was walked: with no
+     * authorizedBy it is the only thing distinguishing "UK tax authority" from
+     * "Individual's personal peer references", and that is where it matters most.
+     */
+    private fun showAuthorityBasis(issuerMeta: JSONObject?) {
+        val basis = issuerMeta?.optString("authorityBasis", "")?.takeIf { it.isNotEmpty() }
+        if (basis == null) {
+            binding.authorityBasisText.visibility = View.GONE
+            return
+        }
+        binding.authorityBasisText.text = getString(R.string.auth_authority_claimed, basis)
+        binding.authorityBasisText.visibility = View.VISIBLE
+    }
+
     private fun showAuthorizationChain(result: VerificationResult, authorization: AuthorizationResult?, issuerMeta: JSONObject?) {
         val domain = when (result) {
             is VerificationResult.Verified -> result.domain
@@ -603,12 +621,17 @@ class MainActivity : AppCompatActivity() {
             else -> null
         }
 
+        showAuthorityBasis(issuerMeta)
+
         if (authorization == null || !authorization.checked) {
             if (domain != null) {
                 binding.authorizationInfo.visibility = View.VISIBLE
-                binding.authorizationText.text = "✓ " + getString(R.string.auth_self_verified, domain)
-                binding.authorizationText.setBackgroundColor(getColor(R.color.auth_confirmed_bg))
-                binding.authorizationChainText.visibility = View.GONE
+                // Amber, not the confirmed green, and a warning rather than a tick: nothing
+                // independent stands behind this, so it must not read like a confirmed chain.
+                binding.authorizationText.text = "⚠ " + getString(R.string.auth_self_verified, domain)
+                binding.authorizationText.setBackgroundColor(getColor(R.color.auth_warning_bg))
+                binding.authorizationChainText.text = getString(R.string.auth_self_verified_caution)
+                binding.authorizationChainText.visibility = View.VISIBLE
             } else {
                 binding.authorizationInfo.visibility = View.GONE
             }
@@ -711,6 +734,7 @@ class MainActivity : AppCompatActivity() {
         binding.authorizationInfo.visibility = View.GONE
         binding.authorizationInfo.setOnClickListener(null)
         binding.authorizationChainText.visibility = View.GONE
+        binding.authorityBasisText.visibility = View.GONE
         updateStatus(getString(R.string.status_ready))
 
         capturedBitmap = null

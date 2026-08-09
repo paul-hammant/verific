@@ -174,6 +174,20 @@
                 android:paddingEnd="6dp"
                 android:visibility="gone" />
 
+            <!-- The issuer's own statement of what authority backs this. Shown even with
+                 no authorizedBy - that is where it carries the most weight. -->
+            <TextView
+                android:id="@+id/authorityBasisText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:textColor="@color/white"
+                android:alpha="0.9"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:paddingBottom="4dp"
+                android:visibility="gone" />
+
         </LinearLayout>
 
         <!-- Diagnostic tabs -->
