@@ -117,6 +117,30 @@ The app does **not** tell the user to trust a domain. It displays the chain; the
 
 This is the same trust model as the primary verification. Live Verify piggybacks on the trust humans already place in domain names. The chain makes visible *which* domains vouch for *which* claims.
 
+### Which domain gets displayed
+
+The domain shown is the one the **document named on its `verify:` line** — never the host that
+served the hash file. An issuer may set `hashesHostedAt` in its metadata to park hash files with a
+provider; that is a hosting hint, not a delegation of authority. Barclays could employ a verification
+provider for a couple of years and then bring it all in-house, and nothing should stop working or
+look different. Where the bytes live is infrastructure, like a CDN — nobody displays "served by
+Akamai" beside a bank's name.
+
+The PSL emphasis is computed from that authority too, so the bolded registrable domain is the
+issuer's, not the provider's.
+
+Displaying the full hostname with its registrable domain emphasised —
+`nicolas-maman.`**`github.io`** — does two jobs at once: the reader sees who the tenant is, and the
+weight sits on the part someone actually registered, renews, is billed for, and can be compelled or
+seized over. The spoof case proves the design:
+`edinburgh.ac.uk--___dir.`**`github.io`** shows the deception and the real accountability in one
+string.
+
+When the named domain is itself a tenancy on a shared namespace, the operator of that namespace has
+no say in having its name displayed. See
+[public-suffix-operator-disclaimer.md](./public-suffix-operator-disclaimer.md) for a proposal that
+gives it one.
+
 ## Federal vs. State Authority
 
 Not everything chains to the national root. In federal countries, some professions are regulated at the state level — the state is the sovereign authority, not the national government.
