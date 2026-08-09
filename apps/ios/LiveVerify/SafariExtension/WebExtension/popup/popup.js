@@ -163,17 +163,39 @@ function renderResult({ verifyResult, registrableDomain, issuerDescription, cert
     const affirming = verifyResult.success;
     const domain = registrableDomain || verifyResult.domain;
 
-    const verdict = el('div', { class: `verdict ${affirming ? 'affirming' : 'denying'}` },
+    // Green is reserved for a claim an independent authority stands behind. An issuer
+    // confirming its own claim is still only the issuer's word, so it gets amber and says
+    // so - matching ResultView.swift in the native app, where affirming with no confirmed
+    // authorization is orange with a "Self-verified by" line.
+    const selfVerified = affirming && !authorization?.checked;
+    const unconfirmedAuthority = affirming && authorization?.checked && !authorization.confirmed;
+    const tone = !affirming ? 'denying'
+        : (selfVerified || unconfirmedAuthority) ? 'warning'
+        : 'affirming';
+
+    const verdict = el('div', { class: `verdict ${tone}` },
         el('div', { class: 'verdict-title' },
             affirming ? 'Verified' : 'Not verified'),
         el('div', { class: 'verdict-detail' },
-            affirming ? '' : verifyResult.status));
+            affirming ? (selfVerified ? 'Self-verified' : '') : verifyResult.status));
 
     const by = el('p', { class: 'hint' });
     by.innerHTML = `${affirming ? 'Confirmed' : 'Answered'} by <span class="domain"></span>`;
     by.querySelector('.domain').textContent = domain;
 
     const parts = [verdict, by];
+
+    if (selfVerified) {
+        const note = el('p', { class: 'hint' });
+        note.innerHTML =
+            'The issuer vouches for this claim itself — <strong>no independent authority ' +
+            'backs it</strong>. Judge it by how much you trust that domain.';
+        parts.push(note);
+    } else if (unconfirmedAuthority) {
+        const note = el('p', { class: 'hint' });
+        note.innerHTML = 'The claimed authority did <strong>not</strong> confirm this issuer.';
+        parts.push(note);
+    }
 
     if (issuerDescription) {
         parts.push(el('p', { class: 'hint' }, issuerDescription));
