@@ -212,10 +212,18 @@
         }
         .demo-result .demo-result-detail { display: block; font-weight: 400; font-size: 0.9em; margin-top: 4px; }
         .demo-result .demo-hash { font-family: var(--mono); font-size: 0.82em; word-break: break-all; opacity: 0.85; }
-        .demo-result.is-verified { background: #f0fdf4; border-color: #bbf7d0; color: #14532d; }
-        .demo-result.is-failed { background: #fef2f2; border-color: #fecaca; color: #7f1d1d; }
+        /* No is-verified / is-failed here on purpose: this page does not render verdicts.
+           It computes the address and hands it over; the issuer's domain answers. */
+        .demo-result.is-lookup { background: var(--accent-soft); border-color: #e3ebfb; color: var(--accent-dark); }
         .demo-result.is-error { background: #fffbeb; border-color: #fde68a; color: #78350f; }
-        .demo-result.is-pending { background: var(--accent-soft); border-color: #e3ebfb; color: var(--accent-dark); }
+        .demo-result .demo-url {
+            display: block; font-family: var(--mono); font-size: 0.86em;
+            word-break: break-all; margin-top: 6px; font-weight: 600;
+        }
+        .demo-note {
+            font-size: 0.92em; color: var(--ink-soft); line-height: 1.55;
+            border-left: 3px solid var(--line); padding-left: 12px; margin: 10px 0 4px;
+        }
 
         /* ---- Audience doors ---- */
         .door-row {
@@ -480,22 +488,31 @@
         </nav>
         <h1>Ask any document: does your issuer stand behind this?</h1>
         <p class="subhead">Select the text of a certificate, licence, or receipt &mdash; and get the issuer's own answer in four seconds. No phone call, no account.</p>
-        <p class="lede">Live Verify is the open standard that answers the only question that still matters when a document lands in front of you &mdash; <em>does the issuer stand behind this, right now?</em> Select or snap the text; a SHA-256 lookup against the issuer's own domain answers in seconds. Try it below &mdash; then break it.</p>
+        <p class="lede">Live Verify is the open standard that answers the only question that still matters when a document lands in front of you &mdash; <em>does the issuer stand behind this, right now?</em> Select or snap the text; a SHA-256 lookup against the issuer's own domain answers in seconds. Build one below &mdash; then break it.</p>
 
-        <!-- Live in-page demo: verify a real claim, then edit it and watch it fail -->
+        <!-- In-page demo: hash a real claim and hand you the issuer's URL.
+             This page deliberately does NOT render a verdict. A page asserting its own
+             trustworthiness is exactly what Live Verify exists to remove: any page can
+             draw a green tick, including a copy of this one. The answer has to come from
+             the issuer's domain, in your own address bar. -->
         <div class="card demo-card" id="tryIt">
-            <h2>Verify this claim &mdash; then change one character</h2>
+            <h2>Hash this claim &mdash; then change one character</h2>
             <p style="margin-bottom: 4px;">This is a real verifiable claim. The <code>verify:</code> line points at this
-                site's own domain, where a hash of the text above it is published. Hit <strong>Verify</strong>. Then
-                edit any character &mdash; a digit of the time, a letter of the name &mdash; and verify again: the hash
-                no longer matches, and the issuer's domain has never heard of it. That's the whole security model, felt
-                in ten seconds. No install, nothing leaves your device but a single hash lookup.</p>
+                site's own domain, where a hash of the text above it is published. Hit <strong>Build the lookup</strong>
+                and follow the link: <em>the issuer's domain answers, not this page.</em> Then edit any character
+                &mdash; a digit of the time, a letter of the name &mdash; and build it again: the hash changes
+                completely, and that new address has never existed. That's the whole security model, felt in ten
+                seconds.</p>
+            <p class="demo-note">Note what this page is <em>not</em> doing: telling you the claim is good. Any web page
+                can draw a green tick &mdash; including a convincing copy of this one. That's why the verdict belongs
+                to the issuer's domain, reached in your own address bar, and why real use runs through the
+                <a href="#testResults">browser extension or phone app</a> rather than a page you happen to be reading.</p>
             <div class="demo-doc" id="demoDoc" contenteditable="true" spellcheck="false" aria-label="Editable verifiable claim">Riverside Athletics Club confirms that
 Jordan Avery completed the Riverside Half Marathon
 on 4 May 2025 in a chip time of 1:47:32.
 <span class="demo-vline">verify:live-verify.github.io/live-verify/c</span></div>
             <div class="demo-controls">
-                <button type="button" class="demo-btn" id="demoVerifyBtn">Verify this claim</button>
+                <button type="button" class="demo-btn" id="demoVerifyBtn">Build the lookup</button>
                 <button type="button" class="demo-btn secondary" id="demoRestoreBtn" hidden>Restore original</button>
             </div>
             <div class="demo-result" id="demoResult" role="status" aria-live="polite" hidden></div>
@@ -1002,13 +1019,16 @@ on 4 May 2025 in a chip time of 1:47:32.
                 return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             }
 
+            // Deliberately stops at the address. There is no fetch and no verdict here:
+            // a page that adjudicates its own trustworthiness is worth nothing as evidence,
+            // because any page can print "Verified" — including a copy of this one made by
+            // someone else. Computing the address is the honest half of the job; answering
+            // it belongs to the issuer's domain, in the reader's own address bar.
             async function runVerify() {
                 var rawText = doc.innerText;
 
                 // Show/hide the restore button based on whether the claim was edited.
                 restoreBtn.hidden = (rawText === ORIGINAL);
-
-                setResult('pending', 'Checking…', 'Normalizing, hashing, and asking the issuer’s domain.');
                 verifyBtn.disabled = true;
 
                 try {
@@ -1024,36 +1044,17 @@ on 4 May 2025 in a chip time of 1:47:32.
                     var normalized = normalizeText(certText);
                     var hash = await sha256(normalized);
                     var fullUrl = buildVerificationUrl(extracted.url, hash);
+                    var edited = (rawText !== ORIGINAL);
 
-                    var response = await fetch(fullUrl);
-
-                    if (response.status === 404) {
-                        setResult('failed', '❌ Fails verification',
-                            'The issuer’s domain has no record of this exact text. Changing a single character changes the hash, so the lookup misses — that is the tamper-evidence.' +
-                            '<br><span class="demo-hash">computed hash: ' + esc(hash) + '</span>');
-                        return;
-                    }
-
-                    if (response.status !== 200) {
-                        setResult('error', 'Verification could not complete',
-                            'The issuer’s domain returned HTTP ' + response.status + '. This is an infrastructure signal, not a pass or a fail.');
-                        return;
-                    }
-
-                    var body = await response.text();
-                    if (body.indexOf('"verified"') !== -1) {
-                        setResult('verified', '✅ Verified',
-                            'Riverside Athletics Club’s domain currently stands behind this exact text.' +
-                            '<br><span class="demo-hash">matched hash: ' + esc(hash) + '</span>');
-                    } else {
-                        var status = body.trim().toUpperCase().substring(0, 60);
-                        setResult('failed', 'Status: ' + esc(status),
-                            'The issuer answered, but with a status other than verified (e.g. revoked or expired).');
-                    }
+                    setResult('lookup', 'Ask the issuer yourself',
+                        (edited
+                            ? 'You edited the claim, so this is a different hash and a different address. Open it: the issuer’s domain has never published this text, and you will get a 404 from <strong>them</strong> — that is the tamper-evidence.'
+                            : 'Open it: the issuer’s domain answers for its own claim. A 200 means they stand behind this exact text right now; a 404 means they do not.') +
+                        '<a class="demo-url" href="' + esc(fullUrl) + '" target="_blank" rel="noopener">' + esc(fullUrl) + '</a>');
                 } catch (err) {
                     // Fail loudly and honestly — never fake a result or silently degrade.
-                    setResult('error', 'Could not reach the issuer',
-                        'Network error or the lookup was blocked (CORS/offline). This is not a pass or a fail — it means the check itself did not run.');
+                    setResult('error', 'Could not build the lookup',
+                        'The claim could not be normalized or hashed, so there is no address to ask. This is not a pass or a fail — the check never ran.');
                 } finally {
                     verifyBtn.disabled = false;
                 }

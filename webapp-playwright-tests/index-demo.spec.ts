@@ -17,75 +17,98 @@
 import { test, expect } from '@playwright/test';
 import path from 'path';
 
-// The front-page in-page demo runs the real Live Verify pipeline (extract verify:
-// line -> normalize -> SHA-256 -> GET the issuer domain). The claim's verify: line
-// hardcodes the production domain, so we intercept that origin: 200 {"status":"verified"}
-// for the pristine claim's hash, 404 for anything else (i.e. an edited claim). This
-// exercises the DOM wiring and pipeline without depending on a live deploy.
+// The front-page demo runs the real Live Verify pipeline (extract verify: line ->
+// normalize -> SHA-256 -> build the URL) and then STOPS, handing the reader the issuer's
+// address as a link.
+//
+// It deliberately renders no verdict. A page that adjudicates its own trustworthiness is
+// worthless as evidence, because any page can draw a green tick - including a copy of this
+// one made by somebody else. So these tests assert the opposite of what a verification test
+// usually asserts: that the page computes the right address, and never claims an answer.
 
 const PRISTINE_HASH =
   '10a05837abbcf6f3533df418855a7cd513a7feb7d4f347f28853d9c4be2bc76f';
 
-test.describe('front-page verify/fail demo', () => {
+const ISSUER_PREFIX = 'https://live-verify.github.io/live-verify/c/';
+
+test.describe('front-page lookup-builder demo', () => {
   test.beforeEach(async ({ page }) => {
-    await page.route('https://live-verify.github.io/live-verify/c/**', (route) => {
-      const url = route.request().url();
-      if (url.includes(PRISTINE_HASH)) {
-        route.fulfill({ status: 200, contentType: 'application/json', body: '{"status":"verified"}' });
-      } else {
-        route.fulfill({ status: 404, contentType: 'text/plain', body: 'Not Found' });
-      }
-    });
     await page.goto('file://' + path.resolve('public/index.html'));
   });
 
-  test('pristine claim verifies green', async ({ page }) => {
+  test('builds the issuer lookup URL for the pristine claim', async ({ page }) => {
     await page.click('#demoVerifyBtn');
     const result = page.locator('#demoResult');
     await expect(result).toBeVisible();
-    await expect(result).toHaveClass(/is-verified/);
-    await expect(result).toContainText('Verified');
+    await expect(result).toHaveClass(/is-lookup/);
+
+    // The address is the deliverable, and it must be a real link the reader can follow -
+    // the answer has to arrive in their own address bar, from the issuer's domain.
+    const link = result.locator('a.demo-url');
+    await expect(link).toHaveAttribute('href', ISSUER_PREFIX + PRISTINE_HASH);
+    await expect(link).toHaveAttribute('target', '_blank');
   });
 
-  test('editing a character makes verification fail red', async ({ page }) => {
-    // Change the chip time inside the editable claim.
+  test('never renders a verdict of its own', async ({ page }) => {
+    await page.click('#demoVerifyBtn');
+    const result = page.locator('#demoResult');
+
+    // The whole point: no pass, no fail, no tick. If a future edit reintroduces one, this
+    // fails - which is the intent.
+    await expect(result).not.toHaveClass(/is-verified/);
+    await expect(result).not.toHaveClass(/is-failed/);
+    await expect(result).not.toContainText('✅');
+    await expect(result).not.toContainText('Verified');
+    await expect(result).not.toContainText('Fails verification');
+  });
+
+  test('editing one character produces a different address', async ({ page }) => {
+    await page.click('#demoVerifyBtn');
+    const pristineHref = await page.locator('#demoResult a.demo-url').getAttribute('href');
+
     await page.evaluate(() => {
       const doc = document.getElementById('demoDoc')!;
       doc.innerText = doc.innerText.replace('1:47:32', '1:47:33');
     });
     await page.click('#demoVerifyBtn');
-    const result = page.locator('#demoResult');
-    await expect(result).toBeVisible();
-    await expect(result).toHaveClass(/is-failed/);
-    await expect(result).toContainText('Fails verification');
+
+    const editedHref = await page.locator('#demoResult a.demo-url').getAttribute('href');
+    expect(editedHref).not.toBe(pristineHref);
+    expect(editedHref).toContain(ISSUER_PREFIX);
+    expect(editedHref).not.toContain(PRISTINE_HASH);
+
     // Restore button appears once the claim has been edited.
     await expect(page.locator('#demoRestoreBtn')).toBeVisible();
   });
 
-  test('restore brings back the pristine claim and re-verifies green', async ({ page }) => {
+  test('restore brings back the pristine claim and its original address', async ({ page }) => {
     await page.evaluate(() => {
       const doc = document.getElementById('demoDoc')!;
       doc.innerText = doc.innerText.replace('Jordan Avery', 'Jordan Averyx');
     });
     await page.click('#demoVerifyBtn');
-    await expect(page.locator('#demoResult')).toHaveClass(/is-failed/);
+    await expect(page.locator('#demoResult a.demo-url')).not.toHaveAttribute(
+      'href', ISSUER_PREFIX + PRISTINE_HASH);
 
     await page.click('#demoRestoreBtn');
     await expect(page.locator('#demoRestoreBtn')).toBeHidden();
     await expect(page.locator('#demoResult')).toBeHidden();
 
     await page.click('#demoVerifyBtn');
-    await expect(page.locator('#demoResult')).toHaveClass(/is-verified/);
+    await expect(page.locator('#demoResult a.demo-url')).toHaveAttribute(
+      'href', ISSUER_PREFIX + PRISTINE_HASH);
   });
 
-  test('network failure shows an honest error state, not a pass or fail', async ({ page }) => {
-    // Override the route to abort — simulates offline / blocked lookup.
-    await page.route('https://live-verify.github.io/live-verify/c/**', (route) => route.abort());
+  test('a claim with no verify: line is refused, not guessed at', async ({ page }) => {
+    await page.evaluate(() => {
+      const doc = document.getElementById('demoDoc')!;
+      doc.innerText = 'Riverside Athletics Club confirms that\nJordan Avery ran.';
+    });
     await page.click('#demoVerifyBtn');
+
     const result = page.locator('#demoResult');
-    await expect(result).toBeVisible();
     await expect(result).toHaveClass(/is-error/);
-    await expect(result).not.toHaveClass(/is-verified/);
-    await expect(result).not.toHaveClass(/is-failed/);
+    await expect(result).toContainText('No verify: line found');
+    await expect(result.locator('a.demo-url')).toHaveCount(0);
   });
 });
