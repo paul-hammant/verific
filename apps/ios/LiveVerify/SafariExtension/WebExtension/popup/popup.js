@@ -146,6 +146,11 @@ async function verifySelection(selectedText) {
         verifyResult,
         registrableDomain: extractDomainAuthority(verificationUrl),
         issuerDescription: meta?.description ?? null,
+        // The one line stating what kind of authority stands behind this. Read straight
+        // from the meta rather than from checkAuthorization, which never reaches it when
+        // there is no authorizedBy - i.e. exactly the self-verified case where knowing
+        // "Individual's personal peer references" vs "UK tax authority" matters most.
+        authorityBasis: meta?.authorityBasis ?? null,
         certText,
         hash,
         authorization
@@ -183,7 +188,7 @@ function renderStranded(stranded) {
     );
 }
 
-function renderResult({ verifyResult, registrableDomain, issuerDescription, certText, hash, authorization }) {
+function renderResult({ verifyResult, registrableDomain, issuerDescription, authorityBasis, certText, hash, authorization }) {
     const affirming = verifyResult.success;
     const domain = registrableDomain || verifyResult.domain;
 
@@ -214,15 +219,24 @@ function renderResult({ verifyResult, registrableDomain, issuerDescription, cert
     const parts = [verdict, by];
 
     if (selfVerified) {
+        // Deliberately no role nouns here. "Verified by <domain>" already casts the domain
+        // as the confirming party; introducing "issuer" mid-sentence makes the reader do
+        // vocabulary work, and "verifier" in this project means the person doing the
+        // checking - i.e. them. State the relationship instead.
         const note = el('p', { class: 'hint' });
         note.innerHTML =
-            'The issuer vouches for this claim itself — <strong>no independent authority ' +
-            'backs it</strong>. Judge it by how much you trust that domain.';
+            'The domain confirming this claim is the one making it — ' +
+            '<strong>nothing independent attests to it</strong>. Weigh it by how much you ' +
+            'trust that domain.';
         parts.push(note);
     } else if (unconfirmedAuthority) {
         const note = el('p', { class: 'hint' });
         note.innerHTML = 'The claimed authority did <strong>not</strong> confirm this issuer.';
         parts.push(note);
+    }
+
+    if (authorityBasis) {
+        parts.push(section('Authority claimed', el('div', { class: 'claim' }, authorityBasis)));
     }
 
     if (issuerDescription) {
