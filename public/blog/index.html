@@ -162,7 +162,8 @@
 
                     var d = document.createElement('div');
                     d.className = 'post-date';
-                    d.textContent = formatDate(post.date);
+                    d.textContent = formatDate(post.date) +
+                        (post.updated ? ' · updated ' + formatDate(post.updated) : '');
 
                     var t = document.createElement('div');
                     t.className = 'post-title';

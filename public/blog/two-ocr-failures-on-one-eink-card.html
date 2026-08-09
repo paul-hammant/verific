@@ -93,8 +93,14 @@
         </nav>
 
         <article>
-            <div class="post-date">August 8, 2026</div>
+            <div class="post-date">August 8, 2026 &middot; updated August 9, 2026</div>
             <h1>Two OCR Failures on One e-Ink Card — and Why Showing Your Working Beats Hiding It</h1>
+
+            <div class="callout"><strong>Update, August 9, 2026:</strong> the original post (Aug 8)
+            described bug two — two claim lines vanishing before the hash — but could not explain
+            <em>why</em>. A second run the next day, on a different surface, captured the raw OCR
+            evidence and I traced it to its root cause. The diagnosis in "<a href="#bug-two">Bug two</a>"
+            below is that follow-up work; the rest of the post is essentially as first written.</div>
 
             <p>Here is a small verification failure that says something large about how Live Verify is
             built. It contains <em>two</em> separate bugs — a simple OCR misread, and a subtler one that
@@ -182,18 +188,24 @@ verify:bbc.co.uk/roles</code></pre>
             is understood, and — crucially — it is <strong>recoverable by a human</strong>, as we'll see
             below.</p>
 
-            <h2>Bug two (the interesting one): a claim line got dropped before the hash</h2>
+            <h2 id="bug-two">Bug two (the interesting one): a claim line got dropped before the hash</h2>
 
-            <p>In the first run of this card, the <strong>Normalized</strong> tab — the text that
-            actually gets hashed — showed only three lines (name, title, series). Both
+            <p style="font-size:0.92em;color:var(--ink-faint);margin-bottom:16px;"><strong>Diagnosed
+            August 9, 2026, from a second run.</strong> When I first wrote this (Aug 8) I could describe
+            the symptom below but not its cause; the three-part explanation that follows is the next
+            day's follow-up, using fresh OCR captures from a second attempt on a different surface.</p>
+
+            <p>In the first run of this card (Aug 8), the <strong>Normalized</strong> tab — the text
+            that actually gets hashed — showed only three lines (name, title, series). Both
             <em>"Roath Lock Studios access"</em> and <em>"Wolf Studios access"</em> were simply gone,
             even though they were plainly there on the card. Those are substantive claims — what this
             person is authorised to access — and they should have been hashed. Their disappearance,
             not the lowercase <em>w</em>, is the failure that actually matters, because it means the app
             hashed a <em>different, shorter</em> credential than the one on the display.</p>
 
-            <p>I could not explain it from that run alone. A second run, on a different surface, gave me
-            the exact evidence — and the cause turned out to be a three-part collision.</p>
+            <p>I could not explain it from that run alone. A second run the next day (Aug 9), on a
+            different surface, gave me the exact evidence — and the cause turned out to be a three-part
+            collision.</p>
 
             <h3 style="font-size:1.12em;font-weight:700;margin:24px 0 10px;">Part 1 — the display word-wrapped a line I didn't want wrapped</h3>
 

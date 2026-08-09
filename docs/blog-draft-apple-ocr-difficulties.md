@@ -2,7 +2,13 @@
 layout: post
 title: "Two OCR Failures on One e-Ink Card — and Why Showing Your Working Beats Hiding It"
 date: 2026-08-08
+updated: 2026-08-09
 ---
+
+> **Update, 2026-08-09:** the original post (Aug 8) described bug two — two claim lines vanishing
+> before the hash — but couldn't explain *why*. A second run the next day, on a different surface,
+> captured the raw OCR evidence and I traced it to its root cause. The "Bug two" section below is that
+> follow-up; the rest is essentially as first written.
 
 Here is a small verification failure that says something large about how Live Verify is built. It
 contains *two* separate bugs — one I understand completely, and one I don't — and the honest thing to
