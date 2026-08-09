@@ -15,106 +15,384 @@
     "message": "Verificar el texto seleccionado",
     "description": "Descripción del atajo de teclado."
   },
-
-  "popupDebug": { "message": "Depuración" },
-  "popupSettings": { "message": "Ajustes" },
-  "popupNoResultsTitle": { "message": "Aún no hay verificaciones" },
-  "popupNoResultsBody": { "message": "Selecciona un texto que contenga una URL verify: y haz clic con el botón derecho → «Verificar selección»" },
-  "popupShortcut": { "message": "Cmd+Mayús+V / Ctrl+Mayús+V" },
-  "popupClearHistory": { "message": "Borrar historial" },
-  "popupConnectionErrorTitle": { "message": "Error de conexión" },
-  "popupConnectionErrorBody": { "message": "No se pudo conectar con el proceso en segundo plano de la extensión. Prueba a recargar la extensión en chrome://extensions" },
-  "popupHideDetails": { "message": "Ocultar detalles" },
-  "popupShowDetails": { "message": "Mostrar detalles" },
-  "popupCopy": { "message": "Copiar" },
-  "popupCopied": { "message": "¡Copiado!" },
-  "popupShowMe": { "message": "Mostrar" },
-  "popupNotFound": { "message": "No encontrado" },
-  "popupBadgeVerified": { "message": "Verificado" },
-  "popupBadgeError": { "message": "Error" },
-  "popupBadgeNotVerified": { "message": "No verificado" },
-  "popupVerifiedByIssuer": { "message": "Verificado por el emisor" },
-  "popupClaimText": { "message": "Texto de la declaración" },
-  "popupVerificationResult": { "message": "Resultado de la verificación" },
-  "popupAuthenticated": { "message": "Autenticado" },
-  "popupSelfVerified": { "message": "Autoverificado (sin cadena de autoridad)" },
-  "popupHashLabel": { "message": "Hash SHA-256" },
-  "popupVerificationUrlLabel": { "message": "URL de verificación" },
-  "popupNormalizedTextLabel": { "message": "Texto normalizado (con hash)" },
-  "popupVerificationTimeLabel": { "message": "Tiempo de verificación" },
-
-  "errNoVerifyUrl": { "message": "No se encontró ninguna URL verify: en la selección" },
-  "errNoCertText": { "message": "No se encontró texto antes de la URL verify:. Selecciona la declaración completa, incluido su contenido." },
-  "errNetwork": { "message": "Error de red: no se pudo contactar con el servidor de verificación" },
-  "errCors": { "message": "El servidor bloqueó la solicitud (CORS). Puede que el emisor no admita la verificación desde el navegador." },
-
-  "authByExpired": { "message": "Autorización de verificación por $AUTHORIZER$ — caducada", "placeholders": { "authorizer": { "content": "$1" } } },
-  "authSuccessor": { "message": "Sucesor: $SUCCESSOR$", "placeholders": { "successor": { "content": "$1" } } },
-  "authByConfirmed": { "message": "Verificación autorizada por $AUTHORIZER$", "placeholders": { "authorizer": { "content": "$1" } } },
-  "authChainEntry": { "message": "Autorizado por $AUTHORIZER$", "placeholders": { "authorizer": { "content": "$1" } } },
-  "authByNotConfirmed": { "message": "Autorización de verificación por $AUTHORIZER$ — sin confirmar", "placeholders": { "authorizer": { "content": "$1" } } },
-  "authClaimsMissing": { "message": "$ISSUER$ afirma tener autorización de verificación de $AUTHORIZER$ — ausente", "placeholders": { "issuer": { "content": "$1" }, "authorizer": { "content": "$2" } } },
-  "authIssuerFallback": { "message": "Emisor" },
-
-  "settingsTitle": { "message": "Ajustes de LiveVerify" },
-  "settingsSubtitle": { "message": "Configura el comportamiento de la verificación y las notificaciones" },
-  "settingsLanguageSection": { "message": "Idioma" },
-  "settingsLanguageAuto": { "message": "Según el navegador" },
-  "settingsLanguageEnglish": { "message": "English (Inglés)" },
-  "settingsLanguageSpanish": { "message": "Español" },
-  "settingsLanguageGerman": { "message": "Deutsch (Alemán)" },
-  "settingsPageScanningSection": { "message": "Escaneo de páginas" },
-  "settingsAutoScanTitle": { "message": "Escanear páginas automáticamente en busca de contenido verificable" },
-  "settingsAutoScanDesc": { "message": "Detecta y resalta automáticamente las regiones marcadas con atributos de verificación" },
-  "settingsAutoVerifyTitle": { "message": "Verificar automáticamente las regiones detectadas" },
-  "settingsAutoVerifyDesc": { "message": "Verifica automáticamente todas las regiones detectadas (requiere que el escaneo automático esté activado)" },
-  "settingsHideUrlsTitle": { "message": "Ocultar las URL verify: en las páginas escaneadas" },
-  "settingsHideUrlsDesc": { "message": "Oculta las líneas del punto de verificación verify: de la página cuando se detectan regiones verificables" },
-  "settingsScanInfo": { "message": "Las páginas con contenido verificable usan marcadores en los elementos HTML para indicar declaraciones verificables. Divs con atributos verifiable-text (con start o stop). O verifiable-text-element=true para todo el elemento. Cuando el escaneo está desactivado, aparece un botón flotante en las páginas con regiones verificables." },
-  "settingsNotificationSection": { "message": "Nivel de notificación" },
-  "settingsMaximumTitle": { "message": "Máximo (Recomendado)" },
-  "settingsMaximumDesc": { "message": "Lo más visible: garantiza que nunca te pierdas un resultado de verificación" },
-  "settingsMaximumFeat1": { "message": "Notificación del sistema con sonido" },
-  "settingsMaximumFeat2": { "message": "La notificación permanece hasta que se descarta" },
-  "settingsBadgeFeature": { "message": "Insignia en el icono de la extensión" },
-  "settingsStandardTitle": { "message": "Estándar" },
-  "settingsStandardDesc": { "message": "Equilibrado: la notificación aparece brevemente" },
-  "settingsStandardFeat1": { "message": "Notificación del sistema (se descarta sola)" },
-  "settingsMinimalTitle": { "message": "Mínimo" },
-  "settingsMinimalDesc": { "message": "Discreto: solo actualiza el icono de la extensión" },
-  "settingsMinimalFeat1": { "message": "Solo insignia en el icono de la extensión" },
-  "settingsMinimalFeat2": { "message": "Haz clic en el icono para ver los detalles" },
-  "settingsKeyboardShortcut": { "message": "Atajo de teclado" },
-  "settingsKeyboardHint": { "message": "Selecciona un texto con una URL verify: y luego usa este atajo para verificar" },
-  "settingsSaved": { "message": "Ajustes guardados" },
-
-  "bannerVerified": { "message": "VERIFICADO" },
-  "bannerError": { "message": "ERROR" },
-  "bannerNotVerified": { "message": "NO VERIFICADO" },
-  "bannerVerifiedBy": { "message": "por $DOMAIN$", "placeholders": { "domain": { "content": "$1" } } },
-  "bannerDoesNotVerify": { "message": "$DOMAIN$ no verifica esta declaración", "placeholders": { "domain": { "content": "$1" } } },
-  "bannerExtractedText": { "message": "Texto extraído" },
-  "bannerNormalizedText": { "message": "Texto normalizado" },
-  "bannerDetails": { "message": "Detalles" },
-  "bannerFooter": { "message": "Extensión de navegador LiveVerify — las capturas de pantalla de esto no son prueba de nada" },
-
-  "notifVerified": { "message": "Verificado" },
-  "notifNotVerified": { "message": "No verificado" },
-  "notifVerifiedBy": { "message": "Verificado por $DOMAIN$", "placeholders": { "domain": { "content": "$1" } } },
-  "notifStatusDomain": { "message": "$STATUS$ ($DOMAIN$)", "placeholders": { "status": { "content": "$1" }, "domain": { "content": "$2" } } },
-  "notifSelfVerified": { "message": "Autoverificado (sin cadena de autoridad)" },
-  "notifAuthExpired": { "message": "Autorización por $AUTHORIZER$ — caducada", "placeholders": { "authorizer": { "content": "$1" } } },
-  "notifAuthConfirmed": { "message": "Autorizado por $AUTHORIZER$", "placeholders": { "authorizer": { "content": "$1" } } },
-  "notifAuthNotConfirmed": { "message": "Autorización por $AUTHORIZER$ — sin confirmar", "placeholders": { "authorizer": { "content": "$1" } } },
-  "notifAuthMissing": { "message": "Afirma tener autorización de $AUTHORIZER$ — ausente", "placeholders": { "authorizer": { "content": "$1" } } },
-
-  "badgeVerify": { "message": "Verificar" },
-  "badgeVerifying": { "message": "Verificando…" },
-  "badgeVerified": { "message": "Verificado" },
-  "badgeVerifiedByTitle": { "message": "Verificado por $DOMAIN$", "placeholders": { "domain": { "content": "$1" } } },
-  "badgeNotVerified": { "message": "No verificado" },
-  "badgeNotVerifiedTitle": { "message": "No verificado" },
-  "badgeError": { "message": "Error" },
-  "badgeAuthorisedBy": { "message": "autorizado por $AUTHORIZER$", "placeholders": { "authorizer": { "content": "$1" } } },
-  "badgeScanRegions": { "message": "Escanear $COUNT$ región(es) verificable(s)", "placeholders": { "count": { "content": "$1" } } }
+  "popupDebug": {
+    "message": "Depuración"
+  },
+  "popupSettings": {
+    "message": "Ajustes"
+  },
+  "popupNoResultsTitle": {
+    "message": "Aún no hay verificaciones"
+  },
+  "popupNoResultsBody": {
+    "message": "Selecciona un texto que contenga una URL verify: y haz clic con el botón derecho → «Verificar selección»"
+  },
+  "popupShortcut": {
+    "message": "Cmd+Mayús+V / Ctrl+Mayús+V"
+  },
+  "popupClearHistory": {
+    "message": "Borrar historial"
+  },
+  "popupConnectionErrorTitle": {
+    "message": "Error de conexión"
+  },
+  "popupConnectionErrorBody": {
+    "message": "No se pudo conectar con el proceso en segundo plano de la extensión. Prueba a recargar la extensión en chrome://extensions"
+  },
+  "popupHideDetails": {
+    "message": "Ocultar detalles"
+  },
+  "popupShowDetails": {
+    "message": "Mostrar detalles"
+  },
+  "popupCopy": {
+    "message": "Copiar"
+  },
+  "popupCopied": {
+    "message": "¡Copiado!"
+  },
+  "popupShowMe": {
+    "message": "Mostrar"
+  },
+  "popupNotFound": {
+    "message": "No encontrado"
+  },
+  "popupBadgeVerified": {
+    "message": "Verificado"
+  },
+  "popupBadgeError": {
+    "message": "Error"
+  },
+  "popupBadgeNotVerified": {
+    "message": "No verificado"
+  },
+  "popupVerifiedByIssuer": {
+    "message": "Verificado por el emisor"
+  },
+  "popupClaimText": {
+    "message": "Texto de la declaración"
+  },
+  "popupVerificationResult": {
+    "message": "Resultado de la verificación"
+  },
+  "popupAuthenticated": {
+    "message": "Autenticado"
+  },
+  "popupSelfVerified": {
+    "message": "Autoverificado — ningún gobierno ni regulador lo atestigua. Proceda con precaución."
+  },
+  "popupHashLabel": {
+    "message": "Hash SHA-256"
+  },
+  "popupVerificationUrlLabel": {
+    "message": "URL de verificación"
+  },
+  "popupNormalizedTextLabel": {
+    "message": "Texto normalizado (con hash)"
+  },
+  "popupVerificationTimeLabel": {
+    "message": "Tiempo de verificación"
+  },
+  "errNoVerifyUrl": {
+    "message": "No se encontró ninguna URL verify: en la selección"
+  },
+  "errNoCertText": {
+    "message": "No se encontró texto antes de la URL verify:. Selecciona la declaración completa, incluido su contenido."
+  },
+  "errNetwork": {
+    "message": "Error de red: no se pudo contactar con el servidor de verificación"
+  },
+  "errCors": {
+    "message": "El servidor bloqueó la solicitud (CORS). Puede que el emisor no admita la verificación desde el navegador."
+  },
+  "authByExpired": {
+    "message": "Autorización de verificación por $AUTHORIZER$ — caducada",
+    "placeholders": {
+      "authorizer": {
+        "content": "$1"
+      }
+    }
+  },
+  "authSuccessor": {
+    "message": "Sucesor: $SUCCESSOR$",
+    "placeholders": {
+      "successor": {
+        "content": "$1"
+      }
+    }
+  },
+  "authByConfirmed": {
+    "message": "Verificación autorizada por $AUTHORIZER$",
+    "placeholders": {
+      "authorizer": {
+        "content": "$1"
+      }
+    }
+  },
+  "authChainEntry": {
+    "message": "Autorizado por $AUTHORIZER$",
+    "placeholders": {
+      "authorizer": {
+        "content": "$1"
+      }
+    }
+  },
+  "authByNotConfirmed": {
+    "message": "Autorización de verificación por $AUTHORIZER$ — sin confirmar",
+    "placeholders": {
+      "authorizer": {
+        "content": "$1"
+      }
+    }
+  },
+  "authClaimsMissing": {
+    "message": "$ISSUER$ afirma tener autorización de verificación de $AUTHORIZER$ — ausente",
+    "placeholders": {
+      "issuer": {
+        "content": "$1"
+      },
+      "authorizer": {
+        "content": "$2"
+      }
+    }
+  },
+  "authIssuerFallback": {
+    "message": "Emisor"
+  },
+  "settingsTitle": {
+    "message": "Ajustes de LiveVerify"
+  },
+  "settingsSubtitle": {
+    "message": "Configura el comportamiento de la verificación y las notificaciones"
+  },
+  "settingsLanguageSection": {
+    "message": "Idioma"
+  },
+  "settingsLanguageAuto": {
+    "message": "Según el navegador"
+  },
+  "settingsLanguageEnglish": {
+    "message": "English (Inglés)"
+  },
+  "settingsLanguageSpanish": {
+    "message": "Español"
+  },
+  "settingsLanguageGerman": {
+    "message": "Deutsch (Alemán)"
+  },
+  "settingsPageScanningSection": {
+    "message": "Escaneo de páginas"
+  },
+  "settingsAutoScanTitle": {
+    "message": "Escanear páginas automáticamente en busca de contenido verificable"
+  },
+  "settingsAutoScanDesc": {
+    "message": "Detecta y resalta automáticamente las regiones marcadas con atributos de verificación"
+  },
+  "settingsAutoVerifyTitle": {
+    "message": "Verificar automáticamente las regiones detectadas"
+  },
+  "settingsAutoVerifyDesc": {
+    "message": "Verifica automáticamente todas las regiones detectadas (requiere que el escaneo automático esté activado)"
+  },
+  "settingsHideUrlsTitle": {
+    "message": "Ocultar las URL verify: en las páginas escaneadas"
+  },
+  "settingsHideUrlsDesc": {
+    "message": "Oculta las líneas del punto de verificación verify: de la página cuando se detectan regiones verificables"
+  },
+  "settingsScanInfo": {
+    "message": "Las páginas con contenido verificable usan marcadores en los elementos HTML para indicar declaraciones verificables. Divs con atributos verifiable-text (con start o stop). O verifiable-text-element=true para todo el elemento. Cuando el escaneo está desactivado, aparece un botón flotante en las páginas con regiones verificables."
+  },
+  "settingsNotificationSection": {
+    "message": "Nivel de notificación"
+  },
+  "settingsMaximumTitle": {
+    "message": "Máximo (Recomendado)"
+  },
+  "settingsMaximumDesc": {
+    "message": "Lo más visible: garantiza que nunca te pierdas un resultado de verificación"
+  },
+  "settingsMaximumFeat1": {
+    "message": "Notificación del sistema con sonido"
+  },
+  "settingsMaximumFeat2": {
+    "message": "La notificación permanece hasta que se descarta"
+  },
+  "settingsBadgeFeature": {
+    "message": "Insignia en el icono de la extensión"
+  },
+  "settingsStandardTitle": {
+    "message": "Estándar"
+  },
+  "settingsStandardDesc": {
+    "message": "Equilibrado: la notificación aparece brevemente"
+  },
+  "settingsStandardFeat1": {
+    "message": "Notificación del sistema (se descarta sola)"
+  },
+  "settingsMinimalTitle": {
+    "message": "Mínimo"
+  },
+  "settingsMinimalDesc": {
+    "message": "Discreto: solo actualiza el icono de la extensión"
+  },
+  "settingsMinimalFeat1": {
+    "message": "Solo insignia en el icono de la extensión"
+  },
+  "settingsMinimalFeat2": {
+    "message": "Haz clic en el icono para ver los detalles"
+  },
+  "settingsKeyboardShortcut": {
+    "message": "Atajo de teclado"
+  },
+  "settingsKeyboardHint": {
+    "message": "Selecciona un texto con una URL verify: y luego usa este atajo para verificar"
+  },
+  "settingsSaved": {
+    "message": "Ajustes guardados"
+  },
+  "bannerVerified": {
+    "message": "VERIFICADO"
+  },
+  "bannerError": {
+    "message": "ERROR"
+  },
+  "bannerNotVerified": {
+    "message": "NO VERIFICADO"
+  },
+  "bannerVerifiedBy": {
+    "message": "por $DOMAIN$",
+    "placeholders": {
+      "domain": {
+        "content": "$1"
+      }
+    }
+  },
+  "bannerDoesNotVerify": {
+    "message": "$DOMAIN$ no verifica esta declaración",
+    "placeholders": {
+      "domain": {
+        "content": "$1"
+      }
+    }
+  },
+  "bannerExtractedText": {
+    "message": "Texto extraído"
+  },
+  "bannerNormalizedText": {
+    "message": "Texto normalizado"
+  },
+  "bannerDetails": {
+    "message": "Detalles"
+  },
+  "bannerFooter": {
+    "message": "Extensión de navegador LiveVerify — las capturas de pantalla de esto no son prueba de nada"
+  },
+  "notifVerified": {
+    "message": "Verificado"
+  },
+  "notifNotVerified": {
+    "message": "No verificado"
+  },
+  "notifVerifiedBy": {
+    "message": "Verificado por $DOMAIN$",
+    "placeholders": {
+      "domain": {
+        "content": "$1"
+      }
+    }
+  },
+  "notifStatusDomain": {
+    "message": "$STATUS$ ($DOMAIN$)",
+    "placeholders": {
+      "status": {
+        "content": "$1"
+      },
+      "domain": {
+        "content": "$2"
+      }
+    }
+  },
+  "notifSelfVerified": {
+    "message": "Autoverificado — ningún gobierno ni regulador lo atestigua"
+  },
+  "notifAuthExpired": {
+    "message": "Autorización por $AUTHORIZER$ — caducada",
+    "placeholders": {
+      "authorizer": {
+        "content": "$1"
+      }
+    }
+  },
+  "notifAuthConfirmed": {
+    "message": "Autorizado por $AUTHORIZER$",
+    "placeholders": {
+      "authorizer": {
+        "content": "$1"
+      }
+    }
+  },
+  "notifAuthNotConfirmed": {
+    "message": "Autorización por $AUTHORIZER$ — sin confirmar",
+    "placeholders": {
+      "authorizer": {
+        "content": "$1"
+      }
+    }
+  },
+  "notifAuthMissing": {
+    "message": "Afirma tener autorización de $AUTHORIZER$ — ausente",
+    "placeholders": {
+      "authorizer": {
+        "content": "$1"
+      }
+    }
+  },
+  "badgeVerify": {
+    "message": "Verificar"
+  },
+  "badgeVerifying": {
+    "message": "Verificando…"
+  },
+  "badgeVerified": {
+    "message": "Verificado"
+  },
+  "badgeVerifiedByTitle": {
+    "message": "Verificado por $DOMAIN$",
+    "placeholders": {
+      "domain": {
+        "content": "$1"
+      }
+    }
+  },
+  "badgeNotVerified": {
+    "message": "No verificado"
+  },
+  "badgeNotVerifiedTitle": {
+    "message": "No verificado"
+  },
+  "badgeError": {
+    "message": "Error"
+  },
+  "badgeAuthorisedBy": {
+    "message": "autorizado por $AUTHORIZER$",
+    "placeholders": {
+      "authorizer": {
+        "content": "$1"
+      }
+    }
+  },
+  "badgeScanRegions": {
+    "message": "Escanear $COUNT$ región(es) verificable(s)",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupAuthorityClaimed": {
+    "message": "Autoridad declarada",
+    "description": "Label above the issuer’s own authorityBasis statement"
+  }
 }

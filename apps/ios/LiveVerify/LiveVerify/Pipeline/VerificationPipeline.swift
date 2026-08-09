@@ -163,6 +163,10 @@ struct VerificationResult {
     var authorization: AuthorizationResult?
     var issuerDescription: String?
     var issuerFormalName: String?
+    /// The issuer's own one-line statement of what authority backs this verification.
+    /// Surfaced even with no authorizedBy - that is where it carries the most weight,
+    /// because nothing else is telling the verifier what kind of issuer this is.
+    var authorityBasis: String?
     /// Content offered to the human to correct and Re-verify when the pipeline refused to
     /// hash - every content line the OCR produced, in the app's best reading order. It is
     /// never hashed on its own; only what the human submits is.
@@ -472,7 +476,8 @@ class VerificationPipeline: ObservableObject {
             baseURL: baseURL,
             authorization: authorization,
             issuerDescription: meta?["description"] as? String,
-            issuerFormalName: (meta?["formalName"] as? String) ?? (meta?["issuer"] as? String)
+            issuerFormalName: (meta?["formalName"] as? String) ?? (meta?["issuer"] as? String),
+            authorityBasis: meta?["authorityBasis"] as? String
         )
     }
 
@@ -609,7 +614,8 @@ class VerificationPipeline: ObservableObject {
             baseURL: baseURL,
             authorization: authorization,
             issuerDescription: meta?["description"] as? String,
-            issuerFormalName: (meta?["formalName"] as? String) ?? (meta?["issuer"] as? String)
+            issuerFormalName: (meta?["formalName"] as? String) ?? (meta?["issuer"] as? String),
+            authorityBasis: meta?["authorityBasis"] as? String
         )
     }
 
@@ -677,7 +683,8 @@ class VerificationPipeline: ObservableObject {
             baseURL: baseURL,
             authorization: authorization,
             issuerDescription: meta?["description"] as? String,
-            issuerFormalName: (meta?["formalName"] as? String) ?? (meta?["issuer"] as? String)
+            issuerFormalName: (meta?["formalName"] as? String) ?? (meta?["issuer"] as? String),
+            authorityBasis: meta?["authorityBasis"] as? String
         )
     }
 }

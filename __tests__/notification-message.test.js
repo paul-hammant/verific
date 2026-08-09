@@ -20,7 +20,10 @@ describe('buildNotificationMessage', () => {
         const { title, message } = buildNotificationMessage(result);
         expect(title).toBe('Verified');
         expect(message).toContain('Verified by paulhammant.com');
-        expect(message).toContain('Self-verified (no authority chain)');
+        expect(message).toContain('Self-verified');
+        // The warning is the point of this line, not the label: a reader must be told
+        // that nothing independent stands behind the claim.
+        expect(message).toContain('no government or regulator attests to this');
     });
 
     test('self-verified with undefined authorization', () => {
@@ -31,7 +34,8 @@ describe('buildNotificationMessage', () => {
         };
         const { title, message } = buildNotificationMessage(result);
         expect(title).toBe('Verified');
-        expect(message).toContain('Self-verified (no authority chain)');
+        expect(message).toContain('Self-verified');
+        expect(message).toContain('no government or regulator attests to this');
     });
 
     // --- Confirmed authority chain ---

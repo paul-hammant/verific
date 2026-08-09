@@ -23,7 +23,7 @@ const EN = {
     notifNotVerified: 'Not Verified',
     notifVerifiedBy: 'Verified by $1',
     notifStatusDomain: '$1 ($2)',
-    notifSelfVerified: 'Self-verified (no authority chain)',
+    notifSelfVerified: 'Self-verified — no government or regulator attests to this',
     notifAuthExpired: 'Authorization by $1 — expired',
     authSuccessor: 'Successor: $1',
     notifAuthConfirmed: 'Authorized by $1',

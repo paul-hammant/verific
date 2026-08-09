@@ -15,106 +15,384 @@
     "message": "Verify selected text",
     "description": "Keyboard command description."
   },
-
-  "popupDebug": { "message": "Debug" },
-  "popupSettings": { "message": "Settings" },
-  "popupNoResultsTitle": { "message": "No verifications yet" },
-  "popupNoResultsBody": { "message": "Select text containing a verify: URL, then right-click → \"Verify Selection\"" },
-  "popupShortcut": { "message": "Cmd+Shift+V / Ctrl+Shift+V" },
-  "popupClearHistory": { "message": "Clear history" },
-  "popupConnectionErrorTitle": { "message": "Connection Error" },
-  "popupConnectionErrorBody": { "message": "Could not connect to extension background. Try reloading the extension in chrome://extensions" },
-  "popupHideDetails": { "message": "Hide details" },
-  "popupShowDetails": { "message": "Show details" },
-  "popupCopy": { "message": "Copy" },
-  "popupCopied": { "message": "Copied!" },
-  "popupShowMe": { "message": "Show me" },
-  "popupNotFound": { "message": "Not found" },
-  "popupBadgeVerified": { "message": "Verified" },
-  "popupBadgeError": { "message": "Error" },
-  "popupBadgeNotVerified": { "message": "Not Verified" },
-  "popupVerifiedByIssuer": { "message": "Verified by issuer" },
-  "popupClaimText": { "message": "Claim Text" },
-  "popupVerificationResult": { "message": "Verification Result" },
-  "popupAuthenticated": { "message": "Authenticated" },
-  "popupSelfVerified": { "message": "Self-verified (no authority chain)" },
-  "popupHashLabel": { "message": "SHA-256 Hash" },
-  "popupVerificationUrlLabel": { "message": "Verification URL" },
-  "popupNormalizedTextLabel": { "message": "Normalized Text (hashed)" },
-  "popupVerificationTimeLabel": { "message": "Verification Time" },
-
-  "errNoVerifyUrl": { "message": "No verify: URL found in selection" },
-  "errNoCertText": { "message": "No text found before the verify: URL. Select the full claim including content." },
-  "errNetwork": { "message": "Network error - could not reach verification server" },
-  "errCors": { "message": "Server blocked the request (CORS). The issuer may not support browser verification." },
-
-  "authByExpired": { "message": "Verification authorization by $AUTHORIZER$ — expired", "placeholders": { "authorizer": { "content": "$1" } } },
-  "authSuccessor": { "message": "Successor: $SUCCESSOR$", "placeholders": { "successor": { "content": "$1" } } },
-  "authByConfirmed": { "message": "Verification authorized by $AUTHORIZER$", "placeholders": { "authorizer": { "content": "$1" } } },
-  "authChainEntry": { "message": "Authorized by $AUTHORIZER$", "placeholders": { "authorizer": { "content": "$1" } } },
-  "authByNotConfirmed": { "message": "Verification authorization by $AUTHORIZER$ — not confirmed", "placeholders": { "authorizer": { "content": "$1" } } },
-  "authClaimsMissing": { "message": "$ISSUER$ claims verification authorization by $AUTHORIZER$ — missing", "placeholders": { "issuer": { "content": "$1" }, "authorizer": { "content": "$2" } } },
-  "authIssuerFallback": { "message": "Issuer" },
-
-  "settingsTitle": { "message": "LiveVerify Settings" },
-  "settingsSubtitle": { "message": "Configure verification behavior and notifications" },
-  "settingsLanguageSection": { "message": "Language" },
-  "settingsLanguageAuto": { "message": "Match browser" },
-  "settingsLanguageEnglish": { "message": "English" },
-  "settingsLanguageSpanish": { "message": "Español (Spanish)" },
-  "settingsLanguageGerman": { "message": "Deutsch (German)" },
-  "settingsPageScanningSection": { "message": "Page Scanning" },
-  "settingsAutoScanTitle": { "message": "Auto-scan pages for verifiable content" },
-  "settingsAutoScanDesc": { "message": "Automatically detect and highlight regions marked with verification attributes" },
-  "settingsAutoVerifyTitle": { "message": "Auto-verify detected regions" },
-  "settingsAutoVerifyDesc": { "message": "Automatically verify all detected regions (requires auto-scan to be enabled)" },
-  "settingsHideUrlsTitle": { "message": "Hide verify: URLs on scanned pages" },
-  "settingsHideUrlsDesc": { "message": "Hide the verify: endpoint lines from the page when verifiable regions are detected" },
-  "settingsScanInfo": { "message": "Pages with verifiable content use markers in HTML elements to indicate verifiable claims. Divs with verifiable-text attributes (and start or stop). Or verifiable-text-element=true for the whole element. When scanning is disabled, a floating button appears on pages with verifiable regions." },
-  "settingsNotificationSection": { "message": "Notification Level" },
-  "settingsMaximumTitle": { "message": "Maximum (Recommended)" },
-  "settingsMaximumDesc": { "message": "Most visible - ensures you never miss a verification result" },
-  "settingsMaximumFeat1": { "message": "System notification with sound" },
-  "settingsMaximumFeat2": { "message": "Notification stays until dismissed" },
-  "settingsBadgeFeature": { "message": "Badge on extension icon" },
-  "settingsStandardTitle": { "message": "Standard" },
-  "settingsStandardDesc": { "message": "Balanced - notification appears briefly" },
-  "settingsStandardFeat1": { "message": "System notification (auto-dismiss)" },
-  "settingsMinimalTitle": { "message": "Minimal" },
-  "settingsMinimalDesc": { "message": "Quiet - only updates the extension icon" },
-  "settingsMinimalFeat1": { "message": "Badge on extension icon only" },
-  "settingsMinimalFeat2": { "message": "Click icon to see details" },
-  "settingsKeyboardShortcut": { "message": "Keyboard Shortcut" },
-  "settingsKeyboardHint": { "message": "Select text with a verify: URL, then use this shortcut to verify" },
-  "settingsSaved": { "message": "Settings saved" },
-
-  "bannerVerified": { "message": "VERIFIED" },
-  "bannerError": { "message": "ERROR" },
-  "bannerNotVerified": { "message": "NOT VERIFIED" },
-  "bannerVerifiedBy": { "message": "by $DOMAIN$", "placeholders": { "domain": { "content": "$1" } } },
-  "bannerDoesNotVerify": { "message": "$DOMAIN$ does not verify this claim", "placeholders": { "domain": { "content": "$1" } } },
-  "bannerExtractedText": { "message": "Extracted Text" },
-  "bannerNormalizedText": { "message": "Normalized Text" },
-  "bannerDetails": { "message": "Details" },
-  "bannerFooter": { "message": "LiveVerify browser extension — screencaps of this are not proof of anything" },
-
-  "notifVerified": { "message": "Verified" },
-  "notifNotVerified": { "message": "Not Verified" },
-  "notifVerifiedBy": { "message": "Verified by $DOMAIN$", "placeholders": { "domain": { "content": "$1" } } },
-  "notifStatusDomain": { "message": "$STATUS$ ($DOMAIN$)", "placeholders": { "status": { "content": "$1" }, "domain": { "content": "$2" } } },
-  "notifSelfVerified": { "message": "Self-verified (no authority chain)" },
-  "notifAuthExpired": { "message": "Authorization by $AUTHORIZER$ — expired", "placeholders": { "authorizer": { "content": "$1" } } },
-  "notifAuthConfirmed": { "message": "Authorized by $AUTHORIZER$", "placeholders": { "authorizer": { "content": "$1" } } },
-  "notifAuthNotConfirmed": { "message": "Authorization by $AUTHORIZER$ — not confirmed", "placeholders": { "authorizer": { "content": "$1" } } },
-  "notifAuthMissing": { "message": "Claims authorization by $AUTHORIZER$ — missing", "placeholders": { "authorizer": { "content": "$1" } } },
-
-  "badgeVerify": { "message": "Verify" },
-  "badgeVerifying": { "message": "Verifying…" },
-  "badgeVerified": { "message": "Verified" },
-  "badgeVerifiedByTitle": { "message": "Verified by $DOMAIN$", "placeholders": { "domain": { "content": "$1" } } },
-  "badgeNotVerified": { "message": "Not Verified" },
-  "badgeNotVerifiedTitle": { "message": "Not verified" },
-  "badgeError": { "message": "Error" },
-  "badgeAuthorisedBy": { "message": "authorised by $AUTHORIZER$", "placeholders": { "authorizer": { "content": "$1" } } },
-  "badgeScanRegions": { "message": "Scan $COUNT$ verifiable region(s)", "placeholders": { "count": { "content": "$1" } } }
+  "popupDebug": {
+    "message": "Debug"
+  },
+  "popupSettings": {
+    "message": "Settings"
+  },
+  "popupNoResultsTitle": {
+    "message": "No verifications yet"
+  },
+  "popupNoResultsBody": {
+    "message": "Select text containing a verify: URL, then right-click → \"Verify Selection\""
+  },
+  "popupShortcut": {
+    "message": "Cmd+Shift+V / Ctrl+Shift+V"
+  },
+  "popupClearHistory": {
+    "message": "Clear history"
+  },
+  "popupConnectionErrorTitle": {
+    "message": "Connection Error"
+  },
+  "popupConnectionErrorBody": {
+    "message": "Could not connect to extension background. Try reloading the extension in chrome://extensions"
+  },
+  "popupHideDetails": {
+    "message": "Hide details"
+  },
+  "popupShowDetails": {
+    "message": "Show details"
+  },
+  "popupCopy": {
+    "message": "Copy"
+  },
+  "popupCopied": {
+    "message": "Copied!"
+  },
+  "popupShowMe": {
+    "message": "Show me"
+  },
+  "popupNotFound": {
+    "message": "Not found"
+  },
+  "popupBadgeVerified": {
+    "message": "Verified"
+  },
+  "popupBadgeError": {
+    "message": "Error"
+  },
+  "popupBadgeNotVerified": {
+    "message": "Not Verified"
+  },
+  "popupVerifiedByIssuer": {
+    "message": "Verified by issuer"
+  },
+  "popupClaimText": {
+    "message": "Claim Text"
+  },
+  "popupVerificationResult": {
+    "message": "Verification Result"
+  },
+  "popupAuthenticated": {
+    "message": "Authenticated"
+  },
+  "popupSelfVerified": {
+    "message": "Self-verified — no government or regulator attests to this. Proceed with caution."
+  },
+  "popupHashLabel": {
+    "message": "SHA-256 Hash"
+  },
+  "popupVerificationUrlLabel": {
+    "message": "Verification URL"
+  },
+  "popupNormalizedTextLabel": {
+    "message": "Normalized Text (hashed)"
+  },
+  "popupVerificationTimeLabel": {
+    "message": "Verification Time"
+  },
+  "errNoVerifyUrl": {
+    "message": "No verify: URL found in selection"
+  },
+  "errNoCertText": {
+    "message": "No text found before the verify: URL. Select the full claim including content."
+  },
+  "errNetwork": {
+    "message": "Network error - could not reach verification server"
+  },
+  "errCors": {
+    "message": "Server blocked the request (CORS). The issuer may not support browser verification."
+  },
+  "authByExpired": {
+    "message": "Verification authorization by $AUTHORIZER$ — expired",
+    "placeholders": {
+      "authorizer": {
+        "content": "$1"
+      }
+    }
+  },
+  "authSuccessor": {
+    "message": "Successor: $SUCCESSOR$",
+    "placeholders": {
+      "successor": {
+        "content": "$1"
+      }
+    }
+  },
+  "authByConfirmed": {
+    "message": "Verification authorized by $AUTHORIZER$",
+    "placeholders": {
+      "authorizer": {
+        "content": "$1"
+      }
+    }
+  },
+  "authChainEntry": {
+    "message": "Authorized by $AUTHORIZER$",
+    "placeholders": {
+      "authorizer": {
+        "content": "$1"
+      }
+    }
+  },
+  "authByNotConfirmed": {
+    "message": "Verification authorization by $AUTHORIZER$ — not confirmed",
+    "placeholders": {
+      "authorizer": {
+        "content": "$1"
+      }
+    }
+  },
+  "authClaimsMissing": {
+    "message": "$ISSUER$ claims verification authorization by $AUTHORIZER$ — missing",
+    "placeholders": {
+      "issuer": {
+        "content": "$1"
+      },
+      "authorizer": {
+        "content": "$2"
+      }
+    }
+  },
+  "authIssuerFallback": {
+    "message": "Issuer"
+  },
+  "settingsTitle": {
+    "message": "LiveVerify Settings"
+  },
+  "settingsSubtitle": {
+    "message": "Configure verification behavior and notifications"
+  },
+  "settingsLanguageSection": {
+    "message": "Language"
+  },
+  "settingsLanguageAuto": {
+    "message": "Match browser"
+  },
+  "settingsLanguageEnglish": {
+    "message": "English"
+  },
+  "settingsLanguageSpanish": {
+    "message": "Español (Spanish)"
+  },
+  "settingsLanguageGerman": {
+    "message": "Deutsch (German)"
+  },
+  "settingsPageScanningSection": {
+    "message": "Page Scanning"
+  },
+  "settingsAutoScanTitle": {
+    "message": "Auto-scan pages for verifiable content"
+  },
+  "settingsAutoScanDesc": {
+    "message": "Automatically detect and highlight regions marked with verification attributes"
+  },
+  "settingsAutoVerifyTitle": {
+    "message": "Auto-verify detected regions"
+  },
+  "settingsAutoVerifyDesc": {
+    "message": "Automatically verify all detected regions (requires auto-scan to be enabled)"
+  },
+  "settingsHideUrlsTitle": {
+    "message": "Hide verify: URLs on scanned pages"
+  },
+  "settingsHideUrlsDesc": {
+    "message": "Hide the verify: endpoint lines from the page when verifiable regions are detected"
+  },
+  "settingsScanInfo": {
+    "message": "Pages with verifiable content use markers in HTML elements to indicate verifiable claims. Divs with verifiable-text attributes (and start or stop). Or verifiable-text-element=true for the whole element. When scanning is disabled, a floating button appears on pages with verifiable regions."
+  },
+  "settingsNotificationSection": {
+    "message": "Notification Level"
+  },
+  "settingsMaximumTitle": {
+    "message": "Maximum (Recommended)"
+  },
+  "settingsMaximumDesc": {
+    "message": "Most visible - ensures you never miss a verification result"
+  },
+  "settingsMaximumFeat1": {
+    "message": "System notification with sound"
+  },
+  "settingsMaximumFeat2": {
+    "message": "Notification stays until dismissed"
+  },
+  "settingsBadgeFeature": {
+    "message": "Badge on extension icon"
+  },
+  "settingsStandardTitle": {
+    "message": "Standard"
+  },
+  "settingsStandardDesc": {
+    "message": "Balanced - notification appears briefly"
+  },
+  "settingsStandardFeat1": {
+    "message": "System notification (auto-dismiss)"
+  },
+  "settingsMinimalTitle": {
+    "message": "Minimal"
+  },
+  "settingsMinimalDesc": {
+    "message": "Quiet - only updates the extension icon"
+  },
+  "settingsMinimalFeat1": {
+    "message": "Badge on extension icon only"
+  },
+  "settingsMinimalFeat2": {
+    "message": "Click icon to see details"
+  },
+  "settingsKeyboardShortcut": {
+    "message": "Keyboard Shortcut"
+  },
+  "settingsKeyboardHint": {
+    "message": "Select text with a verify: URL, then use this shortcut to verify"
+  },
+  "settingsSaved": {
+    "message": "Settings saved"
+  },
+  "bannerVerified": {
+    "message": "VERIFIED"
+  },
+  "bannerError": {
+    "message": "ERROR"
+  },
+  "bannerNotVerified": {
+    "message": "NOT VERIFIED"
+  },
+  "bannerVerifiedBy": {
+    "message": "by $DOMAIN$",
+    "placeholders": {
+      "domain": {
+        "content": "$1"
+      }
+    }
+  },
+  "bannerDoesNotVerify": {
+    "message": "$DOMAIN$ does not verify this claim",
+    "placeholders": {
+      "domain": {
+        "content": "$1"
+      }
+    }
+  },
+  "bannerExtractedText": {
+    "message": "Extracted Text"
+  },
+  "bannerNormalizedText": {
+    "message": "Normalized Text"
+  },
+  "bannerDetails": {
+    "message": "Details"
+  },
+  "bannerFooter": {
+    "message": "LiveVerify browser extension — screencaps of this are not proof of anything"
+  },
+  "notifVerified": {
+    "message": "Verified"
+  },
+  "notifNotVerified": {
+    "message": "Not Verified"
+  },
+  "notifVerifiedBy": {
+    "message": "Verified by $DOMAIN$",
+    "placeholders": {
+      "domain": {
+        "content": "$1"
+      }
+    }
+  },
+  "notifStatusDomain": {
+    "message": "$STATUS$ ($DOMAIN$)",
+    "placeholders": {
+      "status": {
+        "content": "$1"
+      },
+      "domain": {
+        "content": "$2"
+      }
+    }
+  },
+  "notifSelfVerified": {
+    "message": "Self-verified — no government or regulator attests to this"
+  },
+  "notifAuthExpired": {
+    "message": "Authorization by $AUTHORIZER$ — expired",
+    "placeholders": {
+      "authorizer": {
+        "content": "$1"
+      }
+    }
+  },
+  "notifAuthConfirmed": {
+    "message": "Authorized by $AUTHORIZER$",
+    "placeholders": {
+      "authorizer": {
+        "content": "$1"
+      }
+    }
+  },
+  "notifAuthNotConfirmed": {
+    "message": "Authorization by $AUTHORIZER$ — not confirmed",
+    "placeholders": {
+      "authorizer": {
+        "content": "$1"
+      }
+    }
+  },
+  "notifAuthMissing": {
+    "message": "Claims authorization by $AUTHORIZER$ — missing",
+    "placeholders": {
+      "authorizer": {
+        "content": "$1"
+      }
+    }
+  },
+  "badgeVerify": {
+    "message": "Verify"
+  },
+  "badgeVerifying": {
+    "message": "Verifying…"
+  },
+  "badgeVerified": {
+    "message": "Verified"
+  },
+  "badgeVerifiedByTitle": {
+    "message": "Verified by $DOMAIN$",
+    "placeholders": {
+      "domain": {
+        "content": "$1"
+      }
+    }
+  },
+  "badgeNotVerified": {
+    "message": "Not Verified"
+  },
+  "badgeNotVerifiedTitle": {
+    "message": "Not verified"
+  },
+  "badgeError": {
+    "message": "Error"
+  },
+  "badgeAuthorisedBy": {
+    "message": "authorised by $AUTHORIZER$",
+    "placeholders": {
+      "authorizer": {
+        "content": "$1"
+      }
+    }
+  },
+  "badgeScanRegions": {
+    "message": "Scan $COUNT$ verifiable region(s)",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "popupAuthorityClaimed": {
+    "message": "Authority claimed",
+    "description": "Label above the issuer’s own authorityBasis statement"
+  }
 }

@@ -231,6 +231,17 @@ function renderResultCard(result) {
         `;
     }
 
+    // The issuer's own statement of the authority behind this. "Claimed", because with no
+    // authorizedBy nobody has endorsed the wording - it is the issuer describing itself.
+    if (result.authorityBasis) {
+        html += `
+            <div class="authority-basis">
+                <span class="authority-basis-label">${t('popupAuthorityClaimed')}</span>
+                ${escapeHtml(result.authorityBasis)}
+            </div>
+        `;
+    }
+
     // Show claim text if available
     if (result.certText) {
         html += `

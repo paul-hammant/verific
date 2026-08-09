@@ -249,6 +249,9 @@ async function verifySelection(selectedText, tab) {
         status: verifyResult.status,
         domain: verifyResult.domain,
         issuerDescription: meta ? (meta.description || null) : null,
+        // The issuer's own one-line statement of what authority backs this.
+        // Shown even with no authorizedBy - that is where it matters most.
+        authorityBasis: meta ? (meta.authorityBasis || null) : null,
         payload: verifyResult.payload,
         registrableDomain,
         domainNotListed,
@@ -640,6 +643,9 @@ async function verifyText(selectedText) {
         status: verifyResult.status,
         domain: verifyResult.domain,
         issuerDescription: meta ? (meta.description || null) : null,
+        // The issuer's own one-line statement of what authority backs this.
+        // Shown even with no authorizedBy - that is where it matters most.
+        authorityBasis: meta ? (meta.authorityBasis || null) : null,
         payload: verifyResult.payload,
         registrableDomain,
         domainNotListed,

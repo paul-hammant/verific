@@ -190,6 +190,11 @@
             margin-left: 8px;
         }
 
+        /* The claim's line breaks are part of what was hashed, so this must NOT soft-wrap:
+           a wrapped display shows line structure that differs from the bytes behind the
+           hash. Real lines, scrolled horizontally, with edge shadows that appear only
+           while there is more content that way (the "local" layers move with the content
+           and uncover the pinned "scroll" shadows). */
         .claim-text {
             font-family: 'SF Mono', Monaco, Consolas, monospace;
             font-size: 11px;
@@ -197,11 +202,37 @@
             border: 1px solid #e5e7eb;
             border-radius: 6px;
             padding: 10px;
-            white-space: pre-wrap;
-            word-break: break-word;
+            white-space: pre;
             max-height: 150px;
-            overflow-y: auto;
+            overflow: auto;
             line-height: 1.5;
+            background-image:
+                linear-gradient(to right, #f9fafb, #f9fafb),
+                linear-gradient(to left, #f9fafb, #f9fafb),
+                linear-gradient(to right, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0)),
+                linear-gradient(to left, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0));
+            background-position: left center, right center, left center, right center;
+            background-repeat: no-repeat;
+            background-size: 24px 100%, 24px 100%, 14px 100%, 14px 100%;
+            background-attachment: local, local, scroll, scroll;
+        }
+
+        .authority-basis {
+            font-size: 11px;
+            color: #374151;
+            background: #f3f4f6;
+            border-radius: 6px;
+            padding: 7px 10px;
+            margin-bottom: 10px;
+        }
+
+        .authority-basis-label {
+            display: block;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #6b7280;
+            margin-bottom: 2px;
         }
 
         /* Details section (collapsible) */

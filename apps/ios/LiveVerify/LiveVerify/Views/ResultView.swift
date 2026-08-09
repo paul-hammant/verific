@@ -113,6 +113,23 @@ struct ResultView: View {
             } else if let domain = statusDomain, isAffirming {
                 noAuthorityView(domain: domain)
             }
+
+            // The issuer's own account of its authority. "Claimed" because with no
+            // authorizedBy nobody has endorsed the wording - it is self-description.
+            if let authorityBasis = result.authorityBasis {
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("AUTHORITY CLAIMED")
+                        .font(.system(size: 9, weight: .semibold))
+                        .opacity(0.75)
+                    Text(authorityBasis)
+                        .font(.caption)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(.vertical, 2)
+                .padding(.horizontal, 8)
+                .background(Color.black.opacity(0.18))
+                .cornerRadius(4)
+            }
         }
         .padding()
         .foregroundColor(.white)
@@ -196,11 +213,18 @@ struct ResultView: View {
     }
 
     private func noAuthorityView(domain: String) -> some View {
-        HStack(spacing: 4) {
-            Image(systemName: "checkmark.seal.fill")
-                .font(.caption)
-            Text("Self-verified by \(domain)")
-                .font(.caption)
+        VStack(alignment: .leading, spacing: 2) {
+            HStack(spacing: 4) {
+                Image(systemName: "checkmark.seal.fill")
+                    .font(.caption)
+                Text("Self-verified by \(domain)")
+                    .font(.caption)
+            }
+            // Name what is missing rather than leaving the reader to infer it from the
+            // absence of a chain. Same wording as the Safari extension popup.
+            Text("No government or regulator attests to this self-verification \u{2014} proceed with caution.")
+                .font(.caption2)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .padding(.vertical, 2)
         .padding(.horizontal, 8)
@@ -313,15 +337,26 @@ struct ResultView: View {
     }
 
     private var extractedTab: some View {
-        ScrollView {
-            Text(withReturnSymbols(result.rawText))
-                .font(.system(.body, design: .monospaced))
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding()
-                .background(Color(.systemGray6))
-                .cornerRadius(8)
+        ScrollView([.vertical, .horizontal]) {
+            unwrappedText(result.rawText)
                 .padding()
         }
+    }
+
+    /// Monospaced text that keeps its real line breaks.
+    ///
+    /// These panes exist to show exactly what was read and exactly what was hashed, so they
+    /// must not soft-wrap: a wrapped line reads as a line break that is not in the bytes.
+    /// The enclosing ScrollView scrolls horizontally instead.
+    private func unwrappedText(_ text: String) -> some View {
+        Text(withReturnSymbols(text))
+            .font(.system(.body, design: .monospaced))
+            .lineLimit(nil)
+            .fixedSize(horizontal: true, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding()
+            .background(Color(.systemGray6))
+            .cornerRadius(8)
     }
 
     private var normalizedTab: some View {
@@ -329,14 +364,9 @@ struct ResultView: View {
             if let stranded = strandedText {
                 strandedNotice(stranded)
             } else {
-                // Display with ⏎ symbols (read-only)
-                ScrollView {
-                    Text(withReturnSymbols(result.normalizedText ?? ""))
-                        .font(.system(.body, design: .monospaced))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding()
-                        .background(Color(.systemGray6))
-                        .cornerRadius(8)
+                // Display with ⏎ symbols (read-only), real lines preserved
+                ScrollView([.vertical, .horizontal]) {
+                    unwrappedText(result.normalizedText ?? "")
                 }
                 .frame(maxHeight: 150)
                 .padding(.horizontal)
