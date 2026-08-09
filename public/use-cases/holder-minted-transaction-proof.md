@@ -23,14 +23,17 @@ The proof is **narrow by design** — one transaction, not your whole statement.
 produces the canonical text and publishes the matching hash on the *bank's own domain*. That split is
 what makes it trustworthy — see [Trust model](#trust-model-holder-triggered-issuer-published) below.
 
-```
-Payment: £1,200.00 to ACME Ltd on 3 Mar 2026 from a/c ****4421
-CIFAS-Status: No marker recorded against this account in Barclays' records as of 3 Mar 2026
-Produced: 2026-08-09 14:07 UTC at account-holder's request
-Expires: after 5 verifications or on 2026-09-08, whichever is first
+The inline styling is ignored by clip mode — only the text content is hashed.
+
+<div style="max-width: 660px; margin: 24px auto; border: 1px solid #ccc; background: #fff; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+  <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: 0.82em; white-space: pre-wrap; word-break: break-word; color: #000; line-height: 1.7;"><span verifiable-text="start" data-for="proof"></span>Payment: &nbsp;&nbsp;&nbsp;&nbsp;£1,200.00 to ACME Ltd on 3 Mar 2026 from a/c ****4421
+CIFAS-Status: &nbsp;No marker recorded against this account in Barclays' records as of 3 Mar 2026
+Produced: &nbsp;&nbsp;&nbsp;2026-08-09 14:07 UTC at account-holder's request
+Expires: &nbsp;&nbsp;&nbsp;&nbsp;after 5 verifications or on 2026-09-08, whichever is first
 Holder-Note (Bank notes this text is holder-entered): re: your invoice #58
-verify:proofs.barclays.co.uk/c
-```
+
+<span data-verify-line="proof">verify:proofs.barclays.co.uk/c</span><span verifiable-text="end" data-for="proof"></span></pre>
+</div>
 
 **The whole block is one verified claim.** Every line above the `verify:` line is inside the hash and
 answered by the bank's domain — including the holder's note. What differs line-to-line is *what the
