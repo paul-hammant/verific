@@ -48,9 +48,23 @@ const content = document.getElementById('content');
 document.addEventListener('DOMContentLoaded', run);
 
 async function run() {
-    const selection = await readSelection();
+    const { reachedPage, selection } = await readSelection();
 
-    if (!selection || selection.trim().length === 0) {
+    // An unreachable page and an empty selection are different failures and must not
+    // share a message. The content script is only injected as a page loads, so after the
+    // extension is installed or updated an already-open tab has none - the user needs to
+    // reload, which "nothing selected" would never tell them.
+    if (!reachedPage) {
+        renderHint(
+            'Cannot read this page',
+            'Live Verify has not been loaded into this tab. <strong>Reload the page</strong> ' +
+            'and try again. (A tab that was already open when the extension was installed ' +
+            'or updated needs one reload.)'
+        );
+        return;
+    }
+
+    if (selection.trim().length === 0) {
         renderHint(
             'Nothing selected',
             'Select the claim on the page — including its <strong>verify:</strong> or ' +
@@ -64,15 +78,25 @@ async function run() {
 
 /**
  * Ask the content script what the user selected.
- * @returns {Promise<string>} The selected text, or '' when the page cannot be reached
+ * @returns {Promise<{reachedPage: boolean, selection: string}>}
  */
 async function readSelection() {
     const tabs = await api.tabs.query({ active: true, currentWindow: true });
     const tab = tabs[0];
-    if (!tab) return '';
+    if (!tab) return { reachedPage: false, selection: '' };
 
-    const response = await api.tabs.sendMessage(tab.id, { type: 'getSelection' });
-    return response?.selection ?? '';
+    // Safari resolves sendMessage with undefined when no content script is listening;
+    // other engines reject. Both mean the same thing: we never reached the page.
+    let response;
+    try {
+        response = await api.tabs.sendMessage(tab.id, { type: 'getSelection' });
+    } catch {
+        return { reachedPage: false, selection: '' };
+    }
+
+    if (!response) return { reachedPage: false, selection: '' };
+
+    return { reachedPage: true, selection: response.selection ?? '' };
 }
 
 async function verifySelection(selectedText) {
@@ -177,11 +201,15 @@ function renderResult({ verifyResult, registrableDomain, issuerDescription, cert
         el('div', { class: 'verdict-title' },
             affirming ? 'Verified' : 'Not verified'),
         el('div', { class: 'verdict-detail' },
-            affirming ? (selfVerified ? 'Self-verified' : '') : verifyResult.status));
+            affirming ? (selfVerified ? 'Self-Verified' : '') : verifyResult.status));
 
-    const by = el('p', { class: 'hint' });
-    by.innerHTML = `${affirming ? 'Confirmed' : 'Answered'} by <span class="domain"></span>`;
-    by.querySelector('.domain').textContent = domain;
+    // Full hostname, with the registrable domain emphasised - that is the part someone
+    // actually registered, renews, and can be held to (or have seized). On a shared host
+    // the subdomain is just a tenant name: "nicolas-maman.<strong>github.io</strong>".
+    // Matches formatDomainEmphasis() in the Chrome extension's popup.
+    const by = el('p', { class: 'hint' },
+        affirming ? 'Verified by ' : 'Answered by ',
+        domainEmphasis(verifyResult.domain, domain));
 
     const parts = [verdict, by];
 
@@ -227,6 +255,28 @@ function chainView(domain, authorization) {
     });
 
     return chain;
+}
+
+/**
+ * Show the whole hostname, bolding the registrable domain within it.
+ *
+ * Split on the suffix rather than a string replace: the registrable domain is always the
+ * tail of the hostname, and a replace would emphasise an earlier coincidental match.
+ *
+ * @param {string} hostname - Full hostname the answer came from
+ * @param {string} registrable - Registrable domain per the Public Suffix List
+ */
+function domainEmphasis(hostname, registrable) {
+    const wrapper = el('span', { class: 'domain' });
+
+    if (registrable && hostname !== registrable && hostname.endsWith(registrable)) {
+        wrapper.appendChild(document.createTextNode(hostname.slice(0, -registrable.length)));
+        wrapper.appendChild(el('strong', {}, registrable));
+    } else {
+        wrapper.appendChild(el('strong', {}, hostname || registrable));
+    }
+
+    return wrapper;
 }
 
 function section(label, body) {
