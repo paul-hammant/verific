@@ -1,10 +1,9 @@
 [
   {
     "slug": "two-ocr-failures-on-one-eink-card",
-    "title": "Two OCR Failures on One e-Ink Card — and Why Showing Your Working Beats Hiding It",
-    "date": "2026-08-08",
-    "updated": "2026-08-09",
-    "summary": "A mock e-ink credential fails to verify for two reasons: Apple's OCR reads 'Wolf' as 'wolf', and two whole claim lines go missing before the hash. A follow-up run pins the second bug to an OCR reading-order scramble — and the app's transparency is what surfaced and solved both."
+    "title": "Three OCR Failures on One e-Ink Card — and Why Showing Your Working Beats Hiding It",
+    "date": "2026-08-09",
+    "summary": "One cheap e-ink prop, three different OCR failures: a case misread, a reading-order scramble that silently truncated the claim, and a superscript 'th' read as a quote mark. Two were our bugs and are fixed in shipped code; one is about how you print and capture a credential. At no point did the app guess its way to a false pass."
   },
   {
     "slug": "verification-speed-and-trust",

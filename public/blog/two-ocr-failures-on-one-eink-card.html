@@ -19,7 +19,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Two OCR Failures on One e-Ink Card — Live Verify Blog</title>
+    <title>Three OCR Failures on One e-Ink Card — Live Verify Blog</title>
     <style>
         :root {
             --bg: #f6f8fb;
@@ -56,7 +56,8 @@
         article { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: clamp(24px, 5vw, 48px); }
         .post-date { font-size: 0.82em; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
         h1 { font-size: clamp(1.7em, 4.5vw, 2.3em); font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 24px; }
-        h2 { font-size: 1.35em; font-weight: 750; letter-spacing: -0.01em; margin: 34px 0 12px; }
+        h2 { font-size: 1.35em; font-weight: 750; letter-spacing: -0.01em; margin: 36px 0 12px; }
+        h3 { font-size: 1.12em; font-weight: 700; margin: 26px 0 10px; }
         p { font-size: 1.05em; line-height: 1.68; color: var(--ink); margin-bottom: 16px; }
         ul, ol { margin: 0 0 16px 1.3em; }
         li { font-size: 1.05em; line-height: 1.6; margin-bottom: 10px; }
@@ -80,6 +81,7 @@
         .screens { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin: 22px 0; }
         .screens figure { margin: 0; }
         .callout { border: 1px solid #f0d9a8; background: #fdf6e7; border-radius: 12px; padding: 14px 18px; margin: 0 0 18px; font-size: 1em; line-height: 1.6; color: #6b5320; }
+        .fixed { border: 1px solid #b7e0c2; background: #eefaf1; border-radius: 12px; padding: 14px 18px; margin: 0 0 18px; font-size: 1em; line-height: 1.6; color: #245c37; }
         hr { border: none; border-top: 1px solid var(--line); margin: 32px 0; }
         .post-nav { margin-top: 28px; font-size: 0.95em; }
         .post-nav a { color: var(--accent-dark); text-decoration: none; }
@@ -89,27 +91,22 @@
 <body>
     <div class="container">
         <nav class="breadcrumbs" aria-label="Breadcrumb">
-            <a href="../index.html">Live Verify</a> &rsaquo; <a href="index.html">Blog</a> &rsaquo; Two OCR Failures
+            <a href="../index.html">Live Verify</a> &rsaquo; <a href="index.html">Blog</a> &rsaquo; Three OCR Failures
         </nav>
 
         <article>
-            <div class="post-date">August 8, 2026 &middot; updated August 9, 2026</div>
-            <h1>Two OCR Failures on One e-Ink Card — and Why Showing Your Working Beats Hiding It</h1>
+            <div class="post-date">August 9, 2026</div>
+            <h1>Three OCR Failures on One e-Ink Card — and Why Showing Your Working Beats Hiding It</h1>
 
-            <div class="callout"><strong>Update, August 9, 2026:</strong> the original post (Aug 8)
-            described bug two — two claim lines vanishing before the hash — but could not explain
-            <em>why</em>. A second run the next day, on a different surface, captured the raw OCR
-            evidence and I traced it to its root cause. The diagnosis in "<a href="#bug-two">Bug two</a>"
-            below is that follow-up work; the rest of the post is essentially as first written.</div>
+            <p>I made a cheap prop credential, pointed the Live Verify iOS app at it, and it failed to
+            verify — three separate times, for three genuinely different reasons. Two were bugs in our
+            own code, and they're now fixed. One is a lesson about how you print a credential in the
+            first place. None of them was solved by letting the app quietly "correct" what it read until
+            something passed — and that restraint is the whole point of this post.</p>
 
-            <p>Here is a small verification failure that says something large about how Live Verify is
-            built. It contains <em>two</em> separate bugs — a simple OCR misread, and a subtler one that
-            silently changed which credential got hashed — and the honest thing to do is show you both,
-            because the whole design of the app is what let me find and fix them.</p>
+            <h2>The card</h2>
 
-            <h2>The setup</h2>
-
-            <p>I printed a prop credential onto an e-ink card — a mock BBC role-access pass reading:</p>
+            <p>The prop is a mock BBC role-access pass:</p>
 
             <pre><code>Paul James Hammant
 16th Doctor Who
@@ -119,8 +116,8 @@ Wolf Studios access
 verify:bbc.co.uk/roles</code></pre>
 
             <figure>
-                <img src="images/eink-card.jpeg" alt="A small white e-ink card resting on lined paper, displaying the prop credential text with two lines highlighted.">
-                <figcaption>The prop credential on a ~$30 Vidabay e-ink panel. Low contrast, tinted
+                <img src="images/eink-card.jpeg" alt="The prop credential on a small white e-ink card resting on lined paper, with two lines highlighted.">
+                <figcaption>The prop, printed to a ~$30 Vidabay e-ink panel. Low contrast, tinted
                 background, matte finish — a genuinely harder thing to OCR than laser print.</figcaption>
             </figure>
 
@@ -128,108 +125,67 @@ verify:bbc.co.uk/roles</code></pre>
             a showcase prop — there is no such endpoint. The card is a demonstration object, not a real
             BBC credential.</div>
 
-            <p>The hardware is worth naming because it matters to the story: the display is a
-            <a href="https://vidabay.net">Vidabay</a> e-ink panel, <strong>about $30</strong>. A cheap,
-            low-power, reflective e-ink module is exactly the kind of surface a real-world "smart
-            credential" might use — and it is a genuinely <em>harder</em> thing to photograph and OCR
-            than crisp laser-printed paper. Low contrast, a slightly tinted background, and a matte
-            reflective finish are the normal texture of this medium.</p>
+            <p>The hardware matters to the story. The display is a
+            <a href="https://vidabay.net">Vidabay</a> e-ink panel, <strong>about $30</strong> — cheap,
+            low-power, reflective. That's exactly the kind of surface a real-world "smart credential"
+            might use, and it is a genuinely <em>harder</em> capture than crisp laser print: low
+            contrast, a tinted background, and a matte reflective finish that throws glare under a lamp.
+            ($30 is today's price and will fall; a re-writable credential card only makes mass-market
+            sense once the panel is nearly disposable, and that's the trajectory. This particular panel
+            is also small, and too slow to re-write over an NFC tap to feel smooth — neither a dead end,
+            but honest limits as of this card.)</p>
 
-            <p>Two things about this panel are worth saying plainly, because they shape where the idea
-            goes. First, <strong>$30 is today's price, and it will fall.</strong> E-ink has followed the
-            usual trajectory of a maturing display technology — steadily cheaper per unit as volumes
-            grow — and a credential-sized panel that costs $30 now is on a path to a few dollars. A
-            re-writable, low-power card you can update in the field only makes sense as a mass-market
-            credential once the panel is cheap enough to be almost disposable, and that is the
-            direction of travel.</p>
+            <h2>Why one wrong character is fatal</h2>
 
-            <p>Second, and honestly, <strong>this particular panel is both too small and too slow to
-            update over NFC.</strong> The display area barely fits the six lines of this prop; a real
-            credential wants more room for the claim plus a scannable code. And refreshing an e-ink
-            panel is slow — a full redraw is measured in hundreds of milliseconds to seconds, and
-            pushing new content over an NFC tap (which is itself bandwidth-limited and needs the card
-            held in the field for the duration) makes the "tap to re-issue this credential" gesture
-            feel sluggish today. Neither is a dead end — bigger, faster-refresh e-ink and better
-            NFC-to-display paths both exist — but as of this card, updating the display over NFC is not
-            yet a smooth experience, and it would be dishonest to imply otherwise.</p>
+            <p>Live Verify hashes the <em>exact</em> text of a claim and asks the issuer's domain whether
+            that hash is one it stands behind. SHA-256 is deliberately brittle: change a single byte of
+            input and the output is a completely different hash. That brittleness is the <em>point</em> —
+            it's what makes tampering detectable — but it cuts both ways. If the text the app feeds into
+            the hash differs from the registered text by even one character, the lookup fails. Not
+            "close." Failed.</p>
 
-            <p>I pointed the iOS app at it and got a red banner:</p>
+            <p>So every one of the three failures below comes down to the same thing: the bytes the app
+            hashed were not the bytes the issuer hashed. What differs is <em>why</em>.</p>
 
-            <blockquote>FAILED: Hash not found — by bbc.co.uk</blockquote>
-
-            <p>Here is why — twice over.</p>
-
-            <h2>Bug one (understood): Apple's OCR read "Wolf" as "wolf"</h2>
-
-            <p>Live Verify works by hashing the <em>exact</em> text of a claim and asking the issuer's
-            domain whether that hash is one it stands behind. SHA-256 is deliberately brittle: change a
-            single byte of input and the output is a completely different hash. That brittleness is the
-            <em>point</em> — it is what makes tampering detectable — but it cuts both ways. If the text
-            the app feeds into the hash differs from the registered text by even one character, the
-            lookup fails. Not "close." Failed.</p>
+            <h2>Failure one: Apple's OCR read "Wolf" as "wolf"</h2>
 
             <p>The app's <strong>Extracted</strong> tab shows exactly what Apple's Vision OCR pulled off
-            the image, and there it is on the fifth line — a lowercase <code>w</code>:</p>
-
-            <figure>
-                <img src="images/tab-extracted.png" alt="The app's Extracted tab showing raw OCR text. All six lines are present, but 'Wolf Studios access' has been read as 'wolf Studios access' with a lowercase w.">
-                <figcaption>Extracted tab: all six lines present, but OCR read "Wolf" as "wolf".</figcaption>
-            </figure>
-
-            <p>The card says <strong>"Wolf"</strong> (capital W); OCR read <strong>"wolf"</strong>.
-            <code>W</code> (0x57) and <code>w</code> (0x77) are different bytes, so the hash of the
-            lowercase version is nothing like the hash the capital-W original would produce.</p>
+            the image, character for character. In an early run, the fifth line came back with a
+            lowercase <code>w</code>: <code>wolf Studios access</code>. The card says
+            <strong>"Wolf"</strong> (capital W). <code>W</code> (0x57) and <code>w</code> (0x77) are
+            different bytes, so the hash of the lowercase version is nothing like the correct one.</p>
 
             <p>This isn't Apple being bad at OCR — Vision is excellent. It's that <strong>case is
             genuinely ambiguous at small sizes</strong>, especially for letters whose upper- and
             lowercase forms differ only in scale (c/C, o/O, s/S, w/W, x/X). Photograph those off a
             low-contrast e-ink panel at a slight angle and a recogniser will occasionally hedge toward
-            the more common lowercase form. "Wolf"/"wolf" is a textbook instance. This bug is real, it
-            is understood, and — crucially — it is <strong>recoverable by a human</strong>, as we'll see
-            below.</p>
+            the more common lowercase form. It's real, it's understood, and — crucially — it is
+            <strong>recoverable by a human</strong> in the editable Normalized pane. Fix the one letter,
+            re-verify, done.</p>
 
-            <h2 id="bug-two">Bug two (the interesting one): a claim line got dropped before the hash</h2>
+            <h2>Failure two: a claim line got dropped before the hash</h2>
 
-            <p style="font-size:0.92em;color:var(--ink-faint);margin-bottom:16px;"><strong>Diagnosed
-            August 9, 2026, from a second run.</strong> When I first wrote this (Aug 8) I could describe
-            the symptom below but not its cause; the three-part explanation that follows is the next
-            day's follow-up, using fresh OCR captures from a second attempt on a different surface.</p>
+            <p>This was the subtle one. In another run, the <strong>Normalized</strong> tab — the text
+            that actually gets hashed — showed only three lines: name, title, series. Both studio-access
+            lines were gone. Those are substantive claims (what this person is authorised to access) and
+            they should have been hashed. Their disappearance meant the app hashed a
+            <em>different, shorter</em> credential than the one on the display — and the failure that
+            actually matters is that kind, not a visible typo.</p>
 
-            <p>In the first run of this card (Aug 8), the <strong>Normalized</strong> tab — the text
-            that actually gets hashed — showed only three lines (name, title, series). Both
-            <em>"Roath Lock Studios access"</em> and <em>"Wolf Studios access"</em> were simply gone,
-            even though they were plainly there on the card. Those are substantive claims — what this
-            person is authorised to access — and they should have been hashed. Their disappearance,
-            not the lowercase <em>w</em>, is the failure that actually matters, because it means the app
-            hashed a <em>different, shorter</em> credential than the one on the display.</p>
+            <p>The cause was a three-part collision.</p>
 
-            <p>I could not explain it from that run alone. A second run the next day (Aug 9), on a
-            different surface, gave me the exact evidence — and the cause turned out to be a three-part
-            collision.</p>
+            <h3>The card word-wrapped a line I didn't want wrapped</h3>
 
-            <h3 style="font-size:1.12em;font-weight:700;margin:24px 0 10px;">Part 1 — the display word-wrapped a line I didn't want wrapped</h3>
+            <p>The panel firmware lays text out to fit a narrow display, and long lines wrap. Every wrap
+            is a fresh opportunity for what follows to be mis-ordered — the claim lines should have been
+            authored to stay atomic, and weren't.</p>
 
-            <p>Look at the card rendering. The line <code>Series 16 (2027)</code> is fine, but the card
-            firmware is laying text out to fit a narrow panel, and long lines wrap. This is the e-ink
-            panel's own doing, not the app's — and it is the first thing I'd change at the source: a
-            credential's claim lines should be authored to <em>not</em> wrap, because every wrap is a
-            new opportunity for what follows to be mis-ordered. I wanted these lines atomic; the display
-            didn't guarantee that.</p>
+            <h3>Apple's OCR scrambled the reading order</h3>
 
-            <h3 style="font-size:1.12em;font-weight:700;margin:24px 0 10px;">Part 2 — Apple's OCR scrambled the reading order</h3>
-
-            <p>Here is the raw <strong>Extracted</strong> tab from the second run. Read the last two
-            lines carefully:</p>
-
-            <figure>
-                <img src="images/tab-extracted-scrambled.jpeg" alt="Extracted tab from the second run. The lines are: Paul James Hammant / 16th Doctor Who / Series 16(2027) / Wolf Studios access / verify:bbc.co.uk/roles Roath Lock Studios access — with 'Roath Lock Studios access' appended AFTER the verify URL on the same line.">
-                <figcaption>The tell: <code>Roath Lock Studios access</code> has been OCR'd onto the end
-                of the <code>verify:</code> line — <em>after</em> the URL. Vision returned the text
-                regions out of reading order.</figcaption>
-            </figure>
-
-            <p>The card reads, top to bottom: name, title, series, <em>Roath Lock</em>, <em>Wolf</em>,
-            verify. But Apple's Vision framework returned them as:</p>
+            <p>Vision does not hand back "lines, top to bottom." It returns an <em>unordered</em> set of
+            recognised-text regions, each with a bounding box; turning those 2-D boxes into one ordered
+            string is the app's job, not Vision's. On the angled, low-contrast capture, Vision returned
+            "Roath Lock Studios access" <em>after</em> the <code>verify:</code> line, merged onto it:</p>
 
             <pre><code>Paul James Hammant
 16th Doctor Who
@@ -237,128 +193,137 @@ Series 16(2027)
 Wolf Studios access
 verify:bbc.co.uk/roles Roath Lock Studios access</code></pre>
 
-            <p>Two things went wrong: <em>Roath Lock</em> and <em>Wolf</em> swapped, and <em>Roath
-            Lock</em> got merged onto the <em>verify:</em> line. You can see why in the live camera view —
-            Vision's detected text-regions sit at slightly staggered vertical positions over the angled,
-            low-contrast panel, and the ordering it inferred from those boxes is wrong:</p>
+            <h3>The pipeline assumed everything after <code>verify:</code> was garbage</h3>
+
+            <p>Live Verify found the <code>verify:</code> line and hashed only the lines <em>before</em>
+            it — treating anything on or after that line as post-URL noise (dust, a stray mark), which is
+            usually reasonable. But with a real claim line stranded after the URL, that assumption
+            silently truncated the credential. The hash was computed over four lines, not five. It never
+            matched, and never could — the app was faithfully hashing a truncated claim, then showing a
+            red <em>"FAILED: Hash not found — by bbc.co.uk"</em> that blamed the issuer for our own
+            mistake.</p>
+
+            <div class="fixed"><strong>Fixed, and shipped.</strong> Line assembly now lives in one place
+            (<code>LineAssembler.swift</code>), shared by every path whose text gets hashed. Regions are
+            sorted top-to-bottom first and grouped against a running centre-line — with a
+            <strong>horizontal-overlap guard</strong>: two regions that overlap side-to-side can't be on
+            the same physical line, whatever their vertical positions suggest. That alone kills the
+            <code>verify:… Roath Lock…</code> merge. And post-<code>verify:</code> truncation is now a
+            <strong>loud, distinct error</strong> — if any text is stranded on or after the URL line, the
+            app hashes nothing, contacts no issuer, and says so plainly, instead of blaming the domain.
+            A headless test feeds the exact scramble and asserts the lines reassemble in order.</p></div>
+
+            <h2>Failure three: a superscript "th" became a quote mark</h2>
+
+            <p>With reading order fixed, the same card produced a fresh, cleaner failure — and it's a
+            good one, because it's nobody's <em>code</em> bug. Here's the capture and the result:</p>
 
             <figure>
-                <img src="images/camera-boxes.png" alt="The iOS app's live camera view pointed at the e-ink card on a terrazzo countertop, with Vision text-detection boxes overlaid at slightly staggered vertical positions, showing why reading order was mis-inferred.">
-                <figcaption>Live capture: the detected text-regions are staggered, and the reading
-                order Vision infers from them is not top-to-bottom.</figcaption>
+                <img src="images/run3-captured.png" alt="The app's Captured tab: the e-ink card sitting fairly small in the frame among desk cables under a lamp, with a glossy reflective wash across the panel.">
+                <figcaption>The capture: the card is small in the frame, among cables, with a glossy
+                reflective wash. Note the title line renders "16" with a small raised "th".</figcaption>
             </figure>
 
-            <h3 style="font-size:1.12em;font-weight:700;margin:24px 0 10px;">Part 3 — the pipeline assumed everything after <code>verify:</code> is garbage</h3>
+            <div class="screens">
+                <figure>
+                    <img src="images/run3-extracted.png" alt="Extracted tab: the six lines are now in correct top-to-bottom reading order, Roath Lock before Wolf before verify. But line two reads 16-double-quote Doctor Who.">
+                    <figcaption>Extracted — order is correct now. But line 2 reads <code>16"&nbsp;Doctor
+                    Who</code>.</figcaption>
+                </figure>
+                <figure>
+                    <img src="images/run3-normalized.png" alt="Normalized tab: all five content lines are kept and hashed, but line two still reads 16-double-quote Doctor Who, so the hash is wrong.">
+                    <figcaption>Normalized — all five claim lines kept and hashed. Reading order and
+                    truncation are fixed. It still fails, on that one glyph.</figcaption>
+                </figure>
+            </div>
 
-            <p>This is the part that turned an OCR wobble into a wrong hash. Live Verify finds the
-            <code>verify:</code> line and hashes <em>only the lines before it</em> — everything on and
-            after that line is treated as post-URL noise (dust, artifacts, a stray mark), which is
-            usually a reasonable assumption. The code comment even says so: <em>"everything below it is
-            likely OCR garbage."</em></p>
+            <p>The card says <strong>16<sup>th</sup> Doctor Who</strong> — with a typographic
+            <em>superscript</em> "th". Apple's OCR read that raised "th" as a <strong>double-quote
+            mark</strong>: <code>16" Doctor Who</code>. Different bytes, different hash, `FAILED` — but
+            this time reading order and truncation are both correct, so it's a clean, single-glyph miss.</p>
 
-            <p>But when OCR mis-orders the text and drops a real claim line <em>after</em> the
-            <code>verify:</code> line, that assumption quietly truncates the credential. I reproduced it
-            deterministically by feeding the exact scrambled text through the real pipeline:</p>
+            <p>Three things stacked to cause it, and they're worth separating:</p>
 
-            <pre><code>extractVerificationUrl(raw) -> { url: "verify:bbc.co.uk/roles", urlLineIndex: 4 }
-extractCertText(raw, 4)     -> lines 0..3 only:
-    Paul James Hammant
-    16th Doctor Who
-    Series 16(2027)
-    Wolf Studios access
-"Roath Lock Studios access"  -> DROPPED (it sat after the verify line)</code></pre>
+            <ul>
+                <li><strong>The card was authored with a superscript ordinal.</strong> A raised, shrunk
+                "th" is the smallest, highest-detail glyph on the whole card — the first thing to break.</li>
+                <li><strong>The card was small in the viewfinder.</strong> Compared with earlier runs it
+                sits well back among the cables, so that already-tiny superscript is only a handful of
+                pixels tall — right where a recogniser collapses detail into the nearest simple shape, a
+                <code>"</code>.</li>
+                <li><strong>Glossy, low-contrast e-ink under a lamp.</strong> Less edge definition to
+                work with in the first place.</li>
+            </ul>
 
-            <p>So the hash was computed over four lines, not five. It never matched, and never could —
-            the app was faithfully hashing a truncated credential. In the very first run, the scramble
-            pushed the <code>verify:</code> line even earlier, so <em>both</em> studio lines fell after
-            it and were dropped, which is exactly the three-line Normalized text I couldn't explain at
-            the time.</p>
-
-            <p>None of the three parts is individually catastrophic — a wrapped line, a reordering, a
-            reasonable-sounding "ignore trailing garbage" rule. Stacked, they silently changed what got
-            hashed. That is the real bug, and it is a design bug in the tool, not just an OCR misread:
-            <strong>the pipeline should never treat a content-shaped line after the URL as garbage
-            without at least flagging that it did so.</strong> The fix I favour is to make that
-            truncation <em>loud</em> — if there is claim-shaped text after the <code>verify:</code>
-            line, say "text found after the verify line — possible OCR mis-order, check Extracted"
-            rather than silently dropping it. (That is a change to the verification pipeline itself, so
-            it is being handled deliberately and separately from this post.)</p>
+            <p>The honest fix here is <em>not</em> in the app. It would be trivial — and wrong — to teach
+            the pipeline that a <code>"</code> might mean "th" and silently rewrite it. That's the exact
+            guess-dressed-as-a-read we refuse everywhere else: it would make this card pass and quietly
+            destroy the guarantee. The right fixes are upstream: <strong>author the card with a plain
+            "16th"</strong> rather than a superscript, and <strong>fill the frame</strong> when you
+            capture. And the safety net stays where it belongs — the editable Normalized pane, "Edit
+            above to fix OCR errors": change the <code>"</code> to <code>th</code>, re-verify, and it
+            goes green. (A "card too small — move closer" capture hint is a reasonable future
+            affordance; that's a prompt, not a silent correction, so it stays on the right side of the
+            line.)</p>
 
             <h2>Why the app fails loudly and shows its working</h2>
 
-            <p>The tempting "fix" for bug one is the wrong one. We could silently lowercase everything
-            before hashing, or fuzzy-match, or "try a few variants" until something verifies. Every one
-            of those would have made <em>this</em> card pass — and quietly destroyed the guarantee. A
-            system that massages input until it matches is no longer telling you a document is
-            authentic; it is telling you it found <em>something close enough</em>, which is exactly the
-            ambiguity Live Verify exists to remove. Silent correction turns a verifier into a rubber
-            stamp.</p>
+            <p>The tempting "fix" for all three would have been the same wrong move: lowercase everything,
+            fuzzy-match, map <code>"</code>→"th", "try a few variants" until something verifies. Every one
+            would have made <em>this</em> card pass — and turned the verifier into a rubber stamp. A
+            system that massages input until it matches is no longer telling you a document is authentic;
+            it's telling you it found <em>something close enough</em>, which is exactly the ambiguity Live
+            Verify exists to remove.</p>
 
             <p>So the app does the opposite. It <strong>fails loudly and shows every stage of its
             working</strong> in three tabs:</p>
 
             <ul>
-                <li><strong>Captured</strong> — the raw image (here, "No image captured", since this
-                run was fed text).</li>
-                <li><strong>Extracted</strong> — precisely what OCR produced, character for character
-                and <em>in the order OCR returned it</em>. This is where you can see the lowercase
-                "wolf" with your own eyes — and where the scrambled reading order, with "Roath Lock"
-                stranded after the verify line, is right there to be spotted.</li>
-                <li><strong>Normalized</strong> — the text after normalization, which is the actual
-                input to the hash. It is <strong>editable</strong>, with a <strong>Re-verify</strong>
-                button and the note <em>"Edit above to fix OCR errors."</em></li>
+                <li><strong>Captured</strong> — the raw image, so you can see the card was small, glossy,
+                and angled.</li>
+                <li><strong>Extracted</strong> — precisely what OCR produced, character for character and
+                in the order it returned them. This is where you see the lowercase "wolf", the scrambled
+                order, and the <code>16"</code> with your own eyes.</li>
+                <li><strong>Normalized</strong> — the exact text about to be hashed, <strong>editable</strong>,
+                with a <strong>Re-verify</strong> button and the note "Edit above to fix OCR errors."</li>
             </ul>
 
-            <p>This transparency is what let me <em>find and then diagnose both bugs at all.</em> Bug
-            one is visible because Extracted shows the exact characters. Bug two was findable because
-            you can hold Extracted and Normalized side by side and see a claim present in one and absent
-            in the other — and it was ultimately <em>solvable</em> because Extracted preserves the raw
-            OCR order, which is what revealed "Roath Lock" stranded after the verify line. A system that
-            only showed you a green or red badge would have hidden both, and I would never have found
-            the truncation. <strong>The failure is legible, and legibility is the feature.</strong></p>
+            <p>That transparency is the reason any of these were findable — and, for failure two,
+            <em>diagnosable</em>: holding Extracted and Normalized side by side is what exposed the
+            stranded line and, later, the scrambled reading order that caused it. A tool that showed only
+            a green or red badge would have hidden all three. <strong>The failure is legible, and
+            legibility is the feature.</strong></p>
 
-            <p>For bug one, the editable Normalized pane is the whole philosophy in one control: the app
-            is not asking you to trust it, it is showing you the exact bytes it is about to hash, and
-            letting you fix the one letter and re-verify. The human stays in the loop, and the loop is
-            <em>visible</em>.</p>
-
-            <p>Bug two is a reminder that legibility also surfaces defects in the tool itself — and
-            that's good. A transparent pipeline is one you can debug in the field; an opaque one hides
-            its own bugs behind a confident result.</p>
-
-            <h2>The lessons that generalise</h2>
+            <h2>The lessons</h2>
 
             <ol>
                 <li><strong>The hash is unforgiving on purpose, so the input pipeline must be
-                inspectable.</strong> You cannot make SHA-256 tolerant without making it useless. The
-                only honest place to absorb OCR imperfection is <em>before</em> the hash, in the open,
-                with a human able to see and correct what the machine read.</li>
-                <li><strong>"It failed" is a feature when the failure is legible.</strong> A red banner
-                with a visible cause is far more trustworthy than a green banner you can't audit. The
-                worst outcome would be a system that <em>passed</em> this card by guessing.</li>
-                <li><strong>Transparency catches the tool's own bugs, not just the document's.</strong>
-                The truncation defect was not just findable but <em>diagnosable</em> because the app
-                shows intermediate state — and because Extracted preserves raw OCR order, which is what
-                exposed the scramble. That's an argument for building every verification tool this way.</li>
-                <li><strong>Never silently discard content — flag it.</strong> "Ignore everything after
-                the verify line" is a fine heuristic right up until OCR strands a real claim there.
-                Truncation that changes the hash must be <em>loud</em>, never quiet.</li>
-                <li><strong>Author claim lines not to wrap, and don't trust reading order.</strong> The
-                card's own word-wrapping created the seam the scramble exploited. Claims should be laid
-                out to stay atomic, and the pipeline should treat OCR line-order as a hint, not gospel.</li>
-                <li><strong>Cheap hardware is a first-class test case, not an edge case.</strong> A ~$30
-                <a href="https://vidabay.net">Vidabay</a> e-ink panel is representative of where
-                credentials are actually heading. If the pipeline only works on pristine laser print, it
-                doesn't work.</li>
+                inspectable.</strong> You can't make SHA-256 tolerant without making it useless. The only
+                honest place to absorb OCR imperfection is <em>before</em> the hash, in the open, with a
+                human able to see and correct what the machine read.</li>
+                <li><strong>Never silently discard or "correct" content — surface it.</strong> "Ignore
+                everything after the verify line" was fine until OCR stranded a real claim there; that
+                truncation is now loud. And a <code>"</code> is never quietly rewritten to "th".</li>
+                <li><strong>Don't trust OCR reading order.</strong> Vision returns unordered regions;
+                assembling them is the app's job, and a horizontal-overlap guard beats trusting vertical
+                positions on an angled capture.</li>
+                <li><strong>Author credentials to survive OCR.</strong> Avoid glyphs that collapse under
+                pixels — superscript ordinals, fancy typography — and lay out claim lines so they don't
+                wrap. The smallest, fanciest glyph breaks first.</li>
+                <li><strong>Fill the frame.</strong> A card small in the viewfinder starves the
+                recogniser of the very detail (a superscript, a case distinction) that decides the
+                hash.</li>
+                <li><strong>Cheap hardware is a first-class test case.</strong> A ~$30
+                <a href="https://vidabay.net">Vidabay</a> e-ink panel is where credentials are heading. A
+                pipeline that only works on pristine laser print doesn't work.</li>
             </ol>
 
-            <p>The failure in those screenshots is not an embarrassment to bury. One half of it is the
-            system behaving exactly as designed — brittle where it must be, transparent everywhere, and
-            honest that it cannot always read an ambiguous capital <em>W</em> off an angled e-ink card
-            in one shot. The other half is a real design bug in the tool — a reasonable-sounding
-            "ignore trailing garbage" rule that, stacked with a wrapped line and a scrambled reading
-            order, silently hashed the wrong credential. The same transparency that made bug one legible
-            is what let me chase bug two all the way to its cause. Both belong in the open.</p>
+            <p>One prop card, three failures, three different classes: a case misread, a reading-order
+            scramble that silently truncated the claim, and a superscript read as punctuation. Two were
+            our bugs and are fixed in the shipped code. One is a reminder that how you <em>print</em> and
+            <em>capture</em> a credential is part of the system too. And at no point did the app guess its
+            way to a false pass — it showed exactly what it read, why it stopped, and handed back a
+            one-character fix. That's not a workaround for the design. That <em>is</em> the design.</p>
 
             <hr>
             <div class="post-nav"><a href="index.html">&larr; All posts</a></div>
