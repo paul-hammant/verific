@@ -39,7 +39,11 @@ struct ContentView: View {
     @State private var isScanning = false
     @State private var scannedText = ""
     @State private var capturedImage: UIImage?
+    @State private var capturedImageError: String?
     @State private var errorMessage: String?
+
+    /// Lets Verify grab the live camera frame - see ScannerCaptureHandle
+    @State private var captureHandle = ScannerCaptureHandle()
 
     var body: some View {
         ZStack {
@@ -55,6 +59,7 @@ struct ContentView: View {
                 ResultView(
                     result: result,
                     capturedImage: capturedImage,
+                    capturedImageError: capturedImageError,
                     onReVerify: reVerify,
                     onVerifyAnother: resetToScanning
                 )
@@ -78,7 +83,12 @@ struct ContentView: View {
                 unavailableView
             } else {
                 // DataScanner camera view
-                DataScanner(isScanning: $isScanning, scannedText: $scannedText, capturedImage: $capturedImage)
+                DataScanner(
+                    isScanning: $isScanning,
+                    scannedText: $scannedText,
+                    capturedImage: $capturedImage,
+                    captureHandle: captureHandle
+                )
                     .ignoresSafeArea()
                     .overlay(alignment: .top) {
                         Text("Build: \(buildTimestamp)")
@@ -94,7 +104,12 @@ struct ContentView: View {
                         controlsOverlay
                     }
                     .task {
-                        isScanning = true
+                        // Only while actually scanning: this branch is also rendered
+                        // under the processing overlay, and restarting the scan there
+                        // interferes with an in-flight capture.
+                        if case .scanning = appState {
+                            isScanning = true
+                        }
                     }
             }
         }
@@ -230,10 +245,23 @@ struct ContentView: View {
         guard canVerify else { return }
 
         Log.d("Content", "Verifying scanned text (\(scannedText.count) chars)")
-        isScanning = false
-        appState = .processing
 
         Task {
+            // Record what the camera saw at the moment Verify was pressed. This runs
+            // BEFORE any state change on purpose: moving to .processing re-renders the
+            // scanner branch, which restarts scanning and strands an in-flight
+            // capturePhoto() continuation - it then never returns and never throws, and
+            // the spinner hangs forever (observed on device, 9 Aug 2026).
+            //
+            // This is evidence for the Captured tab, not an input to verification - the
+            // text was already selected by tapping.
+            await captureVerifyMomentImage()
+
+            await MainActor.run {
+                isScanning = false
+                appState = .processing
+            }
+
             do {
                 let result = try await pipeline.verifyText(scannedText)
                 await MainActor.run {
@@ -252,6 +280,32 @@ struct ContentView: View {
                     )
                     appState = .result(errorResult)
                 }
+            }
+        }
+    }
+
+    /// Capture the full live frame for the Captured tab.
+    /// Failure is recorded and shown in the tab rather than passed over in silence -
+    /// a blank tab with no explanation is what sent us looking for this in the first place.
+    private func captureVerifyMomentImage() async {
+        guard let capturePhoto = captureHandle.capturePhoto else {
+            await MainActor.run {
+                capturedImageError = "Scanner was not ready to capture the frame"
+            }
+            return
+        }
+
+        do {
+            let image = try await capturePhoto()
+            Log.d("Content", "Captured verify-moment frame: \(image.size)")
+            await MainActor.run {
+                capturedImage = image
+                capturedImageError = nil
+            }
+        } catch {
+            Log.d("Content", "Verify-moment capture failed: \(error.localizedDescription)")
+            await MainActor.run {
+                capturedImageError = "Frame capture failed: \(error.localizedDescription)"
             }
         }
     }
@@ -284,6 +338,7 @@ struct ContentView: View {
     private func resetToScanning() {
         scannedText = ""
         capturedImage = nil
+        capturedImageError = nil
         appState = .scanning
         isScanning = true
     }

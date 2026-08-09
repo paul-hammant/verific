@@ -104,7 +104,9 @@ final class CrossPlatformImageHashTest: XCTestCase {
             return ""
         }
 
-        return observations.compactMap { $0.topCandidates(1).first?.string }.joined(separator: "\n")
+        // Same assembly the app's hashed paths use - Vision gives no reading-order guarantee
+        let regions = observations.compactMap { TextObservation($0) }
+        return LineAssembler.assembleLines(from: regions).joined(separator: "\n")
     }
 
     func testImageFixtures() throws {

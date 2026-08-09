@@ -133,6 +133,24 @@ class JSBridge {
         return result?.toString()
     }
 
+    /// Find content stranded on or after the verify: line
+    /// Such content would be silently dropped from the hash by extractCertText
+    /// - Parameters:
+    ///   - text: Raw OCR text
+    ///   - urlLineIndex: Index of the line containing the verify: URL
+    /// - Returns: The stranded content, or nil if there is none
+    func findStrandedText(in text: String, urlLineIndex: Int) -> String? {
+        let escapedText = text.jsEscaped
+        let script = "findStrandedText('\(escapedText)', \(urlLineIndex))"
+        let result = context.evaluateScript(script)
+
+        guard let result = result, !result.isNull, !result.isUndefined else {
+            return nil
+        }
+        let stranded = result.toString()
+        return (stranded?.isEmpty ?? true) ? nil : stranded
+    }
+
     /// Build full verification URL from base URL and hash
     /// Converts verify: or vfy: to https:// and appends hash (with optional suffix from meta)
     /// - Parameters:

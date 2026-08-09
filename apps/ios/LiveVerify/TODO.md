@@ -12,80 +12,73 @@ Vision's. That assembly step is where the bug lives.
 
 ---
 
-## 1. Fix the line-grouping algorithm (the root cause of the scramble)
+## 1. Fix the line-grouping algorithm (the root cause of the scramble) — DONE
 
-**File:** `LiveVerify/Camera/DataScanner.swift`, `recognizeText(in:)`, the "Group observations into
-lines by Y overlap" block (~lines 256–271).
+Assembly now lives in one place: `LiveVerify/Pipeline/LineAssembler.swift`.
 
-**Defect:** each observation's `centerY` is compared against the group's **first-added member**
-(`lineGroups[i][0]`), with a `0.5 × height` threshold. On an angled / low-contrast capture where two
-physically-separate lines have near-equal `centerY`, they get merged into one group and joined with a
-space — e.g. producing `verify:bbc.co.uk/roles Roath Lock Studios access` on a single line. That single
-mis-grouping is what strands a real claim line after the `verify:` URL.
+What changed:
+- Observations are **sorted top-to-bottom first**, then swept into groups. A region can only join the
+  group currently being built, so it can never chain-merge into a line further up the page, and the
+  output no longer depends on the order Vision happened to return.
+- Grouping compares against the group's **running mean centerY**, not its first-added member, so a
+  line that drifts across a slightly rotated capture keeps grouping.
+- The tolerance is a fraction (0.6) of the **median observation height for the whole capture**, not
+  `max(heightA, heightB) * 0.5`. That was the actual defect: one tall, slanted bounding box widened
+  the tolerance enough to swallow a physically separate line.
+- Added a **horizontal-overlap guard** — regions that overlap in X by more than 20% of the narrower
+  box cannot be on the same physical line, whatever their Y centres say. Text side by side on one
+  line does not overlap; stacked lines do. This alone kills the observed `verify:… Roath Lock…` merge.
 
-**Fix direction (decide on-device with real observations):**
-- Group by comparison against the group's **running mean centerY** (centroid), not against the first
-  member, so a drifting/staggered column doesn't chain-merge.
-- Reconsider the threshold: `0.5 × height` may be too loose for tight line spacing. Consider using the
-  *median* observation height for the threshold, or a fraction of the *gap* between sorted y-centers.
-- Sort groups top-to-bottom and within-group left-to-right (already done at ~272–276) — keep that, it's
-  correct; the bug is upstream in grouping, not sorting.
+**Correction to the original note:** the second copy of this logic was *not* in `CameraService.swift`
+— that file's `LiveTextDetector` only produces bounding boxes for the live viewfinder overlay and its
+strings are never assembled or hashed. The real second copy was `Pipeline/TextRecognizer.swift` (the
+shutter-capture path, whose text *is* hashed), which did no grouping at all: it sorted observations by
+`boundingBox.origin.y` and emitted each as its own line. Both hashed paths now call `LineAssembler`.
 
-**Note:** there are **two** copies of this OCR-to-lines logic —
-`LiveVerify/Camera/DataScanner.swift` (the tapped-region path, `.accurate` + language correction) and
-`LiveVerify/Camera/CameraService.swift` (the live path, `.fast`, no correction). Check whether
-`CameraService` needs the same grouping and fix both, or factor the assembly into one shared helper so
-they can't drift.
+Also in `LineAssembler`: re-joining a `verify:` URL that OCR split across several regions on one line.
+It now closes up a space only at a URL join (the URL so far ends with URL punctuation, or the next
+fragment starts with it) instead of stripping every space on the line — indiscriminate stripping would
+weld a stranded claim onto the URL and hide the very mis-order item 3 exists to surface.
 
-## 2. Add a regression test with synthetic scrambled observations
+## 2. Add a regression test with synthetic scrambled observations — DONE
 
-**File:** new case in `LiveVerifyTests/`.
+`LiveVerifyTests/LineAssemblerTests.swift` — no camera, no Vision, runs headless in the Simulator via
+`xcodebuild test`. Covers: the scramble reproduction (Roath Lock alone on its own line and *before*
+the verify line), order-independence, the horizontal-overlap guard, tight line spacing, a rotated
+column, clean input unchanged, and the URL re-joining rules.
 
-Extract the observation-grouping logic into a testable function (input: an array of
-`(text, centerX, centerY, height)`; output: `[String]` lines) and test it **without a camera** — this
-runs headless in the Simulator via `xcodebuild test` on the Mac mini.
+Note the y-values in the fixture are a *synthetic* reproduction of the observed output, not the real
+run's measurements — the blog post preserves the OCR text, not the bounding boxes. They are chosen so
+the old algorithm produces exactly the documented scramble and the new one does not.
 
-Cases to assert:
-- The known scramble input (name / title / series / Wolf / verify / Roath-Lock with the staggered
-  y-values from the real run) assembles into the correct 6 lines in reading order, with "Roath Lock"
-  on its **own** line and *before* the verify line.
-- Tight line spacing (small vertical gaps) does not chain-merge adjacent lines.
-- A slightly rotated column (monotonic y-drift across a line) still groups correctly.
-- Normal, clean top-to-bottom input is unchanged.
+## 3. Make post-`verify:` truncation LOUD — DONE
 
-## 3. Make post-`verify:` truncation LOUD (belt-and-braces)
+Decided with the product owner: **block, don't warn**. Text on or after the `verify:` line is an error
+state — the human pressed Verify with the selection bounded so that `verify:` was the lowest line, so
+nothing legitimate lives after it. Strict by design: **any** non-whitespace counts; no dust heuristic.
 
-Even with grouping fixed, defend against any future mis-order: the pipeline currently hashes only the
-lines **before** the `verify:` line (`extractCertText`) and silently discards anything on/after it as
-"OCR garbage".
+- `findStrandedText(rawText, urlLineIndex)` in `public/app-logic.js` (canonical, synced) finds content
+  before *or* after the URL on the verify line, and any non-empty line below it.
+- `VerificationOutcome.textAfterVerifyLine(String)` — nothing is hashed and no issuer is contacted.
+  Previously this surfaced as a red "FAILED: Hash not found — by bbc.co.uk", blaming the issuer for
+  our own truncation.
+- The Normalized tab says plainly that nothing was hashed, shows the stranded content, and pre-fills
+  the editor with every content line so the human can re-order and Re-verify.
 
-**Change:** if there is **claim-shaped text after the `verify:` URL on its line, or content lines below
-the verify line**, do not silently drop it — surface a distinct, visible state, e.g. *"Text found
-after the verify line — possible OCR mis-order. Check the Extracted tab."* This turns a silent
-wrong-hash into an honest, legible failure (consistent with the project's fail-loudly rule — no
-retry/fallback, just surface the condition).
+## 4. Reconcile the three inconsistent Vision configurations — DONE
 
-Relevant logic is in the shared JS (`extractVerificationUrl` / `extractCertText` in
-`public/app-logic.js`, bundled at `LiveVerify/Resources/JS/app-logic.js`) — coordinate any JS change
-through `npm run sync-shared` so the extension and apps stay byte-identical. **Raise the exact
-behaviour as a question before implementing** — this changes what the pipeline accepts/rejects.
-
-## 4. Reconcile the three inconsistent Vision configurations
-
-The three `VNRecognizeTextRequest` sites use different settings, so *which* errors appear depends on
-which path ran:
+Decided with the product owner: **no spell-fixing**. The hashed paths are now explicitly `.accurate`
+with `usesLanguageCorrection = false`:
 
 | File | recognitionLevel | usesLanguageCorrection |
 |---|---|---|
-| `Camera/CameraService.swift` (~228–231) | `.fast` | `false` |
-| `Camera/DataScanner.swift` (~300–301) | `.accurate` | `true` |
-| `Pipeline/TextRecognizer.swift` (~106–116) | `.fast`/`.accurate` from meta hints | default |
+| `Pipeline/TextRecognizer.swift` (hashed) | `.accurate`, or `.fast` only if an issuer asks via `ocrHints` | `false`, explicit |
+| `Camera/DataScanner.swift` (hashed) | `.accurate` | `false`, explicit |
+| `Camera/CameraService.swift` (live overlay only, never hashed) | `.fast` | `false` |
 
-Decide the intended config for the *verification* path (the one whose text gets hashed) and make it
-deliberate and documented. The `.fast` + no-correction path is more prone to the `W`→`w` style misread;
-if the hashed path should be `.accurate`, set it explicitly rather than inheriting a hint default.
-(This is about *consistency and intent*, not adding correction that masks errors — the editable
-Normalized pane remains the human fix for genuine misreads.)
+Dictionary correction silently rewrites proper nouns and identifiers into plausible words, which
+changes the hash — a guess dressed as a read. The editable Normalized pane remains the human fix for
+genuine misreads.
 
 ## 5. (Optional) Evaluate the newer Swift Vision `RecognizeTextRequest`
 
@@ -105,5 +98,5 @@ model); note the min-iOS-version cost. Not a priority.
   Engine**, so its Vision output may differ from the iPhone's; a static saved image may OCR cleanly and
   *not* reproduce the live-capture scramble. Treat "can't reproduce on the mini" as *not* evidence the
   bug is gone — item 2's synthetic test is the reliable proof.
-- Keep the iPhone only for occasional capture-realism spot-checks; the two real runs already in the
-  blog post are sufficient evidence the bug is real.
+- Still worth doing on a real device: confirm the tolerance constants in `LineAssembler` hold up on a
+  genuinely angled e-ink capture. They are two named constants at the top of the file.

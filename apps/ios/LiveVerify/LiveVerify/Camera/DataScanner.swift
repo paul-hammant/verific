@@ -19,6 +19,29 @@ import UIKit
 import VisionKit
 import Vision
 
+/// Errors from the scanner capture handle
+enum ScannerCaptureError: Error, LocalizedError {
+    case scannerUnavailable
+
+    var errorDescription: String? {
+        switch self {
+        case .scannerUnavailable:
+            return "Scanner is no longer available"
+        }
+    }
+}
+
+/// Lets the owning view capture the live frame on demand - used to record what the camera
+/// was seeing at the moment Verify was pressed.
+///
+/// A UIKit snapshot of the window will not do: an AVCaptureVideoPreviewLayer is composited
+/// outside the app's own layer tree, so rendering the hierarchy returns black where the
+/// camera is. The frame has to come from the capture session itself.
+final class ScannerCaptureHandle {
+    /// Set by the scanner's coordinator; nil until the scanner exists
+    var capturePhoto: (() async throws -> UIImage)?
+}
+
 /// DataScannerViewController wrapper for SwiftUI
 /// Uses DataScanner for live UI, then VNRecognizeTextRequest for per-line text extraction
 struct DataScanner: UIViewControllerRepresentable {
@@ -26,6 +49,7 @@ struct DataScanner: UIViewControllerRepresentable {
     @Binding var isScanning: Bool
     @Binding var scannedText: String
     @Binding var capturedImage: UIImage?
+    let captureHandle: ScannerCaptureHandle
 
     func makeUIViewController(context: Context) -> DataScannerViewController {
         let controller = DataScannerViewController(
@@ -38,6 +62,11 @@ struct DataScanner: UIViewControllerRepresentable {
 
         controller.delegate = context.coordinator
         context.coordinator.scanner = controller
+
+        captureHandle.capturePhoto = { [weak controller] in
+            guard let controller else { throw ScannerCaptureError.scannerUnavailable }
+            return try await controller.capturePhoto()
+        }
 
         return controller
     }
@@ -225,80 +254,30 @@ struct DataScanner: UIViewControllerRepresentable {
                         return
                     }
 
-                    Log.d("DataScanner", "VNRecognizeTextRequest found \(observations.count) lines")
+                    Log.d("DataScanner", "VNRecognizeTextRequest found \(observations.count) regions")
 
-                    // Extract observations with bounding box info
-                    struct TextObs {
-                        let text: String
-                        let centerX: CGFloat
-                        let centerY: CGFloat
-                        let height: CGFloat
+                    let regions = observations.compactMap { TextObservation($0) }
+                    for region in regions {
+                        Log.d("DataScanner", "  Obs: '\(region.text.prefix(30))' x=\(region.centerX) y=\(region.centerY) w=\(region.width) h=\(region.height)")
                     }
 
-                    var obs: [TextObs] = []
-                    for observation in observations {
-                        if let candidate = observation.topCandidates(1).first {
-                            let box = observation.boundingBox
-                            let o = TextObs(
-                                text: candidate.string,
-                                centerX: box.midX,
-                                centerY: box.midY,
-                                height: box.height
-                            )
-                            Log.d("DataScanner", "  Obs: '\(o.text.prefix(30))' x=\(o.centerX) y=\(o.centerY) h=\(o.height)")
-                            obs.append(o)
-                        }
-                    }
-
-                    // Group observations into lines by Y overlap.
-                    // Two observations are on the same line if their Y centers differ
-                    // by less than half the average height of their bounding boxes.
-                    var lineGroups: [[TextObs]] = []
-                    for o in obs {
-                        var merged = false
-                        for i in 0..<lineGroups.count {
-                            let representative = lineGroups[i][0]
-                            let threshold = max(o.height, representative.height) * 0.5
-                            if abs(o.centerY - representative.centerY) < threshold {
-                                lineGroups[i].append(o)
-                                merged = true
-                                break
-                            }
-                        }
-                        if !merged {
-                            lineGroups.append([o])
-                        }
-                    }
-
-                    // Sort groups top-to-bottom (descending Y), then sort within each group left-to-right
-                    lineGroups.sort { $0[0].centerY > $1[0].centerY }
-                    for i in 0..<lineGroups.count {
-                        lineGroups[i].sort { $0.centerX < $1.centerX }
-                    }
-
-                    // Join observations within each line group with spaces, then join lines with newlines
-                    var resultLines = lineGroups.map { group in
-                        group.map { $0.text }.joined(separator: " ")
-                    }
-
-                    // Fix verify:/vfy: lines - remove ALL spaces from the URL portion
-                    for i in 0..<resultLines.count {
-                        let line = resultLines[i]
-                        let lower = line.lowercased()
-                        if lower.hasPrefix("verify:") || lower.hasPrefix("vfy:") ||
-                           lower.hasPrefix("verify :") || lower.hasPrefix("vfy :") {
-                            // Remove all spaces from the entire line (URLs don't have spaces)
-                            resultLines[i] = line.replacingOccurrences(of: " ", with: "")
-                        }
-                    }
+                    // Shared assembly - see Pipeline/LineAssembler.swift
+                    let resultLines = LineAssembler.rejoinVerifyURLs(
+                        in: LineAssembler.assembleLines(from: regions)
+                    )
 
                     let result = resultLines.joined(separator: "\n")
 
                     continuation.resume(returning: result)
                 }
 
+                // This text gets hashed, so the config is deliberate and matches
+                // Pipeline/TextRecognizer.swift: .accurate for fewer misreads, and language
+                // correction OFF because dictionary correction silently rewrites proper nouns
+                // and identifiers into plausible words - a guess that changes the hash. The
+                // editable Normalized pane is the human fix for genuine misreads.
                 request.recognitionLevel = .accurate
-                request.usesLanguageCorrection = true
+                request.usesLanguageCorrection = false
 
                 let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
                 do {

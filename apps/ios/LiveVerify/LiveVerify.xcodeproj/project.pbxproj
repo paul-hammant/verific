@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		0BAA406F1FF78E6502A8937B /* OcrCleanup.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA4326C1C42CECD58907FCD /* OcrCleanup.swift */; };
+		0BAA40701FF78E6502A8937C /* LineAssembler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA4326D1C42CECD58907FCE /* LineAssembler.swift */; };
+		B06F5DA2239A80903EFC468A /* LineAssemblerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A968EFF9277A4E87212C1DEE /* LineAssemblerTests.swift */; };
 		A1000001 /* LiveVerifyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001 /* LiveVerifyApp.swift */; };
 		A1000002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000002 /* ContentView.swift */; };
 		A1000003 /* CameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000003 /* CameraService.swift */; };
@@ -21,6 +23,7 @@
 		A100000B /* VerificationOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000B /* VerificationOverlay.swift */; };
 		A100000C /* normalize.js in Resources */ = {isa = PBXBuildFile; fileRef = A200000C /* normalize.js */; };
 		A100000D /* app-logic.js in Resources */ = {isa = PBXBuildFile; fileRef = A200000D /* app-logic.js */; };
+		A100000E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A200001E /* Assets.xcassets */; };
 		A100000F /* ContourDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = A200000F /* ContourDetector.swift */; };
 		A1000010 /* LiveVerifyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000010 /* LiveVerifyTests.swift */; };
 		A1000020 /* LiveVerifyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000020 /* LiveVerifyUITests.swift */; };
@@ -64,11 +67,14 @@
 		A2000010 /* LiveVerifyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveVerifyTests.swift; sourceTree = "<group>"; };
 		A2000020 /* LiveVerifyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveVerifyUITests.swift; sourceTree = "<group>"; };
 		A2000021 /* DataScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataScanner.swift; sourceTree = "<group>"; };
+		A200001E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A6000001 /* LiveVerify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiveVerify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6000002 /* LiveVerifyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LiveVerifyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6000003 /* LiveVerifyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LiveVerifyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A968EFF8277A4E87212C1DED /* CrossPlatformImageHashTest.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = CrossPlatformImageHashTest.swift; sourceTree = "<group>"; };
 		BFA4326C1C42CECD58907FCD /* OcrCleanup.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OcrCleanup.swift; sourceTree = "<group>"; };
+		BFA4326D1C42CECD58907FCE /* LineAssembler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LineAssembler.swift; sourceTree = "<group>"; };
+		A968EFF9277A4E87212C1DEE /* LineAssemblerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = LineAssemblerTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +120,7 @@
 				A8000005 /* Pipeline */,
 				A8000006 /* Views */,
 				A8000007 /* Resources */,
+				A200001E /* Assets.xcassets */,
 			);
 			path = LiveVerify;
 			sourceTree = "<group>";
@@ -147,6 +154,7 @@
 				A2000008 /* VerificationClient.swift */,
 				A2000009 /* VerificationPipeline.swift */,
 				BFA4326C1C42CECD58907FCD /* OcrCleanup.swift */,
+				BFA4326D1C42CECD58907FCE /* LineAssembler.swift */,
 			);
 			path = Pipeline;
 			sourceTree = "<group>";
@@ -174,6 +182,7 @@
 			children = (
 				A2000010 /* LiveVerifyTests.swift */,
 				A968EFF8277A4E87212C1DED /* CrossPlatformImageHashTest.swift */,
+				A968EFF9277A4E87212C1DEE /* LineAssemblerTests.swift */,
 			);
 			path = LiveVerifyTests;
 			sourceTree = "<group>";
@@ -311,6 +320,7 @@
 			files = (
 				A100000C /* normalize.js in Resources */,
 				A100000D /* app-logic.js in Resources */,
+				A100000E /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -349,6 +359,7 @@
 				A100000A /* ResultView.swift in Sources */,
 				A100000B /* VerificationOverlay.swift in Sources */,
 				0BAA406F1FF78E6502A8937B /* OcrCleanup.swift in Sources */,
+				0BAA40701FF78E6502A8937C /* LineAssembler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -358,6 +369,7 @@
 			files = (
 				A1000010 /* LiveVerifyTests.swift in Sources */,
 				B06F5DA1239A80903EFC4689 /* CrossPlatformImageHashTest.swift in Sources */,
+				B06F5DA2239A80903EFC468A /* LineAssemblerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

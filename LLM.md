@@ -22,6 +22,7 @@ These capabilities are designed for building into camera apps, browsers (mobile/
 - `Pipeline/VerificationPipeline.swift` — Orchestrates OCR → normalize → hash → verify
 - `Pipeline/VerificationClient.swift` — HTTP verification against issuer endpoints
 - `Pipeline/TextRecognizer.swift`, `Pipeline/ContourDetector.swift`, `Pipeline/OcrCleanup.swift` — OCR and registration-mark detection
+- `Pipeline/LineAssembler.swift` — turns unordered Vision text observations into reading-order lines. Vision gives no reading-order guarantee, so every OCR path that feeds the hash uses this one implementation (see `apps/ios/LiveVerify/TODO.md` for the scramble bug it fixes)
 - `Camera/CameraService.swift`, `Camera/CameraView.swift`, `Camera/DataScanner.swift` — Camera capture
 - `App/`, `Views/` — SwiftUI app shell and result/overlay views
 - Tests in `LiveVerifyTests/` — Unit tests incl. cross-platform hash fixtures
@@ -102,7 +103,7 @@ live-verify/
 │   │   │   ├── Camera/              # CameraService, CameraView, DataScanner
 │   │   │   ├── Pipeline/            # JSBridge, SHA256Hasher, VerificationPipeline,
 │   │   │   │                        #   VerificationClient, TextRecognizer,
-│   │   │   │                        #   ContourDetector, OcrCleanup
+│   │   │   │                        #   ContourDetector, OcrCleanup, LineAssembler
 │   │   │   ├── Resources/JS/        # Bundled normalize.js (canonical copy)
 │   │   │   └── Views/               # Result and overlay views
 │   │   └── LiveVerifyTests/         # Unit tests

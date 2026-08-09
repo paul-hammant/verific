@@ -44,6 +44,7 @@ const {
     extractVerificationUrl,
     trimToFirstLinePattern,
     extractCertText,
+    findStrandedText,
     hashMatchesUrl,
     buildVerificationUrl,
     extractDomain,
@@ -351,6 +352,91 @@ verify:Example.COM/VeRiFy/PaTh`;
                 const result = extractVerificationUrl(rawText);
                 expect(result.url).toBe('verify:Example.COM/VeRiFy/PaTh');
             });
+        });
+    });
+
+    describe('findStrandedText', () => {
+        it('should find a claim OCR stranded after the URL on the verify line', () => {
+            // The real scramble from the mock BBC e-ink card:
+            // public/blog/two-ocr-failures-on-one-eink-card.html
+            const rawText = `Paul James Hammant
+16th Doctor Who
+Series 16(2027)
+Wolf Studios access
+verify:bbc.co.uk/roles Roath Lock Studios access`;
+
+            const { urlLineIndex } = extractVerificationUrl(rawText);
+            expect(urlLineIndex).toBe(4);
+            expect(findStrandedText(rawText, urlLineIndex)).toBe('Roath Lock Studios access');
+        });
+
+        it('should find a claim OCR stranded before the URL on the verify line', () => {
+            const rawText = `Paul James Hammant
+Roath Lock Studios access verify:bbc.co.uk/roles`;
+
+            expect(findStrandedText(rawText, 1)).toBe('Roath Lock Studios access');
+        });
+
+        it('should find content lines below the verify line', () => {
+            const rawText = `Paul James Hammant
+verify:bbc.co.uk/roles
+Roath Lock Studios access
+Wolf Studios access`;
+
+            expect(findStrandedText(rawText, 1))
+                .toBe('Roath Lock Studios access\nWolf Studios access');
+        });
+
+        it('should find content both on and below the verify line', () => {
+            const rawText = `Paul James Hammant
+verify:bbc.co.uk/roles Roath Lock Studios access
+Wolf Studios access`;
+
+            expect(findStrandedText(rawText, 1))
+                .toBe('Roath Lock Studios access\nWolf Studios access');
+        });
+
+        it('should return null for a clean document', () => {
+            const rawText = `Paul James Hammant
+16th Doctor Who
+verify:bbc.co.uk/roles`;
+
+            expect(findStrandedText(rawText, 2)).toBeNull();
+        });
+
+        it('should return null when only blank lines follow the verify line', () => {
+            const rawText = `Paul James Hammant
+verify:bbc.co.uk/roles
+
+
+`;
+
+            expect(findStrandedText(rawText, 1)).toBeNull();
+        });
+
+        it('should count any stray character, not just claim-shaped text', () => {
+            // Strict by design: the verifiable region is bounded, so nothing legitimate
+            // lives after the URL - a stray mark is evidence the read went wrong
+            const rawText = `Paul James Hammant
+verify:bbc.co.uk/roles
+.`;
+
+            expect(findStrandedText(rawText, 2 - 1)).toBe('.');
+        });
+
+        it('should tolerate spaces around the colon', () => {
+            const rawText = `Paul James Hammant
+verify : bbc.co.uk/roles Roath Lock Studios access`;
+
+            expect(findStrandedText(rawText, 1)).toBe('Roath Lock Studios access');
+        });
+
+        it('should return null for an out-of-range line index', () => {
+            const rawText = `Paul James Hammant
+verify:bbc.co.uk/roles`;
+
+            expect(findStrandedText(rawText, -1)).toBeNull();
+            expect(findStrandedText(rawText, 99)).toBeNull();
         });
     });
 

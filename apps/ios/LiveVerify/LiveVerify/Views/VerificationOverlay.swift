@@ -107,7 +107,7 @@ struct VerificationResultOverlay: View {
             return Color.green
         case .denying, .noVerifyURL:
             return Color.red
-        case .networkError, .error:
+        case .textAfterVerifyLine, .networkError, .error:
             return Color.orange
         }
     }
@@ -120,7 +120,7 @@ struct VerificationResultOverlay: View {
             return "xmark.circle.fill"
         case .networkError:
             return "wifi.exclamationmark"
-        case .error:
+        case .textAfterVerifyLine, .error:
             return "exclamationmark.triangle.fill"
         }
     }
@@ -133,6 +133,8 @@ struct VerificationResultOverlay: View {
             return "VERIFICATION FAILED"
         case .noVerifyURL:
             return "NO VERIFY URL"
+        case .textAfterVerifyLine:
+            return "NOT VERIFIED \u{2014} TEXT AFTER VERIFY LINE"
         case .networkError:
             return "NETWORK ERROR"
         case .error:
@@ -146,7 +148,7 @@ struct VerificationResultOverlay: View {
             return nil
         case .denying(let domain, _):
             return "by \(domain)"
-        case .noVerifyURL, .networkError, .error:
+        case .textAfterVerifyLine, .noVerifyURL, .networkError, .error:
             return nil
         }
     }
@@ -159,6 +161,8 @@ struct VerificationResultOverlay: View {
             return reason
         case .noVerifyURL:
             return "No verify: or vfy: URL found in the scanned text"
+        case .textAfterVerifyLine:
+            return "Possible OCR mis-order. Nothing was hashed \u{2014} check the Extracted tab."
         case .networkError(let domain, _):
             return "\(domain) not found"
         case .error(let message):

@@ -225,6 +225,10 @@ class LiveTextDetector {
     private var isProcessing = false
 
     init() {
+        // Preview only: this detector draws boxes on the live viewfinder and its strings are
+        // never read, assembled into lines, or hashed. .fast is right here for frame rate.
+        // The hashed paths (Pipeline/TextRecognizer.swift, Camera/DataScanner.swift) use
+        // .accurate with language correction off.
         textRequest = VNRecognizeTextRequest()
         textRequest.recognitionLevel = .fast
         textRequest.usesLanguageCorrection = false

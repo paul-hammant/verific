@@ -163,6 +163,10 @@ struct VerificationResult {
     var authorization: AuthorizationResult?
     var issuerDescription: String?
     var issuerFormalName: String?
+    /// Content offered to the human to correct and Re-verify when the pipeline refused to
+    /// hash - every content line the OCR produced, in the app's best reading order. It is
+    /// never hashed on its own; only what the human submits is.
+    var recoveryText: String? = nil
 }
 
 /// Pipeline error types
@@ -225,6 +229,43 @@ class VerificationPipeline: ObservableObject {
             Log.d("Pipeline", "Warning: JS bridge initialization failed: \(error)")
             // Will retry on first use
         }
+    }
+
+    /// Refuse to verify when OCR left content on or after the verify: line.
+    ///
+    /// extractCertText hashes only the lines before the verify: line. When OCR returns text
+    /// regions out of reading order, a real claim can be stranded there and silently dropped,
+    /// so the app hashes a shorter credential than the one on the document, gets a 404, and
+    /// reports it as the issuer denying the claim. Blocking here keeps the failure honest and
+    /// legible: nothing is hashed, no issuer is contacted, and the human is pointed at the
+    /// Extracted tab where the mis-order is visible.
+    ///
+    /// - Returns: A blocking result, or nil when there is no stranded content
+    private func strandedTextResult(
+        rawText: String,
+        baseURL: String,
+        urlLineIndex: Int,
+        bridge: JSBridge
+    ) -> VerificationResult? {
+        guard let stranded = bridge.findStrandedText(in: rawText, urlLineIndex: urlLineIndex) else {
+            return nil
+        }
+
+        Log.d("Pipeline", "Text stranded on/after verify line - refusing to hash: \(stranded)")
+
+        // Offer every content line back to the human to re-order and Re-verify
+        let certText = bridge.extractCertText(from: rawText, urlLineIndex: urlLineIndex) ?? ""
+        let recoveryText = certText.isEmpty ? stranded : certText + "\n" + stranded
+
+        return VerificationResult(
+            outcome: .textAfterVerifyLine(stranded),
+            rawText: rawText,
+            normalizedText: nil,
+            hash: nil,
+            verificationURL: nil,
+            baseURL: baseURL,
+            recoveryText: recoveryText
+        )
     }
 
     /// Normalize image orientation - redraw with correct pixel orientation
@@ -334,6 +375,20 @@ class VerificationPipeline: ObservableObject {
                 verificationURL: nil,
                 baseURL: nil
             )
+        }
+
+        // Step 2b: Refuse to hash if OCR stranded content on/after the verify: line
+        if let blocked = strandedTextResult(
+            rawText: rawText,
+            baseURL: baseURL,
+            urlLineIndex: lineIndex,
+            bridge: bridge
+        ) {
+            await MainActor.run {
+                isProcessing = false
+                currentStep = ""
+            }
+            return blocked
         }
 
         await MainActor.run {
@@ -461,6 +516,20 @@ class VerificationPipeline: ObservableObject {
         }
 
         Log.d("Pipeline", "Found verify URL: \(baseURL) at line \(lineIndex)")
+
+        // Refuse to hash if OCR stranded content on/after the verify: line
+        if let blocked = strandedTextResult(
+            rawText: rawText,
+            baseURL: baseURL,
+            urlLineIndex: lineIndex,
+            bridge: bridge
+        ) {
+            await MainActor.run {
+                isProcessing = false
+                currentStep = ""
+            }
+            return blocked
+        }
 
         await MainActor.run {
             currentStep = "Fetching metadata..."

@@ -87,27 +87,31 @@ class TextRecognizer {
                     return
                 }
 
-                // Sort observations by Y position (top to bottom)
-                let sortedObservations = observations.sorted { obs1, obs2 in
-                    // Vision uses bottom-left origin, so higher Y is actually higher on screen
-                    obs1.boundingBox.origin.y > obs2.boundingBox.origin.y
-                }
-
-                // Extract top candidate from each observation
-                let lines = sortedObservations.compactMap { observation -> String? in
-                    observation.topCandidates(1).first?.string
-                }
+                // Vision returns regions with no reading-order guarantee, and several regions
+                // can share one physical line. Shared assembly - see Pipeline/LineAssembler.swift
+                let regions = observations.compactMap { TextObservation($0) }
+                let lines = LineAssembler.rejoinVerifyURLs(
+                    in: LineAssembler.assembleLines(from: regions)
+                )
 
                 let text = lines.joined(separator: "\n")
                 continuation.resume(returning: text)
             }
 
-            // Configure recognition level
+            // Configure recognition level. This text gets hashed, so .accurate is the
+            // deliberate default; an issuer only gets .fast by asking for it explicitly
+            // through ocrHints in verification-meta.json.
             if hints?.recognitionLevel == "fast" {
                 request.recognitionLevel = .fast
             } else {
                 request.recognitionLevel = .accurate
             }
+
+            // Language correction OFF, explicitly rather than by inheriting the default.
+            // Dictionary correction silently rewrites proper nouns and identifiers into
+            // plausible words, which changes the hash - a guess dressed as a read. The
+            // editable Normalized pane is the human fix for genuine misreads.
+            request.usesLanguageCorrection = false
 
             // Configure languages
             if let languages = hints?.languages, !languages.isEmpty {

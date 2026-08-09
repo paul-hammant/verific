@@ -22,6 +22,11 @@ enum VerificationOutcome {
     case denying(domain: String, reason: String)
     case networkError(domain: String, Error)
     case noVerifyURL
+    /// OCR returned content on or after the verify: line, which the pipeline would have
+    /// dropped from the hash. Nothing is hashed and no issuer is contacted in this state -
+    /// the read is wrong, and saying so is more honest than asking a domain about a
+    /// truncated claim and reporting its "not found" as the issuer's answer.
+    case textAfterVerifyLine(String)
     case error(String)
 }
 

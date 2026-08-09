@@ -179,6 +179,63 @@ function extractCertText(rawText, urlLineIndex) {
 }
 
 /**
+ * Find content that shares the verify: line or sits below it.
+ *
+ * extractCertText() hashes only the lines BEFORE the verify: line, on the assumption
+ * that anything on or after it is OCR noise from dust or border artifacts. When OCR
+ * returns text regions out of reading order, a real claim line can be stranded there
+ * and would be dropped from the hash without a trace. Callers use this to detect that
+ * condition and surface it, rather than hashing a truncated claim.
+ *
+ * Strict by design: any non-whitespace content counts. The verifiable region is bounded
+ * (a user's selection, or the registration marks), so nothing legitimate lives after the
+ * URL — a stray character there is evidence the read went wrong, not something to tolerate.
+ *
+ * @param {string} rawText - Raw OCR text
+ * @param {number} urlLineIndex - Index of the line containing the verify:/vfy: URL
+ * @returns {string|null} - Stranded content joined by newlines, or null if there is none
+ */
+function findStrandedText(rawText, urlLineIndex) {
+    const rawLines = rawText.split('\n').map(l => l.trim());
+
+    if (urlLineIndex < 0 || urlLineIndex >= rawLines.length) {
+        return null;
+    }
+
+    const stranded = [];
+    const verifyLine = rawLines[urlLineIndex];
+
+    // Same pattern extractVerificationUrl() uses to locate the URL on its line
+    const match = verifyLine.match(/(^|\s)(verify|vfy)\s*:\s*/i);
+    if (match) {
+        // Content before the URL on the same line
+        const before = verifyLine.substring(0, match.index).trim();
+        if (before.length > 0) {
+            stranded.push(before);
+        }
+
+        // Content after the URL on the same line (the URL ends at the first space)
+        const afterPattern = verifyLine.substring(match.index + match[0].length);
+        const spaceIndex = afterPattern.indexOf(' ');
+        if (spaceIndex !== -1) {
+            const after = afterPattern.substring(spaceIndex).trim();
+            if (after.length > 0) {
+                stranded.push(after);
+            }
+        }
+    }
+
+    // Content on the lines below the verify: line
+    for (let i = urlLineIndex + 1; i < rawLines.length; i++) {
+        if (rawLines[i].length > 0) {
+            stranded.push(rawLines[i]);
+        }
+    }
+
+    return stranded.length > 0 ? stranded.join('\n') : null;
+}
+
+/**
  * Extract domain from verification URL
  * @param {string} baseUrl - Base URL (verify:, vfy:, or https://)
  * @returns {string} Domain name
@@ -476,9 +533,9 @@ async function walkAuthorizationChain(authorizedByUrl, primaryConfirmed, hashFn,
 
 
 // ES module exports (for browser extension)
-export { extractVerificationUrl, buildVerificationUrl, trimToFirstLinePattern, extractCertText, extractDomain, buildMetaUrl, fetchVerificationMeta, verifyHash, checkAuthorization, walkAuthorizationChain };
+export { extractVerificationUrl, buildVerificationUrl, trimToFirstLinePattern, extractCertText, findStrandedText, extractDomain, buildMetaUrl, fetchVerificationMeta, verifyHash, checkAuthorization, walkAuthorizationChain };
 
 // CommonJS exports (for Node.js testing)
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { extractVerificationUrl, buildVerificationUrl, trimToFirstLinePattern, extractCertText, extractDomain, buildMetaUrl, fetchVerificationMeta, verifyHash, checkAuthorization, walkAuthorizationChain };
+    module.exports = { extractVerificationUrl, buildVerificationUrl, trimToFirstLinePattern, extractCertText, findStrandedText, extractDomain, buildMetaUrl, fetchVerificationMeta, verifyHash, checkAuthorization, walkAuthorizationChain };
 }

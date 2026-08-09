@@ -27,6 +27,8 @@ enum ResultTab: String, CaseIterable {
 struct ResultView: View {
     let result: VerificationResult
     let capturedImage: UIImage?
+    /// Why there is no captured image, when there isn't one
+    var capturedImageError: String?
     let onReVerify: (String) -> Void
     let onVerifyAnother: () -> Void
 
@@ -72,7 +74,9 @@ struct ResultView: View {
             actionButtons
         }
         .onAppear {
-            editedText = result.normalizedText ?? ""
+            // Nothing was normalized when the pipeline refused to hash; offer the recovered
+            // content lines so the human can put them in order and Re-verify
+            editedText = result.normalizedText ?? result.recoveryText ?? ""
         }
         .alert("Authority Chain", isPresented: $showingFormalNames) {
             Button("OK", role: .cancel) { }
@@ -217,7 +221,7 @@ struct ResultView: View {
             return "xmark.circle.fill"
         case .networkError:
             return "wifi.exclamationmark"
-        case .error:
+        case .textAfterVerifyLine, .error:
             return "exclamationmark.triangle.fill"
         }
     }
@@ -232,6 +236,8 @@ struct ResultView: View {
             return "No verify: URL found"
         case .networkError(let domain, _):
             return "Network error: \(domain) not found"
+        case .textAfterVerifyLine:
+            return "Text found after the verify line \u{2014} possible OCR mis-order. Check the Extracted tab."
         case .error(let message):
             return message
         }
@@ -259,9 +265,15 @@ struct ResultView: View {
             return .green
         case .denying, .noVerifyURL:
             return .red
-        case .networkError, .error:
+        case .textAfterVerifyLine, .networkError, .error:
             return .orange
         }
+    }
+
+    /// Text stranded on/after the verify: line, when that is why we refused to verify
+    private var strandedText: String? {
+        if case .textAfterVerifyLine(let stranded) = result.outcome { return stranded }
+        return nil
     }
 
     // MARK: - Tabs
@@ -282,9 +294,19 @@ struct ResultView: View {
                     }
                     .buttonStyle(.bordered)
                 } else {
-                    Text("No image captured")
-                        .foregroundColor(.secondary)
-                        .padding()
+                    VStack(spacing: 8) {
+                        Text("No image captured")
+                            .foregroundColor(.secondary)
+
+                        if let capturedImageError = capturedImageError {
+                            Text(capturedImageError)
+                                .font(.caption)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(.orange)
+                        }
+                    }
+                    .padding()
+                    .accessibilityIdentifier("result.noCapturedImage")
                 }
             }
         }
@@ -304,17 +326,21 @@ struct ResultView: View {
 
     private var normalizedTab: some View {
         VStack {
-            // Display with ⏎ symbols (read-only)
-            ScrollView {
-                Text(withReturnSymbols(result.normalizedText ?? ""))
-                    .font(.system(.body, design: .monospaced))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
-                    .background(Color(.systemGray6))
-                    .cornerRadius(8)
+            if let stranded = strandedText {
+                strandedNotice(stranded)
+            } else {
+                // Display with ⏎ symbols (read-only)
+                ScrollView {
+                    Text(withReturnSymbols(result.normalizedText ?? ""))
+                        .font(.system(.body, design: .monospaced))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding()
+                        .background(Color(.systemGray6))
+                        .cornerRadius(8)
+                }
+                .frame(maxHeight: 150)
+                .padding(.horizontal)
             }
-            .frame(maxHeight: 150)
-            .padding(.horizontal)
 
             // Editable version (without ⏎)
             TextEditor(text: $editedText)
@@ -330,7 +356,9 @@ struct ResultView: View {
                 .buttonStyle(.borderedProminent)
                 .accessibilityIdentifier("result.reVerifyButton")
 
-                Text("Edit above to fix OCR errors")
+                Text(strandedText == nil
+                     ? "Edit above to fix OCR errors"
+                     : "Put the lines in the order they appear on the document, then Re-verify")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -338,6 +366,36 @@ struct ResultView: View {
 
             Spacer()
         }
+    }
+
+    /// Shown in place of the normalized text when the pipeline refused to hash:
+    /// says plainly that nothing was hashed and which content was stranded.
+    private func strandedNotice(_ stranded: String) -> some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Nothing was hashed and no issuer was contacted.")
+                    .font(.callout)
+                    .fontWeight(.semibold)
+
+                Text("OCR put this content on or after the verify: line, where it would have been dropped from the hash:")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+
+                Text(stranded)
+                    .font(.system(.body, design: .monospaced))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(8)
+                    .background(Color.orange.opacity(0.15))
+                    .cornerRadius(6)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding()
+            .background(Color(.systemGray6))
+            .cornerRadius(8)
+        }
+        .frame(maxHeight: 190)
+        .padding(.horizontal)
+        .accessibilityIdentifier("result.strandedTextNotice")
     }
 
     // MARK: - Hash Section
