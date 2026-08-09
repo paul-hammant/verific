@@ -146,7 +146,15 @@
             ">
                 Screencaps of this verified message are not proof of anything
             </div>
-            <div id="tsv-modal-details" style="
+            <div id="tsv-authority-basis" style="
+                display: none;
+                padding: 8px 24px;
+                border-bottom: 1px solid #333;
+                font-size: 13px;
+                color: #bbb;
+                text-align: center;
+            "></div>
+            <div id="tsv-modal-details" style=""
                 display: none;
                 padding: 16px 20px;
                 background: #16213e;
@@ -161,11 +169,10 @@
                         padding: 12px;
                         background: #0f0f23;
                         border-radius: 4px;
-                        white-space: pre-wrap;
-                        word-break: break-all;
+                        white-space: pre;
                         font-size: 12px;
                         max-height: 100px;
-                        overflow-y: auto;
+                        overflow: auto;
                     "></pre>
                 </div>
                 <div>
@@ -476,7 +483,8 @@
                 if (statusUpper === 'VERIFIED') {
                     console.log('[TSV] ✓ VERIFICATION SUCCESSFUL - hash matches and endpoint confirmed');
                     showResult('verified', 'VERIFIED', `by ${domain}`, normalizedText, hash,
-                        registrableDomain, domainNotListed, authorization, domain);
+                        registrableDomain, domainNotListed, authorization, domain,
+                    metadata && metadata.authorityBasis);
                 } else {
                     // Show the actual status from the response (e.g., REVOKED),
                     // with the issuer's message and domain as the detail line.
@@ -486,18 +494,21 @@
                         ? `${message} — from ${domain}`
                         : `from ${domain}`;
                     showResult('denied', headline, detail, normalizedText, hash,
-                        registrableDomain, domainNotListed, authorization, domain);
+                        registrableDomain, domainNotListed, authorization, domain,
+                    metadata && metadata.authorityBasis);
                 }
             } else if (response.status === 404) {
                 console.log('[TSV] ✗ VERIFICATION FAILED - hash endpoint not found (404)');
                 showResult('failed', 'NOT FOUND',
                     `${domain} does not verify this claim`, normalizedText, hash,
-                    registrableDomain, domainNotListed, authorization, domain);
+                    registrableDomain, domainNotListed, authorization, domain,
+                    metadata && metadata.authorityBasis);
             } else {
                 console.log('[TSV] ✗ VERIFICATION FAILED - unexpected HTTP status');
                 showResult('failed', `HTTP ${response.status}`,
                     `Unexpected response from ${domain}`, normalizedText, hash,
-                    registrableDomain, domainNotListed, authorization, domain);
+                    registrableDomain, domainNotListed, authorization, domain,
+                    metadata && metadata.authorityBasis);
             }
         } catch (error) {
             console.error('[TSV] Verification error:', error);
@@ -519,7 +530,7 @@
     /**
      * Show verification result in the modal
      */
-    function showResult(type, status, detail, normalizedText, hash, emphasisDomain, domainNotListed, authorization, fullDomain) {
+    function showResult(type, status, detail, normalizedText, hash, emphasisDomain, domainNotListed, authorization, fullDomain, authorityBasis) {
         const statusIcon = resultModal.querySelector('#tsv-status-icon');
         const statusText = resultModal.querySelector('#tsv-status-text');
         const domainEl = resultModal.querySelector('#tsv-domain');
@@ -632,12 +643,30 @@
                 `;
                 domainEl.parentNode.insertBefore(authorizationEl, domainEl.nextSibling);
             }
-            authorizationEl.style.background = 'rgba(72, 187, 120, 0.2)';
-            authorizationEl.style.color = '#68d391';
-            authorizationEl.innerHTML = `Self-verified by <strong>${fullDomain}</strong>`;
+            // Amber, not the confirmed green: nothing independent stands behind this, so it
+            // must not look like a walked authority chain. Name what is missing, too - a
+            // reader deciding whether to rely on the claim gets nothing from "no chain".
+            authorizationEl.style.background = 'rgba(255, 152, 0, 0.2)';
+            authorizationEl.style.color = '#ffb74d';
+            authorizationEl.innerHTML =
+                `Self-verified by <strong>${fullDomain}</strong>` +
+                `<br><span style="font-size: 12px; opacity: 0.9;">No government or regulator ` +
+                `attests to this self-verification &mdash; proceed with caution.</span>`;
             authorizationEl.style.display = 'block';
         } else if (authorizationEl) {
             authorizationEl.style.display = 'none';
+        }
+
+        // The issuer's own account of the authority behind this. "Claimed", because with no
+        // authorizedBy nobody has endorsed the wording - it is self-description.
+        const authorityBasisEl = resultModal.querySelector('#tsv-authority-basis');
+        if (authorityBasisEl) {
+            if (authorityBasis) {
+                authorityBasisEl.textContent = `Authority claimed: ${authorityBasis}`;
+                authorityBasisEl.style.display = 'block';
+            } else {
+                authorityBasisEl.style.display = 'none';
+            }
         }
 
         normalizedEl.textContent = normalizedText || '';
