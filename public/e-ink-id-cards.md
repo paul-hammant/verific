@@ -32,6 +32,19 @@ The server rotates the salt on two triggers:
 
 The key invariant: a salt shown on the badge is always a salt the server will currently honour. The screen does not drift ahead of the server, and the server does not silently expire something the screen still shows.
 
+### Scope: In-Person Verification Only
+
+State the obvious plainly, because the rotating salt makes it easy to assume the opposite: **a rotating-salt e-ink badge proves a credential only in the moment and place it is scanned. It is not a remote-identity mechanism.**
+
+The very property that defeats photograph-and-replay also rules out remote use. A salt is live and short-lived; the instant it leaves the room — read out over a phone call, shown on a video call, forwarded as an image — it is either already stale or replayable at most once before burn-on-verify or TTL rotates it. So the same design that makes the badge strong face-to-face makes it **useless for proving who you are to a distant party.** Counter-intuitively, rotation makes this credential *worse* for remote identity, not better: a static badge at least survives being sent; a rotating one is dead on arrival.
+
+Do not confuse two different roles the internet connection plays here:
+
+- **The badge needs connectivity to stay in lockstep with the server** — the phone/Bluetooth/NFC/tether path exists so the *badge* receives pushed salt rotations (see [Salt Synchronization](#salt-synchronization) below).
+- **That connectivity is not a channel for a distant verifier.** It keeps the badge current; it does not let someone across the internet verify the holder. Verification still requires the verifier and the badge to be **physically co-present**, with the verifier scanning the live salt themselves.
+
+If a scenario genuinely needs remote or asynchronous proof, this mechanism is the wrong tool — that is the domain of ordinary (static) verifiable documents, and of the point-in-time-vs-current distinction (authentic *in the moment* is not the same as true *later*; see [point-in-time-vs-current.md](../docs/point-in-time-vs-current.md)). For lower-adversarial, non-rotating needs, the **static badge** variant documented later in this file is the appropriate choice.
+
 ### Caveat Emptor: A Photograph Is Not a Verification
 
 Because the screen and server move together, **photographing the e-ink display does nothing useful unless Live Verify is run immediately, in the same moment.** A stored PNG freezes one salt; by the time anyone tries to verify that captured hash, the server has almost certainly rotated — via burn-on-verify (if the badge was scanned) or via TTL (if it wasn't) — and the badge itself has re-rendered to match. The photograph is then a picture of an expired credential: it returns `404`, proves nothing, and cannot be replayed.
