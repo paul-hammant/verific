@@ -1,0 +1,112 @@
+/*
+    Copyright (C) 2026, Paul Hammant
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
+
+:root {
+    --brand: #3b82f6;
+    --ink: #1a1a1a;
+    --ink-soft: #666;
+    --line: #e5e5e5;
+    --surface: #fff;
+    --surface-sunken: #f6f7f9;
+    --affirm: #15803d;
+    --affirm-bg: #dcfce7;
+    --deny: #b91c1c;
+    --deny-bg: #fee2e2;
+    --warn: #b45309;
+    --warn-bg: #fef3c7;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --ink: #f2f2f2;
+        --ink-soft: #a1a1aa;
+        --line: #3a3a3c;
+        --surface: #1c1c1e;
+        --surface-sunken: #2c2c2e;
+        --affirm: #4ade80;
+        --affirm-bg: #14532d;
+        --deny: #fca5a5;
+        --deny-bg: #7f1d1d;
+        --warn: #fcd34d;
+        --warn-bg: #78350f;
+    }
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.45;
+    /* Popup sizing: iOS Safari sizes to content within its own sheet, desktop needs a width */
+    min-width: 320px;
+    max-width: 100%;
+    background: var(--surface);
+    color: var(--ink);
+}
+
+.header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+}
+
+.brand { font-weight: 650; }
+
+.content { padding: 16px; }
+
+.status-line { color: var(--ink-soft); }
+
+.verdict {
+    padding: 12px 14px;
+    border-radius: 10px;
+    margin-bottom: 14px;
+}
+
+.verdict-title { font-weight: 700; font-size: 15px; }
+
+.verdict-detail { font-size: 13px; margin-top: 2px; opacity: 0.9; }
+
+.verdict.affirming { background: var(--affirm-bg); color: var(--affirm); }
+.verdict.denying { background: var(--deny-bg); color: var(--deny); }
+.verdict.warning { background: var(--warn-bg); color: var(--warn); }
+
+.domain { font-weight: 700; }
+
+.section { margin-top: 14px; }
+
+.section-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    margin-bottom: 5px;
+}
+
+.claim, .hash, .chain {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12px;
+    background: var(--surface-sunken);
+    border-radius: 8px;
+    padding: 10px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.chain-entry { display: block; }
+.chain-entry.unconfirmed { color: var(--deny); }
+
+.hint { color: var(--ink-soft); font-size: 13px; }
+.hint strong { color: var(--ink); }

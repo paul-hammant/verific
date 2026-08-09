@@ -38,7 +38,31 @@ The 5 failing tests are in the `extractVerificationUrl`, `extractCertText`,
 - Add a CJS wrapper/re-export for the shared verify.js
 - Move browser-extension tests to a separate Jest project with ESM support
 
-## iOS app should ship a legit Safari Web Extension
+## iOS app should ship a legit Safari Web Extension — DONE (iOS host)
+
+Shipped as the `LiveVerifySafari` app-extension target inside `LiveVerify.xcodeproj`, embedded
+in the camera app under `PlugIns/`. Sources in `apps/ios/LiveVerify/SafariExtension/`.
+
+- `scripts/sync-shared.js` gained a second target, so `WebExtension/shared/` is generated from
+  canonical `public/` and is **byte-identical** to `apps/browser-extension/shared/`. Not a fork.
+- `SafariWebExtensionHandler.swift` is deliberately inert — routing any verification through
+  native code would fork the logic.
+- **iOS Safari has no `contextMenus`, `notifications` or `commands` APIs** (macOS Safari does).
+  So the right-click "Verify this claim" gesture cannot exist here. The flow is: select text →
+  open Live Verify from the ᴀA/extensions menu → the popup reads the selection via a content
+  script and verifies it. Parity of function, not of gesture.
+- The content script remembers the last non-empty selection, because opening the popup can
+  collapse the visible one.
+- Two Xcode gotchas worth knowing, both fixed here: `ENABLE_DEBUG_DYLIB = NO` is required or the
+  preview dylib lands unsigned inside the `.appex`; and the web-extension files must sit at the
+  bundle **root**, not in a folder called `Resources` — that name makes codesign mis-walk a
+  shallow iOS bundle as a deep macOS one and fail with "code object is not signed at all".
+
+Not yet done: `verifiable-text` marker auto-scanning, history, settings and i18n, all of which
+the Chrome extension has. Untested end-to-end in Safari — needs enabling in
+Settings → Apps → Safari → Extensions on the device.
+
+## Old notes: iOS app should ship a legit Safari Web Extension
 
 We already have the Live Verify iOS app (`apps/ios/LiveVerify/`). Expand it to also ship a
 **real Safari Web Extension** that gives Safari the same in-page text verification the

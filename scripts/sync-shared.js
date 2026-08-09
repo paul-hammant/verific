@@ -41,6 +41,14 @@ const TARGETS = [
         dir: path.join(ROOT, 'apps', 'browser-extension', 'shared'),
         exports: 'es',  // ES export {} + CommonJS fallback
     },
+    {
+        // Safari Web Extension vended by the iOS app. Same generated output as the
+        // Chrome/Edge/Firefox extension, so hashing and normalization stay byte-identical
+        // across every client - see "reuse the canonical JS, don't fork it" in TODO.md.
+        name: 'safari-extension (iOS host)',
+        dir: path.join(ROOT, 'apps', 'ios', 'LiveVerify', 'SafariExtension', 'WebExtension', 'shared'),
+        exports: 'es',
+    },
 ];
 
 /**
