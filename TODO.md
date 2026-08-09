@@ -58,9 +58,18 @@ in the camera app under `PlugIns/`. Sources in `apps/ios/LiveVerify/SafariExtens
   bundle **root**, not in a folder called `Resources` — that name makes codesign mis-walk a
   shallow iOS bundle as a deep macOS one and fail with "code object is not signed at all".
 
+**Verified end-to-end in the iOS Simulator** (9 Aug 2026): enabled in Settings → Apps → Safari →
+Extensions, selected a claim on a training page, and the popup verified it against the issuer.
+
+**Blocked on the physical test iPhone**, not by our code: Safari lists the extension but the
+enable toggle is greyed in both Settings and Safari's Manage Extensions, and *every* extension is
+greyed, not just ours. Screen Time → Content & Privacy Restrictions is enforced on that device and
+bounces back to "on" when turned off — i.e. a configuration profile / supervision / Family Sharing
+policy, which greys Safari extension toggles wherever they appear. **Use the Simulator to test this
+extension** until that device policy is resolved.
+
 Not yet done: `verifiable-text` marker auto-scanning, history, settings and i18n, all of which
-the Chrome extension has. Untested end-to-end in Safari — needs enabling in
-Settings → Apps → Safari → Extensions on the device.
+the Chrome extension has.
 
 ## Old notes: iOS app should ship a legit Safari Web Extension
 
