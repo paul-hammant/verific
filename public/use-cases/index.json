@@ -1,7 +1,7 @@
 {
-  "generated": "2026-08-08T11:43:17.646Z",
-  "totalUseCases": 611,
-  "totalFurtherDerivations": 934,
+  "generated": "2026-08-09T12:47:47.868Z",
+  "totalUseCases": 612,
+  "totalFurtherDerivations": 936,
   "categories": {
     "Real Estate & Property": 45,
     "Charitable & Non-Profit": 8,
@@ -26,7 +26,7 @@
     "Financial Compliance": 26,
     "Business & Commerce": 31,
     "Specialty Insurance": 23,
-    "Banking & Payments": 31,
+    "Banking & Payments": 32,
     "Investment & Fintech": 23,
     "Agriculture & Food": 10,
     "Site & Equipment Safety": 12,
@@ -5207,6 +5207,27 @@
         "property-rules",
         "real-estate",
         "title-clearance"
+      ]
+    },
+    {
+      "slug": "holder-minted-transaction-proof",
+      "title": "Holder-Minted Proof of Purchase, Spend or Transfer",
+      "category": "Banking & Payments",
+      "volume": "Very Large",
+      "retention": "Holder-set (expires after N verifications or NN days) + issuer audit record",
+      "verificationMode": "clip",
+      "furtherDerivations": 2,
+      "snippet": "- Transaction line — amount, counterparty, date, masked account — the core fact, bank-attested.",
+      "tags": [
+        "proof-of-payment",
+        "bank-statement",
+        "self-service",
+        "on-demand",
+        "holder-minted",
+        "expiry",
+        "cifas",
+        "point-in-time",
+        "chain-of-custody"
       ]
     },
     {
@@ -12607,11 +12628,11 @@
       "count": 37
     },
     {
-      "name": "Business & Commerce",
-      "count": 31
+      "name": "Banking & Payments",
+      "count": 32
     },
     {
-      "name": "Banking & Payments",
+      "name": "Business & Commerce",
       "count": 31
     },
     {
