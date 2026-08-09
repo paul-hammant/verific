@@ -138,3 +138,6 @@ or relied upon continuously (pause breaks it)?*
   wrong for a static certificate.
 - [university-degrees.md](../public/use-cases/university-degrees.md) — the canonical high-value,
   subject-held credential this pattern is built for.
+- [verification-meta-schemas.md](verification-meta-schemas.md) — the `dataHandling` field, the *policy*
+  counterpart to this feature: it asks handlers who read the plaintext not to retain it beyond a stated
+  window, on the subject's behalf.
