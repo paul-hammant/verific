@@ -81,40 +81,62 @@ recogniser will occasionally hedge toward the more common lowercase form. "Wolf"
 instance. This bug is real, it is understood, and — crucially — it is **recoverable by a human**, as
 we'll see below.
 
-## Bug two (unexplained): two whole lines went missing before the hash
+## Bug two (the interesting one): a claim line got dropped before the hash
 
-This is the more interesting failure, and I am going to be honest that **I do not fully know why it
-happened.**
+In the first run of this card, the **Normalized** tab — the text that actually gets hashed — showed
+only three lines (name, title, series). Both *"Roath Lock Studios access"* and *"Wolf Studios access"*
+were gone, even though they were plainly on the card. Those are substantive claims — what this person
+is authorised to access — and they should have been hashed. Their disappearance, not the lowercase
+*w*, is the failure that actually matters, because it means the app hashed a *different, shorter*
+credential than the one on the display.
 
-Compare the two tabs. The **Extracted** tab (raw OCR) has all six lines, including both
-*"Roath Lock Studios access"* and *"Wolf Studios access."* But the **Normalized** tab — the text that
-actually gets hashed — shows only three:
+I could not explain it from that run alone. A second run, on a different surface, gave the exact
+evidence — and the cause turned out to be a three-part collision.
+
+**Part 1 — the display word-wrapped a line I didn't want wrapped.** The card firmware lays text out to
+fit a narrow panel, and long lines wrap. This is the e-ink panel's own doing, not the app's — and it's
+the first thing I'd change at the source: a credential's claim lines should be authored to *not* wrap,
+because every wrap is a new opportunity for what follows to be mis-ordered. I wanted these lines
+atomic; the display didn't guarantee that.
+
+**Part 2 — Apple's OCR scrambled the reading order.** The raw Extracted tab from the second run reads:
 
 ```
 Paul James Hammant
 16th Doctor Who
-Series 16 (2027)
+Series 16(2027)
+Wolf Studios access
+verify:bbc.co.uk/roles Roath Lock Studios access
 ```
 
-Both studio-access lines, and the verify line, are gone.
+The card is, top to bottom: name, title, series, *Roath Lock*, *Wolf*, verify. But Vision returned
+*Roath Lock* and *Wolf* swapped, and merged *Roath Lock* onto the *verify:* line. The live camera view
+shows why: Vision's detected text-regions sit at slightly staggered vertical positions over the angled,
+low-contrast panel, and the reading order it infers from those boxes is wrong.
 
-Some of that is *correct*: the `verify:` line is deliberately excluded from the hashed text by design.
-But the two **studio-access lines vanishing is not correct** — those are substantive claims (what this
-person is authorised to access), and they should have been hashed.
+**Part 3 — the pipeline assumed everything after `verify:` is garbage.** Live Verify finds the
+`verify:` line and hashes *only the lines before it*; everything on and after that line is treated as
+post-URL noise. The code comment even says *"everything below it is likely OCR garbage."* Usually
+reasonable — but when OCR strands a real claim line after the `verify:` line, that assumption quietly
+truncates the credential. Reproduced deterministically through the real pipeline:
 
-I traced the pipeline that produces the normalized text — URL extraction, cert-text extraction,
-normalization — and on the clean six-line text as shown, none of those steps *should* drop a non-blank
-content line. (The one path that legitimately *could* rewrite content — issuer-supplied
-`ocrNormalizationRules` fetched from a `verification-meta.json` — is a no-op here, precisely because
-the endpoint is fictional and no metadata was fetched.) So the honest conclusion is that the raw text
-the pipeline actually received differed, in some way I can't see from a screenshot, from the tidy six
-lines the Extracted tab rendered — perhaps a wrapped line, a stray character, or a line-index off-by
-that mis-split the text. **Without the exact raw OCR string from that run, I won't pretend to know
-which.** Diagnosing it properly means capturing that literal string (a device log line, or a unit test
-that feeds the six lines through the pipeline and asserts all five content lines survive) — which is
-the right next step, and a good regression guard regardless.
+```
+extractVerificationUrl(raw) -> { url: "verify:bbc.co.uk/roles", urlLineIndex: 4 }
+extractCertText(raw, 4)     -> lines 0..3 only (Wolf kept, Roath Lock dropped)
+```
 
-That uncertainty is itself the point of the next section.
+So the hash was computed over four lines, not five — it never matched, and never could. In the first
+run the scramble pushed the `verify:` line even earlier, so *both* studio lines fell after it and were
+dropped, which is exactly the three-line Normalized text I couldn't explain at the time.
+
+None of the three parts is individually catastrophic — a wrapped line, a reordering, a
+reasonable-sounding "ignore trailing garbage" rule. Stacked, they silently changed what got hashed.
+That is a design bug in the tool, not just an OCR misread: **the pipeline should never treat a
+content-shaped line after the URL as garbage without at least flagging that it did so.** The fix I
+favour is to make that truncation *loud* — if there is claim-shaped text after the `verify:` line, say
+"text found after the verify line — possible OCR mis-order, check Extracted" rather than silently
+dropping it. (That is a change to the verification pipeline itself, handled deliberately and
+separately from this post.)
 
 ## Why the app fails loudly and shows its working
 
@@ -173,10 +195,10 @@ TODO before publishing:
 
 - Add the four app screenshots (Captured / Extracted / Normalized / the failure banner) and the e-ink
   card photo inline, with alt text.
-- **Diagnose bug two:** capture the literal raw-OCR string from a run (device log) or write a
-  `LiveVerifyTests` case feeding the six lines through the pipeline and asserting all five content
-  lines survive; then update this post with the confirmed cause. Do not publish the "unexplained"
-  framing as final if the cause is found first.
+- **Bug two is now diagnosed** (OCR reading-order scramble + word-wrap + post-`verify:` truncation
+  assumption), confirmed by reproducing it through the real pipeline. Follow-up is the *code* fix:
+  make the truncation loud (flag claim-shaped text after the `verify:` line) — handled separately
+  from this post. Consider adding a `LiveVerifyTests` regression case for the scrambled input.
 - Confirm the exact Vidabay model before publishing (price ~$30, https://vidabay.net).
 - Cross-link to the e-ink ID cards use case and to the normalization rules.
 - Proofread for flow; trim if long for the blog format.

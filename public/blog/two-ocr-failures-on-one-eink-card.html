@@ -97,9 +97,9 @@
             <h1>Two OCR Failures on One e-Ink Card — and Why Showing Your Working Beats Hiding It</h1>
 
             <p>Here is a small verification failure that says something large about how Live Verify is
-            built. It contains <em>two</em> separate bugs — one I understand completely, and one I
-            don't — and the honest thing to do is show you both, because the whole design of the app is
-            about not hiding either.</p>
+            built. It contains <em>two</em> separate bugs — a simple OCR misread, and a subtler one that
+            silently changed which credential got hashed — and the honest thing to do is show you both,
+            because the whole design of the app is what let me find and fix them.</p>
 
             <h2>The setup</h2>
 
@@ -182,47 +182,95 @@ verify:bbc.co.uk/roles</code></pre>
             is understood, and — crucially — it is <strong>recoverable by a human</strong>, as we'll see
             below.</p>
 
-            <h2>Bug two (unexplained): two whole lines went missing before the hash</h2>
+            <h2>Bug two (the interesting one): a claim line got dropped before the hash</h2>
 
-            <p>This is the more interesting failure, and I am going to be honest that <strong>I do not
-            fully know why it happened.</strong></p>
+            <p>In the first run of this card, the <strong>Normalized</strong> tab — the text that
+            actually gets hashed — showed only three lines (name, title, series). Both
+            <em>"Roath Lock Studios access"</em> and <em>"Wolf Studios access"</em> were simply gone,
+            even though they were plainly there on the card. Those are substantive claims — what this
+            person is authorised to access — and they should have been hashed. Their disappearance,
+            not the lowercase <em>w</em>, is the failure that actually matters, because it means the app
+            hashed a <em>different, shorter</em> credential than the one on the display.</p>
 
-            <p>Compare the two tabs. The <strong>Extracted</strong> tab (raw OCR) has all six lines,
-            including both <em>"Roath Lock Studios access"</em> and <em>"Wolf Studios access."</em> But
-            the <strong>Normalized</strong> tab — the text that actually gets hashed — shows only
-            three:</p>
+            <p>I could not explain it from that run alone. A second run, on a different surface, gave me
+            the exact evidence — and the cause turned out to be a three-part collision.</p>
 
-            <div class="screens">
-                <figure>
-                    <img src="images/tab-extracted.png" alt="Extracted tab: six lines including both studio-access lines.">
-                    <figcaption>Extracted — six lines.</figcaption>
-                </figure>
-                <figure>
-                    <img src="images/tab-normalized.png" alt="Normalized tab: only three lines — name, title, series. Both studio-access lines and the verify line are gone.">
-                    <figcaption>Normalized — only three. Two claims gone.</figcaption>
-                </figure>
-            </div>
+            <h3 style="font-size:1.12em;font-weight:700;margin:24px 0 10px;">Part 1 — the display word-wrapped a line I didn't want wrapped</h3>
 
-            <p>Some of that is <em>correct</em>: the <code>verify:</code> line is deliberately excluded
-            from the hashed text by design. But the two <strong>studio-access lines vanishing is not
-            correct</strong> — those are substantive claims (what this person is authorised to access),
-            and they should have been hashed.</p>
+            <p>Look at the card rendering. The line <code>Series 16 (2027)</code> is fine, but the card
+            firmware is laying text out to fit a narrow panel, and long lines wrap. This is the e-ink
+            panel's own doing, not the app's — and it is the first thing I'd change at the source: a
+            credential's claim lines should be authored to <em>not</em> wrap, because every wrap is a
+            new opportunity for what follows to be mis-ordered. I wanted these lines atomic; the display
+            didn't guarantee that.</p>
 
-            <p>I traced the pipeline that produces the normalized text — URL extraction, cert-text
-            extraction, normalization — and on the clean six-line text as shown, none of those steps
-            <em>should</em> drop a non-blank content line. (The one path that legitimately <em>could</em>
-            rewrite content — issuer-supplied <code>ocrNormalizationRules</code> fetched from a
-            <code>verification-meta.json</code> — is a no-op here, precisely because the endpoint is
-            fictional and no metadata was fetched.) So the honest conclusion is that the raw text the
-            pipeline actually received differed, in some way I can't see from a screenshot, from the
-            tidy six lines the Extracted tab rendered — perhaps a wrapped line, a stray character, or a
-            line-index off-by that mis-split the text. <strong>Without the exact raw OCR string from
-            that run, I won't pretend to know which.</strong> Diagnosing it properly means capturing
-            that literal string (a device log line, or a unit test that feeds the six lines through the
-            pipeline and asserts all five content lines survive) — which is the right next step, and a
-            good regression guard regardless.</p>
+            <h3 style="font-size:1.12em;font-weight:700;margin:24px 0 10px;">Part 2 — Apple's OCR scrambled the reading order</h3>
 
-            <p>That uncertainty is itself the point of the next section.</p>
+            <p>Here is the raw <strong>Extracted</strong> tab from the second run. Read the last two
+            lines carefully:</p>
+
+            <figure>
+                <img src="images/tab-extracted-scrambled.jpeg" alt="Extracted tab from the second run. The lines are: Paul James Hammant / 16th Doctor Who / Series 16(2027) / Wolf Studios access / verify:bbc.co.uk/roles Roath Lock Studios access — with 'Roath Lock Studios access' appended AFTER the verify URL on the same line.">
+                <figcaption>The tell: <code>Roath Lock Studios access</code> has been OCR'd onto the end
+                of the <code>verify:</code> line — <em>after</em> the URL. Vision returned the text
+                regions out of reading order.</figcaption>
+            </figure>
+
+            <p>The card reads, top to bottom: name, title, series, <em>Roath Lock</em>, <em>Wolf</em>,
+            verify. But Apple's Vision framework returned them as:</p>
+
+            <pre><code>Paul James Hammant
+16th Doctor Who
+Series 16(2027)
+Wolf Studios access
+verify:bbc.co.uk/roles Roath Lock Studios access</code></pre>
+
+            <p>Two things went wrong: <em>Roath Lock</em> and <em>Wolf</em> swapped, and <em>Roath
+            Lock</em> got merged onto the <em>verify:</em> line. You can see why in the live camera view —
+            Vision's detected text-regions sit at slightly staggered vertical positions over the angled,
+            low-contrast panel, and the ordering it inferred from those boxes is wrong:</p>
+
+            <figure>
+                <img src="images/camera-boxes.png" alt="The iOS app's live camera view pointed at the e-ink card on a terrazzo countertop, with Vision text-detection boxes overlaid at slightly staggered vertical positions, showing why reading order was mis-inferred.">
+                <figcaption>Live capture: the detected text-regions are staggered, and the reading
+                order Vision infers from them is not top-to-bottom.</figcaption>
+            </figure>
+
+            <h3 style="font-size:1.12em;font-weight:700;margin:24px 0 10px;">Part 3 — the pipeline assumed everything after <code>verify:</code> is garbage</h3>
+
+            <p>This is the part that turned an OCR wobble into a wrong hash. Live Verify finds the
+            <code>verify:</code> line and hashes <em>only the lines before it</em> — everything on and
+            after that line is treated as post-URL noise (dust, artifacts, a stray mark), which is
+            usually a reasonable assumption. The code comment even says so: <em>"everything below it is
+            likely OCR garbage."</em></p>
+
+            <p>But when OCR mis-orders the text and drops a real claim line <em>after</em> the
+            <code>verify:</code> line, that assumption quietly truncates the credential. I reproduced it
+            deterministically by feeding the exact scrambled text through the real pipeline:</p>
+
+            <pre><code>extractVerificationUrl(raw) -> { url: "verify:bbc.co.uk/roles", urlLineIndex: 4 }
+extractCertText(raw, 4)     -> lines 0..3 only:
+    Paul James Hammant
+    16th Doctor Who
+    Series 16(2027)
+    Wolf Studios access
+"Roath Lock Studios access"  -> DROPPED (it sat after the verify line)</code></pre>
+
+            <p>So the hash was computed over four lines, not five. It never matched, and never could —
+            the app was faithfully hashing a truncated credential. In the very first run, the scramble
+            pushed the <code>verify:</code> line even earlier, so <em>both</em> studio lines fell after
+            it and were dropped, which is exactly the three-line Normalized text I couldn't explain at
+            the time.</p>
+
+            <p>None of the three parts is individually catastrophic — a wrapped line, a reordering, a
+            reasonable-sounding "ignore trailing garbage" rule. Stacked, they silently changed what got
+            hashed. That is the real bug, and it is a design bug in the tool, not just an OCR misread:
+            <strong>the pipeline should never treat a content-shaped line after the URL as garbage
+            without at least flagging that it did so.</strong> The fix I favour is to make that
+            truncation <em>loud</em> — if there is claim-shaped text after the <code>verify:</code>
+            line, say "text found after the verify line — possible OCR mis-order, check Extracted"
+            rather than silently dropping it. (That is a change to the verification pipeline itself, so
+            it is being handled deliberately and separately from this post.)</p>
 
             <h2>Why the app fails loudly and shows its working</h2>
 
@@ -240,19 +288,22 @@ verify:bbc.co.uk/roles</code></pre>
             <ul>
                 <li><strong>Captured</strong> — the raw image (here, "No image captured", since this
                 run was fed text).</li>
-                <li><strong>Extracted</strong> — precisely what OCR produced, character for character.
-                <em>This is where you can see the lowercase "wolf" with your own eyes</em>, and where
-                you can see that both studio lines were read correctly at this stage.</li>
+                <li><strong>Extracted</strong> — precisely what OCR produced, character for character
+                and <em>in the order OCR returned it</em>. This is where you can see the lowercase
+                "wolf" with your own eyes — and where the scrambled reading order, with "Roath Lock"
+                stranded after the verify line, is right there to be spotted.</li>
                 <li><strong>Normalized</strong> — the text after normalization, which is the actual
                 input to the hash. It is <strong>editable</strong>, with a <strong>Re-verify</strong>
                 button and the note <em>"Edit above to fix OCR errors."</em></li>
             </ul>
 
-            <p>This transparency is what let me <em>find both bugs at all.</em> Bug one is visible
-            because Extracted shows the exact characters. Bug two is visible because you can hold
-            Extracted and Normalized side by side and see two lines present in one and absent in the
-            other. A system that only showed you a green or red badge would have hidden both.
-            <strong>The failure is legible, and legibility is the feature.</strong></p>
+            <p>This transparency is what let me <em>find and then diagnose both bugs at all.</em> Bug
+            one is visible because Extracted shows the exact characters. Bug two was findable because
+            you can hold Extracted and Normalized side by side and see a claim present in one and absent
+            in the other — and it was ultimately <em>solvable</em> because Extracted preserves the raw
+            OCR order, which is what revealed "Roath Lock" stranded after the verify line. A system that
+            only showed you a green or red badge would have hidden both, and I would never have found
+            the truncation. <strong>The failure is legible, and legibility is the feature.</strong></p>
 
             <p>For bug one, the editable Normalized pane is the whole philosophy in one control: the app
             is not asking you to trust it, it is showing you the exact bytes it is about to hash, and
@@ -274,8 +325,15 @@ verify:bbc.co.uk/roles</code></pre>
                 with a visible cause is far more trustworthy than a green banner you can't audit. The
                 worst outcome would be a system that <em>passed</em> this card by guessing.</li>
                 <li><strong>Transparency catches the tool's own bugs, not just the document's.</strong>
-                The missing-lines defect was findable only because the app shows intermediate state.
-                That's an argument for building every verification tool this way.</li>
+                The truncation defect was not just findable but <em>diagnosable</em> because the app
+                shows intermediate state — and because Extracted preserves raw OCR order, which is what
+                exposed the scramble. That's an argument for building every verification tool this way.</li>
+                <li><strong>Never silently discard content — flag it.</strong> "Ignore everything after
+                the verify line" is a fine heuristic right up until OCR strands a real claim there.
+                Truncation that changes the hash must be <em>loud</em>, never quiet.</li>
+                <li><strong>Author claim lines not to wrap, and don't trust reading order.</strong> The
+                card's own word-wrapping created the seam the scramble exploited. Claims should be laid
+                out to stay atomic, and the pipeline should treat OCR line-order as a hint, not gospel.</li>
                 <li><strong>Cheap hardware is a first-class test case, not an edge case.</strong> A ~$30
                 <a href="https://vidabay.net">Vidabay</a> e-ink panel is representative of where
                 credentials are actually heading. If the pipeline only works on pristine laser print, it
@@ -285,8 +343,10 @@ verify:bbc.co.uk/roles</code></pre>
             <p>The failure in those screenshots is not an embarrassment to bury. One half of it is the
             system behaving exactly as designed — brittle where it must be, transparent everywhere, and
             honest that it cannot always read an ambiguous capital <em>W</em> off an angled e-ink card
-            in one shot. The other half is a real bug in the tool that the same transparency made
-            visible. Both belong in the open.</p>
+            in one shot. The other half is a real design bug in the tool — a reasonable-sounding
+            "ignore trailing garbage" rule that, stacked with a wrapped line and a scrambled reading
+            order, silently hashed the wrong credential. The same transparency that made bug one legible
+            is what let me chase bug two all the way to its cause. Both belong in the open.</p>
 
             <hr>
             <div class="post-nav"><a href="index.html">&larr; All posts</a></div>
