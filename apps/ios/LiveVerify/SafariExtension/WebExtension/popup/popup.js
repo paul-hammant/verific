@@ -225,9 +225,9 @@ function renderResult({ verifyResult, registrableDomain, issuerDescription, auth
         // checking - i.e. them. State the relationship instead.
         const note = el('p', { class: 'hint' });
         note.innerHTML =
-            'The domain confirming this claim is the one making it — ' +
-            '<strong>nothing independent attests to it</strong>. Weigh it by how much you ' +
-            'trust that domain.';
+            '<strong>No government or regulator attests to this self-verification — ' +
+            'proceed with caution.</strong> The domain confirming this claim is the one ' +
+            'making it.';
         parts.push(note);
     } else if (unconfirmedAuthority) {
         const note = el('p', { class: 'hint' });

@@ -101,8 +101,35 @@ body {
     background: var(--surface-sunken);
     border-radius: 8px;
     padding: 10px;
+}
+
+/* The hash is one long token with no meaningful breaks - wrapping it is harmless */
+.hash {
     white-space: pre-wrap;
     overflow-wrap: anywhere;
+}
+
+/* The claim must NOT wrap. Its line breaks are part of what was hashed, so a soft-wrapped
+   display would show line structure that differs from the bytes behind the hash. Keep the
+   real lines and scroll horizontally instead. */
+.claim, .chain {
+    white-space: pre;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+
+    /* Scroll affordance: edge shadows that appear only while there is more content that
+       way. The two "local" layers are painted with the content and slide the cover away
+       from an edge once it is scrolled; the two "scroll" layers stay pinned, so a shadow
+       shows exactly when that direction has more to see. */
+    background-image:
+        linear-gradient(to right, var(--surface-sunken), var(--surface-sunken)),
+        linear-gradient(to left, var(--surface-sunken), var(--surface-sunken)),
+        linear-gradient(to right, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0)),
+        linear-gradient(to left, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0));
+    background-position: left center, right center, left center, right center;
+    background-repeat: no-repeat;
+    background-size: 24px 100%, 24px 100%, 14px 100%, 14px 100%;
+    background-attachment: local, local, scroll, scroll;
 }
 
 .chain-entry { display: block; }
