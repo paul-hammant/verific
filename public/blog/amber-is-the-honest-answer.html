@@ -1,0 +1,249 @@
+<!--
+    Copyright (C) 2026, Paul Hammant
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amber Is the Honest Answer — Live Verify Blog</title>
+    <style>
+        :root {
+            --bg: #f6f8fb;
+            --bg-grad-top: #eef2f9;
+            --surface: #ffffff;
+            --ink: #0f172a;
+            --ink-soft: #475569;
+            --ink-faint: #64748b;
+            --line: #e2e8f0;
+            --accent: #2563eb;
+            --accent-dark: #1d4ed8;
+            --accent-soft: #eff4ff;
+            --radius: 16px;
+            --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.08);
+            --shadow-md: 0 6px 18px rgba(15, 23, 42, 0.08);
+            --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            background-image: radial-gradient(1200px 500px at 50% -120px, var(--bg-grad-top) 0%, var(--bg) 70%);
+            min-height: 100vh;
+            padding: 28px 20px 56px;
+            color: var(--ink);
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+        .container { max-width: 720px; margin: 0 auto; }
+        .breadcrumbs { font-size: 0.9em; color: var(--ink-faint); margin-bottom: 22px; }
+        .breadcrumbs a { color: var(--accent-dark); text-decoration: none; }
+        .breadcrumbs a:hover { text-decoration: underline; }
+        article { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-sm); padding: clamp(24px, 5vw, 48px); }
+        .post-date { font-size: 0.82em; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 10px; }
+        h1 { font-size: clamp(1.7em, 4.5vw, 2.3em); font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 24px; }
+        h2 { font-size: 1.35em; font-weight: 750; letter-spacing: -0.01em; margin: 36px 0 12px; }
+        h3 { font-size: 1.12em; font-weight: 700; margin: 26px 0 10px; }
+        p { font-size: 1.05em; line-height: 1.68; color: var(--ink); margin-bottom: 16px; }
+        ul, ol { margin: 0 0 16px 1.3em; }
+        li { font-size: 1.05em; line-height: 1.6; margin-bottom: 10px; }
+        a { color: var(--accent-dark); }
+        strong { font-weight: 700; }
+        code { font-family: var(--mono); font-size: 0.9em; background: #eef2f8; padding: 1px 5px; border-radius: 5px; }
+        pre {
+            font-family: var(--mono); font-size: 0.86em; line-height: 1.55;
+            background: #0f1b33; color: #e6edf7; padding: 16px 18px;
+            border-radius: 12px; overflow-x: auto; margin: 0 0 18px;
+        }
+        pre code { background: none; padding: 0; color: inherit; font-size: 1em; }
+        blockquote {
+            border-left: 4px solid var(--accent); background: var(--accent-soft);
+            padding: 12px 18px; border-radius: 0 10px 10px 0; margin: 0 0 18px;
+            color: var(--ink); font-weight: 600;
+        }
+        figure { margin: 22px 0; }
+        figure img { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow-sm); }
+        figcaption { font-size: 0.9em; color: var(--ink-faint); margin-top: 8px; text-align: center; line-height: 1.45; }
+        .screens { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin: 22px 0; }
+        .screens figure { margin: 0; }
+        .callout { border: 1px solid #f0d9a8; background: #fdf6e7; border-radius: 12px; padding: 14px 18px; margin: 0 0 18px; font-size: 1em; line-height: 1.6; color: #6b5320; }
+        .fixed { border: 1px solid #b7e0c2; background: #eefaf1; border-radius: 12px; padding: 14px 18px; margin: 0 0 18px; font-size: 1em; line-height: 1.6; color: #245c37; }
+        hr { border: none; border-top: 1px solid var(--line); margin: 32px 0; }
+        .post-nav { margin-top: 28px; font-size: 0.95em; }
+        .post-nav a { color: var(--accent-dark); text-decoration: none; }
+        .post-nav a:hover { text-decoration: underline; }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+            <a href="../index.html">Live Verify</a> &rsaquo; <a href="index.html">Blog</a> &rsaquo; Amber Is the Honest Answer
+        </nav>
+
+        <article>
+            <div class="post-date">August 9, 2026</div>
+            <h1>Amber Is the Honest Answer</h1>
+
+            <p>Here is a verification that succeeded. The hash matched, the issuer&rsquo;s domain
+            answered, nothing failed. And the app deliberately refused to show you green.</p>
+
+            <figure>
+                <img src="images/safari-extension-self-verified.png" alt="Live Verify running as a Safari extension on iOS. An amber panel reads Verified, Self-Verified. Below: Verified by paul-hammant.github.io with github.io in bold; No government or regulator attests to this self-verification — proceed with caution; Authority claimed: Peer references; and the claim text that was hashed.">
+                <figcaption>A real peer reference, verified. Amber, not green &mdash; and every line
+                under the verdict is there to stop you over-reading it.</figcaption>
+            </figure>
+
+            <p>This is Live Verify running as a <strong>Safari Web Extension on iOS</strong>, which is
+            new. Select a claim on a page, open the extension, and it hashes the text and asks the
+            issuer&rsquo;s domain whether that hash is one it stands behind. Same normalization, same
+            SHA-256, same lookup as the Chrome extension and the native apps &mdash; literally the same
+            JavaScript, generated from one canonical source, so the hashes cannot drift apart.</p>
+
+            <p>But the interesting part is not that it worked. It is what the app says <em>after</em>
+            it works.</p>
+
+            <h2>Green would have been a lie</h2>
+
+            <p>The claim in that screenshot is a professional reference I wrote about someone I work
+            with. I published it on my own domain and published its hash there too. When the extension
+            looks that hash up, my domain says yes.</p>
+
+            <p>Which proves exactly one thing: <strong>the text has not been altered since I published
+            it.</strong> That is genuinely useful &mdash; it is tamper-evidence, and it is the whole
+            point of the hash. But it says nothing whatsoever about whether the reference is
+            <em>true</em>, or whether I am someone whose reference should carry weight. I am vouching
+            for my own words. The domain confirming the claim is the domain making it.</p>
+
+            <p>A green tick would have collapsed those two very different things into one signal. So
+            the app renders amber and says the quiet part out loud:</p>
+
+            <blockquote>No government or regulator attests to this self-verification &mdash; proceed
+            with caution. The domain confirming this claim is the one making it.</blockquote>
+
+            <p>It used to say &ldquo;Self-verified (no authority chain)&rdquo;. That was accurate and
+            useless: it described a missing data structure to someone who is trying to decide whether
+            to rely on a document. Naming what is absent &mdash; a government, a regulator &mdash;
+            does the work that &ldquo;no authority chain&rdquo; never did.</p>
+
+            <p>The colour matters more than it sounds. On one of our clients, self-verified claims were
+            being drawn on the <em>confirmed green</em> background, pixel-identical to a claim backed
+            by a fully walked chain of endorsers. Two completely different trust situations, one
+            colour. That is fixed everywhere now.</p>
+
+            <h2>&ldquo;Authority claimed: Peer references&rdquo;</h2>
+
+            <p>An issuer can publish one line stating what kind of authority stands behind its
+            verifications. A tax authority says so. A university says so. Mine says <em>Peer
+            references</em>, because that is what it is.</p>
+
+            <p>The label above it reads <strong>Authority claimed</strong>, and the word is doing
+            deliberate work. Nobody has endorsed that sentence. It is me describing myself, presented
+            as such. When there <em>is</em> an endorser in the chain, that endorser has implicitly
+            signed off on the wording &mdash; because they hash the issuer&rsquo;s whole metadata file
+            &mdash; and it stops being merely claimed.</p>
+
+            <p>That field existed in the spec for months and had never once been displayed by any
+            client. The code that reads it sat behind a check for an endorser, so the one line that
+            distinguishes &ldquo;national tax authority&rdquo; from &ldquo;bloke with opinions&rdquo;
+            was invisible in precisely the case where it carries the most weight.</p>
+
+            <h2>Read the domain, not the subdomain</h2>
+
+            <p>Look at the attribution line: <code>paul-hammant.<strong>github.io</strong></code>, with
+            the tail in bold.</p>
+
+            <p>Earlier versions showed only <code>github.io</code>. That was a defensive choice &mdash;
+            anyone can take a GitHub Pages subdomain, so a hostname like
+            <code>edinburgh.ac.uk--___dir.github.io</code> must never be allowed to display as if it
+            were Edinburgh. But collapsing to the suffix also hid <em>who</em> the tenant was.</p>
+
+            <p>Showing the whole hostname with the registrable part emphasised does both jobs at once.
+            You see the tenant name, and the weight sits on the part that someone actually registered,
+            renews, is billed for, and can be compelled or seized over. On a shared host, the bit before
+            the dot is just a tenancy. The spoof case is the one that proves the design:
+            <code>edinburgh.ac.uk--___dir.<strong>github.io</strong></code> shows you the deception and
+            where the real accountability lies, in the same string.</p>
+
+            <h2>The claim, on its own lines</h2>
+
+            <p>The pane at the bottom shows the exact text that went into the hash. It scrolls sideways
+            rather than wrapping, and that is not a styling preference.</p>
+
+            <p>Line breaks are part of what gets hashed. A soft-wrapped display invents line structure
+            that is not in the bytes &mdash; so the one pane whose entire job is to show you the input
+            exactly was quietly misrepresenting it. One client was breaking lines <em>mid-word</em>.
+            Real lines now, in every client.</p>
+
+            <h2>The page that stopped grading itself</h2>
+
+            <p>The same principle took something away from our own front page.</p>
+
+            <p>It carried a live demo: edit a claim, press Verify, watch a green &ldquo;Verified&rdquo;
+            appear or a red failure when you changed a character. It ran the real pipeline. It was also
+            quietly self-defeating, because the verdict was drawn by the page, in a box the page
+            controls. Any page can print a green tick &mdash; including a convincing copy of ours. The
+            reader best equipped to notice that is exactly the reader we most need to convince, and the
+            habit it teaches, <em>look for the badge in the page</em>, is the one this project exists to
+            break.</p>
+
+            <p>So the demo now stops one step earlier. It hashes your text, builds the issuer&rsquo;s
+            lookup URL, and hands it to you as a link. You follow it, and the answer arrives in your own
+            address bar from the issuer&rsquo;s domain: 200 if they stand behind that exact text, 404 if
+            they have never published it. Edit a character and the address changes completely. Same
+            lesson, and now the page demonstrates the trust boundary instead of contradicting it.</p>
+
+            <p>There is a test that asserts no verdict is ever rendered there. If someone reinstates the
+            tick, the build fails and they have to argue with the test&rsquo;s name.</p>
+
+            <h2>What this does and does not prove</h2>
+
+            <ul>
+                <li><strong>It proves the text is unaltered</strong> since the issuer published its
+                hash. Change one byte and the lookup misses.</li>
+                <li><strong>It proves the issuer stands behind it right now</strong> &mdash; the answer
+                is live, so a withdrawn or revoked claim stops verifying.</li>
+                <li><strong>It does not prove the claim is true.</strong> A self-verified reference is
+                one person&rsquo;s word, cryptographically pinned. Pinning a claim does not make it
+                accurate.</li>
+                <li><strong>It does not confer authority.</strong> Nothing you write about yourself in
+                your own metadata will turn amber into green. Only an independent endorser does that,
+                and inventing one you control would be trust theatre.</li>
+            </ul>
+
+            <p>Which is why amber is not a defect to be fixed on the way to green. For a personal
+            reference, amber <em>is</em> the correct reading. There is no authority on earth that
+            endorses my opinion of a colleague, and a system that implied otherwise would be worse than
+            useless.</p>
+
+            <h2>The general rule</h2>
+
+            <p>Every change here comes from the same instinct: <strong>a verifier must never claim more
+            than its evidence supports, and must never let a reader infer more than it said.</strong>
+            Green means an independent authority stands behind this. Amber means it verified, and
+            here is exactly how far that goes. The claim is shown as bytes, not as a paraphrase. The
+            domain is shown with the accountable part emphasised. And a page never grades itself.</p>
+
+            <p>None of it makes the tool look more impressive. All of it makes it more useful when
+            something is actually at stake, which is the only moment any of this matters.</p>
+
+            <hr>
+            <div class="post-nav"><a href="index.html">&larr; All posts</a></div>
+        </article>
+    </div>
+</body>
+</html>

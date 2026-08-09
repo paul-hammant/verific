@@ -1,5 +1,11 @@
 [
   {
+    "slug": "amber-is-the-honest-answer",
+    "title": "Amber Is the Honest Answer",
+    "date": "2026-08-09",
+    "summary": "A peer reference verifies successfully and the app deliberately refuses to show green. Live Verify now ships as a Safari extension on iOS, and every client says the same careful thing: verified means the text is unaltered and the issuer stands behind it — not that anyone in authority agrees. Also: why our own front page stopped grading itself."
+  },
+  {
     "slug": "two-ocr-failures-on-one-eink-card",
     "title": "Three OCR Failures on One e-Ink Card — and Why Showing Your Working Beats Hiding It",
     "date": "2026-08-09",
