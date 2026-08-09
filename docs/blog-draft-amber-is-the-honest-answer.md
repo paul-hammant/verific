@@ -8,7 +8,7 @@ Here is a verification that succeeded. The hash matched, the issuer's domain ans
 failed. And the app deliberately refused to show you green.
 
 ![Live Verify running as a Safari extension on iOS: an amber "Verified / Self-Verified" panel,
-"Verified by paul-hammant.**github.io**", the caution line, "Authority claimed: Peer references",
+"Verified by **paulhammant.com**", the caution line, "Authority claimed" with the issuer's own one-line statement,
 and the exact claim text that was hashed.](../public/blog/images/safari-extension-self-verified.png)
 
 This is Live Verify running as a **Safari Web Extension on iOS**, which is new. Select a claim on a
@@ -45,10 +45,10 @@ The colour matters more than it sounds. On one of our clients, self-verified cla
 on the *confirmed green* background, pixel-identical to a claim backed by a fully walked chain of
 endorsers. Two completely different trust situations, one colour. That is fixed everywhere now.
 
-## "Authority claimed: Peer references"
+## "Authority claimed"
 
 An issuer can publish one line stating what kind of authority stands behind its verifications. A tax
-authority says so. A university says so. Mine says *Peer references*, because that is what it is.
+authority says so. A university says so. Mine says *"Paul's peer references: people I've worked with previously that I rate"*, because that is what it is.
 
 The label above it reads **Authority claimed**, and the word is doing deliberate work. Nobody has
 endorsed that sentence. It is me describing myself, presented as such. When there *is* an endorser in
@@ -60,19 +60,41 @@ that reads it sat behind a check for an endorser, so the one line that distingui
 authority" from "bloke with opinions" was invisible in precisely the case where it carries the most
 weight.
 
-## Read the domain, not the subdomain
+## Read the domain the document named
 
-Look at the attribution line: `paul-hammant.`**`github.io`**, with the tail in bold.
+Look at the attribution line: **paulhammant.com**. That is the domain printed beside the reference,
+and the domain a reader would judge.
 
-Earlier versions showed only `github.io`. That was a defensive choice — anyone can take a GitHub
-Pages subdomain, so a hostname like `edinburgh.ac.uk--___dir.github.io` must never be allowed to
-display as if it were Edinburgh. But collapsing to the suffix also hid *who* the tenant was.
+It did not say that until I wrote this post. It said `paul-hammant.github.io`.
 
-Showing the whole hostname with the registrable part emphasised does both jobs at once. You see the
-tenant name, and the weight sits on the part that someone actually registered, renews, is billed for,
-and can be compelled or seized over. On a shared host, the bit before the dot is just a tenancy. The
-spoof case is the one that proves the design: `edinburgh.ac.uk--___dir.`**`github.io`** shows you the
-deception and where the real accountability lies, in the same string.
+My hash files are parked on GitHub Pages. My metadata declares that with a `hashesHostedAt` field,
+and every client was deriving the displayed domain from wherever the hash file turned out to live —
+so a claim naming `paulhammant.com` was being reported as verified by a domain the document never
+mentions. The human reads one name on the page and the app announces another, which is precisely the
+confusion this project exists to remove. Worse: because the app emphasises the registrable domain, it
+was putting the weight on **github.io** — telling readers that *GitHub* stands behind my opinion of a
+colleague.
+
+The rule it should have followed: Barclays could employ a verification provider for a couple of years
+and then bring it all in-house, and nothing should stop working or look different. Where the bytes
+live is infrastructure, like a CDN. Nobody prints "served by Akamai" beside a bank's name.
+
+So the displayed authority now comes from the `verify:` line in every client, and the function that
+checks a hash takes that domain as a required argument — it throws rather than guess. Hosting moved
+out of the trust display entirely.
+
+The emphasis logic still matters, though, for claims whose `verify:` line *does* name a shared host.
+Showing the whole hostname with the registrable part in bold does two jobs at once: you see who the
+tenant is, and the weight sits on the part someone actually registered, renews, is billed for, and
+can be compelled or seized over. The spoof case proves it —
+`edinburgh.ac.uk--___dir.`**`github.io`** shows you the deception and the real accountability in a
+single string.
+
+Which leaves an open question we have started writing down rather than answering: when a claim is
+published on `foo.github.io`, GitHub's name ends up beside a claim it has never seen, and GitHub has
+no say in that. The mirror image of an issuer naming its endorser would be a namespace operator
+disowning its tenants — a file at the suffix itself saying "this verification is not endorsed by us".
+It is worth nothing until an operator publishes one.
 
 ## The claim, on its own lines
 
