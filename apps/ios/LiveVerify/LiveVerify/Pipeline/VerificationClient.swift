@@ -145,17 +145,40 @@ class VerificationClient {
         }
     }
 
+    /// The domain a document named on its verify: line, which is the party the reader is
+    /// asked to trust.
+    ///
+    /// Never derive this from the verification URL: `hashesHostedAt` in the meta may point
+    /// hash lookups at a hosting provider, and that is infrastructure. An issuer can put its
+    /// hash files behind a provider for a couple of years and then bring them in-house, and
+    /// neither the verification nor what the reader sees should change.
+    /// - Parameter baseURL: e.g. "verify:example.com/c", "vfy:example.com/c", "https://example.com/c"
+    static func authorityDomain(from baseURL: String) -> String {
+        let lower = baseURL.lowercased()
+        var urlPart = baseURL
+        if lower.hasPrefix("verify:") {
+            urlPart = String(baseURL.dropFirst(7))
+        } else if lower.hasPrefix("vfy:") {
+            urlPart = String(baseURL.dropFirst(4))
+        } else if lower.hasPrefix("https://") {
+            urlPart = String(baseURL.dropFirst(8))
+        }
+        return urlPart.components(separatedBy: "/").first ?? urlPart
+    }
+
     /// Verify a hash against the issuer's endpoint
     /// - Parameters:
-    ///   - verificationURL: Full verification URL (https://domain.com/path/hash)
+    ///   - verificationURL: Full verification URL (https://host/path/hash) - where the bytes live
     ///   - meta: Optional verification-meta.json for response type interpretation
+    ///   - authorityDomain: The domain the document named on its verify: line. This is what
+    ///     the reader is shown, never the host that served the bytes.
     /// - Returns: Verification outcome
-    func verify(verificationURL: String, meta: [String: Any]?) async -> VerificationOutcome {
+    func verify(verificationURL: String, meta: [String: Any]?, authorityDomain: String) async -> VerificationOutcome {
         guard let url = URL(string: verificationURL) else {
-            return .denying(domain: "unknown", reason: "Invalid URL")
+            return .denying(domain: authorityDomain, reason: "Invalid URL")
         }
 
-        let domain = url.host ?? "unknown"
+        let domain = authorityDomain
 
         do {
             let (data, response) = try await session.data(from: url)

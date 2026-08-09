@@ -453,7 +453,8 @@ class MainActivity : AppCompatActivity() {
                     Log.d(TAG, "Trying candidate $i/${candidates.size}: hash=${hash.take(16)}... (${candidate.count { it == '\n' } + 1} lines)")
 
                     triedCandidates.add(DiagnosticAdapter.NormalizedCandidate(normalized, hash))
-                    val candidateResult = VerificationLogic.verifyHash(url)
+                    val candidateResult = VerificationLogic.verifyHash(
+                        url, VerificationLogic.authorityDomain(urlResult.url))
 
                     if (candidateResult is VerificationResult.Verified) {
                         Log.d(TAG, "Candidate $i matched!")

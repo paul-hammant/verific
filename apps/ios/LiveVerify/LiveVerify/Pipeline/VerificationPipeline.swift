@@ -447,7 +447,11 @@ class VerificationPipeline: ObservableObject {
         }
 
         // Step 8: Verify against issuer endpoint
-        let outcome = await verificationClient.verify(verificationURL: verificationURL, meta: meta)
+        let outcome = await verificationClient.verify(
+            verificationURL: verificationURL,
+            meta: meta,
+            authorityDomain: VerificationClient.authorityDomain(from: baseURL)
+        )
 
         // Check authorization chain if meta has authorizedBy
         var authorization: AuthorizationResult?
@@ -585,7 +589,11 @@ class VerificationPipeline: ObservableObject {
         }
 
         // Verify against issuer endpoint
-        let outcome = await verificationClient.verify(verificationURL: verificationURL, meta: meta)
+        let outcome = await verificationClient.verify(
+            verificationURL: verificationURL,
+            meta: meta,
+            authorityDomain: VerificationClient.authorityDomain(from: baseURL)
+        )
 
         // Check authorization chain if meta has authorizedBy
         var authorization: AuthorizationResult?
@@ -657,7 +665,11 @@ class VerificationPipeline: ObservableObject {
         }
 
         // Verify
-        let outcome = await verificationClient.verify(verificationURL: verificationURL, meta: meta)
+        let outcome = await verificationClient.verify(
+            verificationURL: verificationURL,
+            meta: meta,
+            authorityDomain: VerificationClient.authorityDomain(from: baseURL)
+        )
 
         // Check authorization chain
         var authorization: AuthorizationResult?

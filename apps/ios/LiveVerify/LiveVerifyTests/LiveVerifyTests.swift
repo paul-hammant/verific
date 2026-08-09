@@ -148,7 +148,7 @@ final class VerificationClientTests: XCTestCase {
             return (response, verifiedData)
         }
 
-        let result = await client.verify(verificationURL: "https://example.com/c/abc123", meta: nil)
+        let result = await client.verify(verificationURL: "https://example.com/c/abc123", meta: nil, authorityDomain: "example.com")
 
         if case .affirming(let domain, let status) = result {
             XCTAssertEqual(domain, "example.com")
@@ -168,7 +168,7 @@ final class VerificationClientTests: XCTestCase {
             return (response, jsonData)
         }
 
-        let result = await client.verify(verificationURL: "https://example.com/c/abc123", meta: nil)
+        let result = await client.verify(verificationURL: "https://example.com/c/abc123", meta: nil, authorityDomain: "example.com")
 
         if case .affirming(let domain, let status) = result {
             XCTAssertEqual(domain, "example.com")
@@ -188,7 +188,7 @@ final class VerificationClientTests: XCTestCase {
             return (response, jsonData)
         }
 
-        let result = await client.verify(verificationURL: "https://example.com/c/abc123", meta: nil)
+        let result = await client.verify(verificationURL: "https://example.com/c/abc123", meta: nil, authorityDomain: "example.com")
 
         if case .denying(let domain, let reason) = result {
             XCTAssertEqual(domain, "example.com")
@@ -204,7 +204,7 @@ final class VerificationClientTests: XCTestCase {
             return (response, Data())
         }
 
-        let result = await client.verify(verificationURL: "https://example.com/c/abc123", meta: nil)
+        let result = await client.verify(verificationURL: "https://example.com/c/abc123", meta: nil, authorityDomain: "example.com")
 
         if case .denying(let domain, let reason) = result {
             XCTAssertEqual(domain, "example.com")
@@ -220,7 +220,7 @@ final class VerificationClientTests: XCTestCase {
             return (response, Data())
         }
 
-        let result = await client.verify(verificationURL: "https://example.com/c/abc123", meta: nil)
+        let result = await client.verify(verificationURL: "https://example.com/c/abc123", meta: nil, authorityDomain: "example.com")
 
         if case .denying(let domain, let reason) = result {
             XCTAssertEqual(domain, "example.com")
@@ -235,7 +235,7 @@ final class VerificationClientTests: XCTestCase {
             throw NSError(domain: NSURLErrorDomain, code: NSURLErrorNotConnectedToInternet, userInfo: nil)
         }
 
-        let result = await client.verify(verificationURL: "https://example.com/c/abc123", meta: nil)
+        let result = await client.verify(verificationURL: "https://example.com/c/abc123", meta: nil, authorityDomain: "example.com")
 
         if case .networkError(let domain, let error) = result {
             XCTAssertEqual(domain, "example.com")
@@ -261,7 +261,7 @@ final class VerificationClientTests: XCTestCase {
             ]
         ]
 
-        let result = await client.verify(verificationURL: "https://example.com/c/abc123", meta: meta)
+        let result = await client.verify(verificationURL: "https://example.com/c/abc123", meta: meta, authorityDomain: "example.com")
 
         if case .affirming(let domain, let status) = result {
             XCTAssertEqual(domain, "example.com")
@@ -398,7 +398,7 @@ final class VerificationClientTests: XCTestCase {
             ]
         ]
 
-        let result = await client.verify(verificationURL: "https://example.com/c/abc123", meta: meta)
+        let result = await client.verify(verificationURL: "https://example.com/c/abc123", meta: meta, authorityDomain: "example.com")
 
         if case .denying(let domain, let reason) = result {
             XCTAssertEqual(domain, "example.com")
@@ -650,5 +650,74 @@ final class StringJSEscapedTests: XCTestCase {
     func testStringWithBackslash() {
         let str = "path\\to\\file"
         XCTAssertEqual(str.jsEscaped, "path\\\\to\\\\file")
+    }
+}
+
+/// The displayed domain must be the one the DOCUMENT named, not whichever host served the
+/// hash file. `hashesHostedAt` lets an issuer park its hash files with a provider; moving
+/// them, or bringing them back in-house, must change nothing the reader sees.
+final class AuthorityDomainTests: XCTestCase {
+
+    func testAuthorityDomainFromVerifyPrefix() {
+        XCTAssertEqual(VerificationClient.authorityDomain(from: "verify:paulhammant.com/refs"),
+                       "paulhammant.com")
+    }
+
+    func testAuthorityDomainFromVfyPrefix() {
+        XCTAssertEqual(VerificationClient.authorityDomain(from: "vfy:barclays.co.uk/c"),
+                       "barclays.co.uk")
+    }
+
+    func testAuthorityDomainFromHttps() {
+        XCTAssertEqual(VerificationClient.authorityDomain(from: "https://barclays.co.uk/c/x"),
+                       "barclays.co.uk")
+    }
+
+    func testAuthorityDomainWithNoPath() {
+        XCTAssertEqual(VerificationClient.authorityDomain(from: "verify:example.com"), "example.com")
+    }
+
+    /// The scenario the rule exists for: an issuer outsources hash hosting, then brings it
+    /// back in-house. The reader sees the issuer both times.
+    func testHostingProviderIsNeverShownAsTheAuthority() async {
+        MockURLProtocol.requestHandler = { request in
+            let response = HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!
+            return (response, "{\"status\":\"verified\"}".data(using: .utf8)!)
+        }
+
+        // Hashes parked with a provider today...
+        let outsourced = await client.verify(
+            verificationURL: "https://live-verifiers-inc.com/barclays/abc123",
+            meta: ["hashesHostedAt": "https://live-verifiers-inc.com/barclays"],
+            authorityDomain: "barclays.co.uk")
+
+        // ...and served in-house tomorrow.
+        let inHouse = await client.verify(
+            verificationURL: "https://barclays.co.uk/c/abc123",
+            meta: nil,
+            authorityDomain: "barclays.co.uk")
+
+        for result in [outsourced, inHouse] {
+            guard case .affirming(let domain, _) = result else {
+                XCTFail("Expected .affirming, got \(result)")
+                return
+            }
+            XCTAssertEqual(domain, "barclays.co.uk")
+        }
+    }
+
+    // Reuse the mocked client from the suite above
+    private var client: VerificationClient!
+
+    override func setUp() {
+        super.setUp()
+        let config = URLSessionConfiguration.ephemeral
+        config.protocolClasses = [MockURLProtocol.self]
+        client = VerificationClient(session: URLSession(configuration: config))
+    }
+
+    override func tearDown() {
+        MockURLProtocol.requestHandler = nil
+        super.tearDown()
     }
 }

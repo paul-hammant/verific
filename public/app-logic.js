@@ -342,8 +342,20 @@ async function fetchVerificationMeta(baseUrl) {
  * @param {Object} meta - Optional metadata for response interpretation
  * @returns {Promise<{success: boolean, status: string, domain: string}>}
  */
-async function verifyHash(verificationUrl, meta) {
-    const domain = new URL(verificationUrl).hostname;
+async function verifyHash(verificationUrl, meta, authorityDomain) {
+    // The domain shown to the reader is the one the DOCUMENT named on its verify: line —
+    // never whichever host happened to serve the bytes.
+    //
+    // meta.hashesHostedAt is a hosting hint, not a delegation of authority: an issuer may
+    // put its hash files behind a provider for a couple of years and then bring them
+    // in-house, and neither the verification nor what the reader sees should change. The
+    // provider is infrastructure, like a CDN — nobody displays "served by Akamai" beside a
+    // bank's name, and displaying it here would make an issuer's hosting choices look like
+    // trust changes.
+    if (!authorityDomain) {
+        throw new Error('verifyHash requires the authority domain from the verify: line');
+    }
+    const domain = authorityDomain;
 
     try {
         const response = await fetch(verificationUrl);

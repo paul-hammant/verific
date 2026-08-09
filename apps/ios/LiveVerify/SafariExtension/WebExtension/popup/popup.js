@@ -33,6 +33,7 @@ import {
     extractVerificationUrl,
     extractCertText,
     findStrandedText,
+    extractDomain,
     buildVerificationUrl,
     buildMetaUrl,
     fetchVerificationMeta,
@@ -135,7 +136,12 @@ async function verifySelection(selectedText) {
     const normalizedText = normalizeText(certText, meta);
     const hash = await sha256(normalizedText);
     const verificationUrl = buildVerificationUrl(baseUrl, hash, meta);
-    const verifyResult = await verifyHash(verificationUrl, meta);
+
+    // Credit the domain the document named, not whichever host served the hash file.
+    // meta.hashesHostedAt is a hosting hint: an issuer may move its files to a provider
+    // and back again, and none of that should change who the reader sees.
+    const authorityDomain = extractDomain(baseUrl);
+    const verifyResult = await verifyHash(verificationUrl, meta, authorityDomain);
 
     let authorization = null;
     if (meta && meta.authorizedBy) {
@@ -144,7 +150,7 @@ async function verifySelection(selectedText) {
 
     renderResult({
         verifyResult,
-        registrableDomain: extractDomainAuthority(verificationUrl),
+        registrableDomain: extractDomainAuthority(`https://${authorityDomain}`),
         issuerDescription: meta?.description ?? null,
         // The one line stating what kind of authority stands behind this. Read straight
         // from the meta rather than from checkAuthorization, which never reaches it when

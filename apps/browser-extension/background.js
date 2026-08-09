@@ -207,14 +207,16 @@ async function verifySelection(selectedText, tab) {
     console.log('[LiveVerify] Verification URL:', verificationUrl);
 
     // Verify against endpoint
-    const verifyResult = await verifyHash(verificationUrl, meta);
+    const verifyResult = await verifyHash(verificationUrl, meta, domain);
     console.log('[LiveVerify] Verify result:', verifyResult.success ? 'SUCCESS' : 'FAILED', verifyResult.status);
 
-    // Extract registrable domain via PSL for domain emphasis display
+    // Extract registrable domain via PSL for domain emphasis display.
+    // From the AUTHORITY the document named, not the host serving the hash files —
+    // meta.hashesHostedAt is a hosting hint and must not change who gets the credit.
     let registrableDomain = '';
     let domainNotListed = false;
     try {
-        const authority = extractDomainAuthority(verificationUrl);
+        const authority = extractDomainAuthority(`https://${domain}`);
         registrableDomain = authority;
         // Check if the TLD is in the PSL
         if (typeof psl !== 'undefined' && psl.parse) {
@@ -608,13 +610,13 @@ async function verifyText(selectedText) {
     const verificationUrl = buildVerificationUrl(baseUrl, hash, meta);
 
     // Verify against endpoint
-    const verifyResult = await verifyHash(verificationUrl, meta);
+    const verifyResult = await verifyHash(verificationUrl, meta, domain);
 
     // Extract registrable domain via PSL
     let registrableDomain = '';
     let domainNotListed = false;
     try {
-        registrableDomain = extractDomainAuthority(verificationUrl);
+        registrableDomain = extractDomainAuthority(`https://${domain}`);
         if (typeof psl !== 'undefined' && psl.parse) {
             const parsed = psl.parse(verifyResult.domain);
             if (!parsed.listed) {

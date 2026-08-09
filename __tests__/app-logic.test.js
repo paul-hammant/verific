@@ -45,6 +45,7 @@ const {
     trimToFirstLinePattern,
     extractCertText,
     findStrandedText,
+    verifyHash,
     hashMatchesUrl,
     buildVerificationUrl,
     extractDomain,
@@ -352,6 +353,63 @@ verify:Example.COM/VeRiFy/PaTh`;
                 const result = extractVerificationUrl(rawText);
                 expect(result.url).toBe('verify:Example.COM/VeRiFy/PaTh');
             });
+        });
+    });
+
+    describe('verifyHash authority display', () => {
+        // hashesHostedAt is a hosting hint, not a delegation of authority. Barclays could
+        // employ live-verifiers-inc.com for a couple of years and then bring it all
+        // in-house: neither the verification nor what the reader sees should change.
+        const okJson = () => Promise.resolve({
+            ok: true, status: 200, text: () => Promise.resolve('{"status":"verified"}')
+        });
+
+        let originalFetch;
+        beforeEach(() => { originalFetch = global.fetch; });
+        afterEach(() => { global.fetch = originalFetch; });
+
+        it('credits the domain from the verify: line, not the hosting provider', async () => {
+            global.fetch = jest.fn(okJson);
+            const result = await verifyHash(
+                'https://live-verifiers-inc.com/barclays/abc123',
+                { hashesHostedAt: 'https://live-verifiers-inc.com/barclays' },
+                'barclays.co.uk');
+
+            expect(result.success).toBe(true);
+            expect(result.domain).toBe('barclays.co.uk');
+        });
+
+        it('shows the same domain once hosting is brought in-house', async () => {
+            global.fetch = jest.fn(okJson);
+            const outsourced = await verifyHash(
+                'https://live-verifiers-inc.com/barclays/abc123',
+                { hashesHostedAt: 'https://live-verifiers-inc.com/barclays' },
+                'barclays.co.uk');
+            const inHouse = await verifyHash(
+                'https://barclays.co.uk/c/abc123', null, 'barclays.co.uk');
+
+            expect(inHouse.domain).toBe(outsourced.domain);
+        });
+
+        it('names the authority when the lookup 404s, not the host that answered', async () => {
+            global.fetch = jest.fn(() => Promise.resolve({
+                ok: false, status: 404, text: () => Promise.resolve('')
+            }));
+            const result = await verifyHash(
+                'https://live-verifiers-inc.com/barclays/abc123',
+                { hashesHostedAt: 'https://live-verifiers-inc.com/barclays' },
+                'barclays.co.uk');
+
+            expect(result.success).toBe(false);
+            expect(result.domain).toBe('barclays.co.uk');
+            expect(result.status).toContain('barclays.co.uk');
+            expect(result.status).not.toContain('live-verifiers-inc');
+        });
+
+        it('refuses to guess the authority if it was not supplied', async () => {
+            global.fetch = jest.fn(okJson);
+            await expect(verifyHash('https://example.com/c/abc123', null))
+                .rejects.toThrow(/authority domain/i);
         });
     });
 

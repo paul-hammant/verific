@@ -154,7 +154,7 @@
                 color: #bbb;
                 text-align: center;
             "></div>
-            <div id="tsv-modal-details" style=""
+            <div id="tsv-modal-details" style="
                 display: none;
                 padding: 16px 20px;
                 background: #16213e;
@@ -393,17 +393,19 @@
         const verificationUrl = buildVerificationUrl(baseUrl, hash, metadata);
         console.log('[TSV] Verification URL:', verificationUrl);
 
-        // Step 7: Extract domain for display
+        // Step 7: Extract domain for display.
+        // From the verify: line the document carries — NOT from verificationUrl, which
+        // meta.hashesHostedAt may point at a hosting provider. Where the hash file lives
+        // is infrastructure; an issuer moving it must not change who the reader credits.
         let domain = '';
         let registrableDomain = '';
         let domainNotListed = false;
         try {
-            const urlObj = new URL(verificationUrl);
-            domain = urlObj.hostname;
+            domain = extractDomain(baseUrl);
 
             // Use extractDomainAuthority (PSL-based) for registrable domain emphasis
             if (typeof extractDomainAuthority === 'function') {
-                registrableDomain = extractDomainAuthority(verificationUrl);
+                registrableDomain = extractDomainAuthority(`https://${domain}`);
             }
             // Check if domain TLD is recognized by PSL
             if (typeof psl !== 'undefined' && psl.parse) {

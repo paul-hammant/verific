@@ -288,14 +288,22 @@ object VerificationLogic {
      * @param verificationUrl Full verification URL with hash
      * @return VerificationResult indicating success/failure
      */
-    suspend fun verifyHash(verificationUrl: String): VerificationResult = withContext(Dispatchers.IO) {
+    /**
+     * @param authorityDomain the domain the document named on its verify: line — the party
+     *   the reader is asked to trust, and the only one shown. Never derived from
+     *   verificationUrl: `hashesHostedAt` may point hash lookups at a hosting provider, and
+     *   that is infrastructure. An issuer can park its hash files with a provider for a
+     *   couple of years then bring them in-house, and neither the verification nor what the
+     *   reader sees should change.
+     */
+    suspend fun verifyHash(verificationUrl: String, authorityDomain: String): VerificationResult = withContext(Dispatchers.IO) {
         try {
             val request = Request.Builder()
                 .url(verificationUrl)
                 .build()
 
             val response = client.newCall(request).execute()
-            val domain = getDomainFromUrl(verificationUrl)
+            val domain = authorityDomain
             when (response.code) {
                 200 -> {
                     val bodyText = response.body?.string()?.trim() ?: ""
@@ -323,6 +331,24 @@ object VerificationLogic {
         } catch (e: Exception) {
             VerificationResult.Error(e.message ?: "Network error")
         }
+    }
+
+    /**
+     * The domain a document named on its verify: line — the party the reader is asked to
+     * trust, and the only one shown.
+     *
+     * @param baseUrl e.g. "verify:example.com/c", "vfy:example.com/c", "https://example.com/c"
+     */
+    fun authorityDomain(baseUrl: String): String {
+        val lower = baseUrl.lowercase()
+        val urlPart = when {
+            lower.startsWith("verify:") -> baseUrl.substring(7)
+            lower.startsWith("vfy:") -> baseUrl.substring(4)
+            lower.startsWith("https://") -> baseUrl.substring(8)
+            lower.startsWith("http://") -> baseUrl.substring(7)
+            else -> baseUrl
+        }
+        return urlPart.substringBefore("/")
     }
 
     fun getDomainFromUrl(url: String): String {
