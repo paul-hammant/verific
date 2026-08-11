@@ -96,8 +96,8 @@ acts.
 **South Korea — permitted, no UK-government conversation needed.** South Korea is not an embargoed
 destination. Paul could, from the UK, answer questions about Live Verify put to him by the South Korean
 government, provide ordinary technical explanation of how the protocol works, and go on to **add South
-Korea's chosen root to the bundled sovereign-roots list** — say `승인.go.kr`, or whatever namespace
-they nominate — so that South Korean issuers anchor GREEN as "Anchored to South Korea government." None
+Korea's chosen root to the bundled sovereign-roots list** — say `승인.go.kr` (승인 means "approval"),
+or whatever namespace they nominate — so that South Korean issuers anchor GREEN as "Anchored to South Korea government." None
 of that requires a licence or any dialogue with the UK government. It is ordinary open-source
 dissemination plus a one-line, ceremony-free list entry, exactly as the [sovereign-roots
 list](sovereign-roots.md) is designed to work.
