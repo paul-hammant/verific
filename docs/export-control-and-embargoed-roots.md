@@ -60,6 +60,19 @@ related to the use or development of the technology) is prohibited where there i
 notification from the Secretary of State, that the technology is intended for **WMD purposes**.
 Restricted regimes are higher-risk candidates for such notifications.
 
+**Article 19 is, in practice, the least applicable of the three to Live Verify — and almost certainly
+does not apply.** Live Verify is a document-authenticity checker: it hashes a claim and asks the
+issuer's domain whether that hash is one it stands behind. It has **no plausible role in the design,
+development, production, or use of a weapon of mass destruction**, and no realistic pathway by which
+confirming that a certificate is unaltered contributes to a WMD programme. Article 19 bites on
+technology with a credible WMD nexus; a verification protocol has none. It is listed here for
+completeness — it is one of the Order's prohibitions and this note surveys them all — not because there
+is a genuine WMD end-use concern. The only reason it surfaces at all is the abstract dual-use hook in
+the item above (that any use of cryptography *could* attract information-security controls), and even
+that is a classification question about the software's category, not a claim that Live Verify has a
+WMD use. If the Secretary of State ever issued a specific notification, that notification would govern;
+absent one, Article 19 has no purchase here.
+
 ## The public-domain exception — and its limit
 
 As an open-source project, the *general code* of Live Verify is protected by **Article 18**, under
@@ -123,8 +136,10 @@ North Korea change character:
   **Article 20** could read as an act *calculated to promote* the technology's use and legitimacy in an
   embargoed destination.
 - **Answering the DPRK government's questions and providing tailored technical support** could amount to
-  **technical assistance** beyond mere public dissemination, and — given the WMD-risk profile of the
-  regime — engages **Article 19**.
+  **technical assistance** beyond mere public dissemination. (Article 19's WMD-end-use limb is a
+  further, separate prohibition, but — as noted above — it does not realistically apply to a
+  document-verification tool; the operative concern here is the Article 20 promotion point and the
+  general prohibition on technical assistance to an embargoed destination, not WMD end-use.)
 
 So the very same maintainer, doing the very same two things (explain the protocol; add the country's
 root), is on the right side of the line for Seoul and would likely need a **Secretary of State licence**
