@@ -4,7 +4,10 @@ This note records why the bundled [sovereign-roots list](sovereign-roots.md) sho
 embargoed destinations** — and why *adding* one is not a neutral technical act but a regulated one
 under UK export law. It is a legal-context note, not legal advice; anyone shipping the list from the UK
 who wishes to include a restricted jurisdiction should take their own advice and, where required, seek
-a licence.
+a licence. The UK lens applies because the project's maintainer is UK-resident today; at maturity the
+list is a multi-vendor, multi-government standards artifact, and the [closing
+section](#at-maturity-a-standards-committee-and-many-governments-watching) explains how the scrutiny
+distributes across many jurisdictions rather than one.
 
 The governing instrument is the UK **Export Control Order 2008**.
 
@@ -148,6 +151,40 @@ that the list confers. Verification and anchoring remain two separate signals.
 Maintaining neutrality by excluding embargoed destinations therefore aligns with Schedule 4 while
 preserving the protocol's honest-limit posture: the app declines to *vouch* for a root it is not
 lawfully permitted to vouch for, rather than pretending the jurisdiction does not exist.
+
+## At maturity: a standards committee, and many governments watching
+
+Everything above is framed around *today's* reality — a single UK-resident maintainer shipping the
+list, so UK export law is the lens that applies to him. That is the right lens now, but it is not the
+end state, and the doc would be misleading if it implied the UK is the permanent gatekeeper.
+
+At maturity the sovereign-roots list is not one person's file. It is a **standards-committee artifact**,
+maintained the way browser CA root stores actually are — by the platform vendors who ship the
+verification technology: **Apple, Google, Microsoft, Samsung, Adobe**, and their peers, sitting on a
+standards body that governs the list in the open (the PSL / CA-root-store model the
+[sovereign-roots](sovereign-roots.md) doc already points to). Once that is the case:
+
+- **The maintainer's single-jurisdiction export exposure stops being the whole story.** A change is
+  made by a multi-vendor body, not by one UK person, so it is not a UK-person's unilateral act in the
+  Article 20 sense. Each participating vendor remains answerable to its own home jurisdictions, which is
+  a broader and more robust constraint than any one maintainer's.
+- **Additions are scrutinised by more governments than just the UK.** A prospective root — especially a
+  contested or restricted one — would be reviewed against the export-control, sanctions, and
+  national-security regimes of *multiple* states (the US, the EU, and others whose vendors sit on the
+  committee), not the UK alone. That is a feature: it makes it far harder for any single government to
+  quietly insert, or quietly force the exclusion of, a root — neutrality across many jurisdictions is
+  what lets rival adopters co-trust the list at all.
+- **The exclusion rule generalises.** "Exclude embargoed destinations, by default, unless covered by
+  the relevant government authority" is not a UK-only rule; it is the shape every participating
+  jurisdiction's controls impose. A root that is embargoed under several members' regimes simply will
+  not clear committee review, whoever proposes it.
+
+So the UK-export-control analysis in this note is best read as the **current, concrete instance** of a
+general principle: *adding a sovereign root is a regulated act answerable to real governments, and the
+governance is designed to distribute that scrutiny across many of them rather than concentrate it in
+one.* The list stays a plain, one-line-per-country artifact; what changes with maturity is that the
+authority behind each line is a multi-vendor, multi-government process, not a lone maintainer under a
+single flag.
 
 ## Related
 
