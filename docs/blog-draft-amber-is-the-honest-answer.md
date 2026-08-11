@@ -17,6 +17,14 @@ one it stands behind. Same normalization, same SHA-256, same lookup as the Chrom
 native apps — literally the same JavaScript, generated from one canonical source, so the hashes
 cannot drift apart.
 
+One disclosure, in the spirit of the rest of this post: that screenshot is from the **iOS Simulator**,
+not a physical iPhone. Not for want of trying — on our test iPhone the extension appears in Safari's
+list but its enable toggle is *ghosted*, and so is every other extension's. That is a device policy
+(Screen Time / Content & Privacy Restrictions, enforced by a configuration profile), not anything in
+our code, and it greys the toggles wherever they appear. The Simulator enables the extension normally
+and runs the identical build, so it is a faithful functional test — but we would rather tell you it
+was the Simulator than let a screenshot imply a device story we cannot yet show.
+
 But the interesting part is not that it worked. It is what the app says *after* it works.
 
 ## Green would have been a lie

@@ -104,8 +104,9 @@
 
             <figure>
                 <img src="images/safari-extension-self-verified.png" alt="Live Verify running as a Safari extension on iOS. An amber panel reads Verified, Self-Verified. Below: Verified by paulhammant.com in bold; No government or regulator attests to this self-verification — proceed with caution; Authority claimed, giving the issuer's own one-line statement of what backs these references; and the claim text that was hashed.">
-                <figcaption>A real peer reference, verified. Amber, not green &mdash; and every line
-                under the verdict is there to stop you over-reading it.</figcaption>
+                <figcaption>A real peer reference, verified, in the Live Verify Safari extension (iOS
+                Simulator &mdash; see the note below). Amber, not green &mdash; and every line under the
+                verdict is there to stop you over-reading it.</figcaption>
             </figure>
 
             <p>This is Live Verify running as a <strong>Safari Web Extension on iOS</strong>, which is
@@ -113,6 +114,16 @@
             issuer&rsquo;s domain whether that hash is one it stands behind. Same normalization, same
             SHA-256, same lookup as the Chrome extension and the native apps &mdash; literally the same
             JavaScript, generated from one canonical source, so the hashes cannot drift apart.</p>
+
+            <p>One disclosure, in the spirit of the rest of this post: that screenshot is from the
+            <strong>iOS Simulator</strong>, not a physical iPhone. Not for want of trying &mdash; on our
+            test iPhone the extension appears in Safari&rsquo;s list but its enable toggle is
+            <em>ghosted</em>, and so is every other extension&rsquo;s. That is a device policy (Screen
+            Time / Content &amp; Privacy Restrictions, enforced by a configuration profile), not
+            anything in our code, and it greys the toggles wherever they appear. The Simulator enables
+            the extension normally and runs the identical build, so it is a faithful functional test
+            &mdash; but we would rather tell you it was the Simulator than let a screenshot imply a
+            device story we cannot yet show.</p>
 
             <p>But the interesting part is not that it worked. It is what the app says <em>after</em>
             it works.</p>
