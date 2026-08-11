@@ -104,7 +104,8 @@ Which leaves an open question we have started writing down rather than answering
 published on `foo.github.io`, GitHub's name ends up beside a claim it has never seen, and GitHub has
 no say in that. The mirror image of an issuer naming its endorser would be a namespace operator
 disowning its tenants — a file at the suffix itself saying "this verification is not endorsed by us".
-It is worth nothing until an operator publishes one.
+It is worth nothing until an operator publishes one. (Specified as a proposal in
+[public-suffix-operator-disclaimer.md](public-suffix-operator-disclaimer.md).)
 
 ## The claim, on its own lines
 

@@ -145,3 +145,18 @@ beside a bank's name.
   verdict modifier — the claim's verification is unaffected — so probably the latter.
 - **Adoption.** This is worth nothing until an operator publishes one. Worth approaching GitHub with
   a working implementation rather than a proposal.
+
+## Related
+
+- [spoofing-countermeasures.md](spoofing-countermeasures.md) — domain emphasis and the
+  `*.github.io` collapse this disclaimer completes; the `edinburgh.ac.uk--___dir.github.io` case.
+- [authority-chain-app-display.md](authority-chain-app-display.md) — how the authority row (where this
+  disclaimer would render) is displayed.
+- [authority-chain-spec.md](authority-chain-spec.md) — the `authorizedBy` chain this is the mirror
+  image of (issuer names its endorser ↔ operator disowns its tenant).
+- [sovereign-roots.md](sovereign-roots.md) — the same PSL-governed known-suffix list this lookup keys
+  off; a listed public suffix is the trigger condition.
+- [lets-encrypt-precedent.md](lets-encrypt-precedent.md) — the neutral-steward / root-store governance
+  model this shares.
+- Blog: *Amber Is the Honest Answer* (`public/blog/amber-is-the-honest-answer.html`) — the post that
+  surfaced this open question in prose.

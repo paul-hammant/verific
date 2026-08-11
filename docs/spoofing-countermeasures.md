@@ -123,7 +123,7 @@ This is specifically relevant to the "authority-issued claim on a third-party si
 ### Implemented
 
 - **Authority chain**: Even if `evil.com` returns "verified", the popup and banner show the domain. Without an `authorizedBy` chain to a recognised authority, the verification is self-asserted. Users should check who is verifying, not just that something says "verified."
-- **Domain emphasis**: The registrable domain is bolded in results (e.g., verify.**example.com**) to draw attention to the actual issuer.
+- **Domain emphasis**: The registrable domain is bolded in results (e.g., verify.**example.com**) to draw attention to the actual issuer. For multi-tenant public suffixes (`foo.github.io`), this collapses to the operator's registrable domain — see [public-suffix-operator-disclaimer.md](public-suffix-operator-disclaimer.md) for the proposed way an operator can additionally disown a tenant's claim ("this verification is not endorsed by us").
 - **Banner disclaimer**: "screencaps of this are not proof of anything" reminds users that the in-page UI is not tamper-proof evidence.
 - **Badge count per tab**: The `X/N` toolbar badge is set via the Chrome extension API, which page JS cannot access or spoof.
 
