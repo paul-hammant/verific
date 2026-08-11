@@ -81,8 +81,12 @@ truncation are both correct now, so it's a clean single-glyph miss. Three things
 
 - **The card was authored with a superscript ordinal** — the smallest, highest-detail glyph on the
   card, first to break.
-- **The card was small in the viewfinder** — sat well back among cables, so that tiny superscript was
-  only a few pixels tall, right where a recogniser collapses detail into the nearest simple shape.
+- **The card was small in the viewfinder** — the unglamorous reason: an impromptu test, the card
+  tethered to a temperamental 2018 Mac mini by a 6-inch USB cable, and that nest of spaghetti behind
+  the machine was the only spot it would reach. So it sits well back among the cables rather than
+  filling the frame, and that tiny superscript ends up only a few pixels tall, right where a
+  recogniser collapses detail into the nearest simple shape. Real captures happen in real, awkward
+  places.
 - **Glossy, low-contrast e-ink under a lamp** — less edge definition to begin with.
 
 The honest fix is *not* in the app. Teaching the pipeline that `"` might mean "th" and silently
