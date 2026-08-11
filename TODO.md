@@ -61,12 +61,16 @@ in the camera app under `PlugIns/`. Sources in `apps/ios/LiveVerify/SafariExtens
 **Verified end-to-end in the iOS Simulator** (9 Aug 2026): enabled in Settings → Apps → Safari →
 Extensions, selected a claim on a training page, and the popup verified it against the issuer.
 
-**Blocked on the physical test iPhone**, not by our code: Safari lists the extension but the
+**Blocked on the physical test iPhone**, and NOT yet diagnosed: Safari lists the extension but the
 enable toggle is greyed in both Settings and Safari's Manage Extensions, and *every* extension is
-greyed, not just ours. Screen Time → Content & Privacy Restrictions is enforced on that device and
-bounces back to "on" when turned off — i.e. a configuration profile / supervision / Family Sharing
-policy, which greys Safari extension toggles wherever they appear. **Use the Simulator to test this
-extension** until that device policy is resolved.
+greyed, not just ours — which points to a device-level restriction rather than a bug in our code.
+Despite extensive fiddling and searching we have **not found how to enable it**. One observation on
+that device: Screen Time → Content & Privacy Restrictions appears enforced and bounces back to "on"
+when turned off, which *suggests* a configuration-profile / supervision / Family-Sharing policy — but
+that is a hypothesis, not a confirmed cause; the actual setting responsible is still unidentified.
+**Use the Simulator to test this extension** until on-device enablement is cracked. (Next things to
+try: check for an MDM/config profile in Settings → General → VPN & Device Management; a different,
+unrestricted iPhone; and whether the extension enables on a fresh device with no Screen Time set.)
 
 Not yet done: `verifiable-text` marker auto-scanning, history, settings and i18n, all of which
 the Chrome extension has.
