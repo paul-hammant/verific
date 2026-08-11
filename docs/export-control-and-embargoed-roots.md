@@ -85,6 +85,15 @@ Yes — most likely a **UK licence** would be needed.
 - Where an act is performed under a **general licence**, the actor must **register with the Secretary
   of State within 30 days** of the first act under that licence.
 
+**The approval need not be maintainer-initiated.** "A licence would be required" does not mean the
+maintainer must be the one to go and apply for it. The cleaner real-world path is the reverse: the UK
+government could **instruct** the addition — in effect, *"add `xxx.xx` for country `XXXX`"* — and could
+handle the diplomatic conversation with that jurisdiction itself. In that case the maintainer is acting
+**on the authority of, and at the direction of, UK-gov**, rather than seeking their own permission from
+afar. The point is not who initiates the paperwork; it is that adding an embargoed root is a **regulated
+act that must be covered by UK-government authority in some form** — a licence applied for, or an
+instruction handed down — rather than a unilateral one-line list edit like every unrestricted root.
+
 ## A worked example: the two Koreas
 
 The line between permitted and controlled is easiest to see by contrasting two neighbouring
@@ -125,7 +134,8 @@ This adds an explicit **exclusion criterion** to the [sovereign-roots](sovereign
 
 > **Embargoed destinations (per Schedule 4 of the Export Control Order 2008) are excluded from the
 > bundled sovereign-roots list by default.** Their absence is deliberate, not an oversight. Including
-> one from the UK would likely require a UK licence from the Secretary of State, to avoid breaching
+> one from the UK would need to be covered by UK-government authority — a licence from the Secretary of
+> State, or a government instruction to add it — rather than a unilateral list edit, to avoid breaching
 > trade controls or the prohibition on promoting controlled technology to restricted regimes.
 
 This sits comfortably beside the list's existing design. A chain that terminates at an *unlisted* root
