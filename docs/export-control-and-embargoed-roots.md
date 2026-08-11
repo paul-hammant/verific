@@ -85,6 +85,40 @@ Yes — most likely a **UK licence** would be needed.
 - Where an act is performed under a **general licence**, the actor must **register with the Secretary
   of State within 30 days** of the first act under that licence.
 
+## A worked example: the two Koreas
+
+The line between permitted and controlled is easiest to see by contrasting two neighbouring
+jurisdictions — one unrestricted, one on Schedule 4.
+
+Take the maintainer of this project, **Paul Hammant, resident in the UK**, as the person performing the
+acts.
+
+**South Korea — permitted, no UK-government conversation needed.** South Korea is not an embargoed
+destination. Paul could, from the UK, answer questions about Live Verify put to him by the South Korean
+government, provide ordinary technical explanation of how the protocol works, and go on to **add South
+Korea's chosen root to the bundled sovereign-roots list** — say `승인됨.go.kr`, or whatever namespace
+they nominate — so that South Korean issuers anchor GREEN as "Anchored to South Korea government." None
+of that requires a licence or any dialogue with the UK government. It is ordinary open-source
+dissemination plus a one-line, ceremony-free list entry, exactly as the [sovereign-roots
+list](sovereign-roots.md) is designed to work.
+
+**North Korea — its land neighbour — not permitted the same way.** The Democratic People's Republic of
+Korea sits in **Schedule 4, Part 1** (embargoed, no exception for transit). The *same acts* pointed at
+North Korea change character:
+
+- **Adding `…` under a DPRK government namespace to the list** would produce a GREEN "Anchored to North
+  Korea government" result — an affirmative endorsement built into the shipped software, which under
+  **Article 20** could read as an act *calculated to promote* the technology's use and legitimacy in an
+  embargoed destination.
+- **Answering the DPRK government's questions and providing tailored technical support** could amount to
+  **technical assistance** beyond mere public dissemination, and — given the WMD-risk profile of the
+  regime — engages **Article 19**.
+
+So the very same maintainer, doing the very same two things (explain the protocol; add the country's
+root), is on the right side of the line for Seoul and would likely need a **Secretary of State licence**
+for Pyongyang. The distinction is not the *act*; it is the *destination*. Two countries sharing a land
+border, one a routine list entry, the other a regulated one.
+
 ## Consequence for the list's entry criteria
 
 This adds an explicit **exclusion criterion** to the [sovereign-roots](sovereign-roots.md) governance:
