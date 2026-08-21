@@ -142,7 +142,7 @@ struct ResultView: View {
             HStack(spacing: 4) {
                 Image(systemName: "clock.badge.exclamationmark")
                     .font(.caption)
-                Text("Authorization by \(auth.authorizer ?? "unknown") \u{2014} expired")
+                Text("Endorsement by \(auth.authorizer ?? "unknown") \u{2014} expired")
                     .font(.caption)
                 if let successor = auth.successor {
                     Text("Successor: \(successor)")

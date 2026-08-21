@@ -106,7 +106,7 @@
     "message": "Der Server hat die Anfrage blockiert (CORS). Der Aussteller unterstützt möglicherweise keine Verifizierung im Browser."
   },
   "authByExpired": {
-    "message": "Verifizierungsautorisierung durch $AUTHORIZER$ — abgelaufen",
+    "message": "Befürwortung durch $AUTHORIZER$ — abgelaufen",
     "placeholders": {
       "authorizer": {
         "content": "$1"
@@ -122,7 +122,7 @@
     }
   },
   "authByConfirmed": {
-    "message": "Verifizierung autorisiert durch $AUTHORIZER$",
+    "message": "Befürwortet durch $AUTHORIZER$",
     "placeholders": {
       "authorizer": {
         "content": "$1"
@@ -130,7 +130,7 @@
     }
   },
   "authChainEntry": {
-    "message": "Autorisiert durch $AUTHORIZER$",
+    "message": "Befürwortet durch $AUTHORIZER$",
     "placeholders": {
       "authorizer": {
         "content": "$1"
@@ -138,7 +138,7 @@
     }
   },
   "authByNotConfirmed": {
-    "message": "Verifizierungsautorisierung durch $AUTHORIZER$ — nicht bestätigt",
+    "message": "Befürwortung durch $AUTHORIZER$ — nicht bestätigt",
     "placeholders": {
       "authorizer": {
         "content": "$1"
@@ -146,7 +146,7 @@
     }
   },
   "authClaimsMissing": {
-    "message": "$ISSUER$ behauptet eine Verifizierungsautorisierung durch $AUTHORIZER$ — fehlt",
+    "message": "$ISSUER$ behauptet eine Befürwortung durch $AUTHORIZER$ — fehlt",
     "placeholders": {
       "issuer": {
         "content": "$1"
@@ -318,7 +318,7 @@
     "message": "Selbst verifiziert — keine Behörde oder Aufsichtsstelle bestätigt dies"
   },
   "notifAuthExpired": {
-    "message": "Autorisierung durch $AUTHORIZER$ — abgelaufen",
+    "message": "Befürwortung durch $AUTHORIZER$ — abgelaufen",
     "placeholders": {
       "authorizer": {
         "content": "$1"
@@ -326,7 +326,7 @@
     }
   },
   "notifAuthConfirmed": {
-    "message": "Autorisiert durch $AUTHORIZER$",
+    "message": "Befürwortet durch $AUTHORIZER$",
     "placeholders": {
       "authorizer": {
         "content": "$1"
@@ -334,7 +334,7 @@
     }
   },
   "notifAuthNotConfirmed": {
-    "message": "Autorisierung durch $AUTHORIZER$ — nicht bestätigt",
+    "message": "Befürwortung durch $AUTHORIZER$ — nicht bestätigt",
     "placeholders": {
       "authorizer": {
         "content": "$1"
@@ -342,7 +342,7 @@
     }
   },
   "notifAuthMissing": {
-    "message": "Behauptet eine Autorisierung durch $AUTHORIZER$ — fehlt",
+    "message": "Behauptet eine Befürwortung durch $AUTHORIZER$ — fehlt",
     "placeholders": {
       "authorizer": {
         "content": "$1"
@@ -376,7 +376,7 @@
     "message": "Fehler"
   },
   "badgeAuthorisedBy": {
-    "message": "autorisiert durch $AUTHORIZER$",
+    "message": "befürwortet durch $AUTHORIZER$",
     "placeholders": {
       "authorizer": {
         "content": "$1"
