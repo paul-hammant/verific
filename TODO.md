@@ -1,5 +1,21 @@
 # TODO
 
+## Consider per-claim `authorizedBy` in the hash-response JSON
+
+Consider optional, and signalled-as-allowed, `authorizedBy` in the hash-response JSON. Optionally
+signalled in `verification-meta.json`.
+
+**Why:** the existing `authorizedBy` lives in `verification-meta.json`, which is *per issuer* — fine
+for "HSBC is authorised by HMRC" (one regulator per issuer). It breaks for **multi-client delegates**:
+a law firm (Meridian) that sub-delegates on behalf of *many* clients cannot put a single
+`authorizedBy: acme.example` in its domain-wide meta — that would falsely say Meridian works
+exclusively for Acme. The upstream authority is **per-claim, not per-issuer**: *this* sub-delegation
+traces to Acme, *that* one to Zenith. So the per-claim upstream link belongs in the response for that
+specific claim's hash (e.g. `meridian.example/subdelegations/{hash}` returns `authorizedBy:
+acme.example/delegations`), while `verification-meta.json` may optionally *signal that per-claim
+authorizedBy is allowed/expected* for this issuer. Surfaced by the delegation analysis in the
+ISNAD-overlap debate.
+
 ## Clients: implement `endorsementLabel` display precedence
 
 Spec added in `docs/verification-meta-schemas.md` (the `endorsementLabel` locale-map). Not yet wired
