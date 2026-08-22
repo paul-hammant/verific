@@ -103,11 +103,14 @@ positions in the stack, and they slot together cleanly:
   Y at time T" — not a judgement. Isnad's cross-operator model is *share evidence, never grades*:
   operators exchange facts and re-derive narrator grades under their own policy. A domain-anchored,
   human-legible revocation is exactly that kind of fact.
-- **ISNAD evidence should gate Live Verify issuance.** The return direction. At a distribution
-  portal, the bot deciding whether to publish a hash should have an ISNAD-style verdict in hand and
-  should map it directly: `SERVE` → `OK`, `REVIEW` → `PENDING` (amber, never auto-promoting),
-  `QUARANTINE` → not issued or `RESTRICTED`. Evidence in, status out, revocation back in as evidence —
-  the two projects form a loop, not a hand-off. Worked through in the xz case below.
+- **A grader's evidence can gate Live Verify issuance — via the portal.** The return direction. At a
+  distribution portal, the bot deciding whether to publish a hash can consult a grader (ISNAD is one
+  candidate, but the portal may use any) and withhold `OK` until the evidence allows it — publishing
+  `PENDING` (a proposed new amber status) meanwhile. The portal owns that mapping; Live Verify only
+  defines the plain human-facing statuses (`OK` / `PENDING` / `REVOKED` / `RESTRICTED`). Live Verify
+  and the grader never touch directly — the portal's approver bot sits between them — so this is a
+  loop *through the portal*, not a hand-off between the two projects. Worked through in the xz case
+  below.
 
 ## Worked case: the xz-utils backdoor
 

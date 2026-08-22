@@ -322,7 +322,7 @@ Side by side:
 | | Live Verify | ISNAD |
 |---|---|---|
 | 24 Feb 2024, project as issuer | `OK` — correctly; it was official | chain capped (tarball ≠ tag); release-manager grade short → caveats |
-| 24 Feb 2024, portal as issuer, gated | `PENDING` — never `OK` | `REVIEW` drives the status; see [Gating issuance on evidence](#gating-issuance-on-evidence) |
+| 24 Feb 2024, portal as issuer, gated | `PENDING` — never `OK`; the portal's approver bot withholds `OK` (see [Gating issuance on evidence](#gating-issuance-on-evidence)) | grader returns "needs review" — the evidence the portal's bot acts on |
 | 29 Mar 2024 | `REVOKED` / endorser `RESTRICTED`; every human re-check sees it | `HUMAN_REVIEW` → permanent integrity strike on the narrator |
 | Answers | "Is this what the issuer issued?" | "How much should I trust the hands it passed through?" |
 | Human | at the threshold, deciding | at the review queue, adjudicating |
@@ -337,22 +337,35 @@ revocation becomes evidence that outlives the incident.
 ## Gating issuance on evidence
 
 Everything above treats the Live Verify status as something the issuer sets
-by hand. It should not be. At a distribution portal, the decision to publish
-a hash — to say `OK` — should be made by a bot that has an ISNAD-style
-verdict on the artifact in front of it, and that bot should refuse to say
-`OK` until the verdict allows it.
+by hand. It need not be. At a distribution portal, the decision to publish a
+hash — to say `OK` — can be made by a **package-approver bot**: a piece of the
+portal's own publishing pipeline that will not stand behind an artifact until
+it has evidence the artifact is what it claims to be.
+
+Where does that evidence come from? From whatever the portal already runs — its
+rebuilders, its provenance checks, its scanners — and, optionally, from an
+**external grader**. [ISNAD](https://github.com/alizahidraja/isnad) is one such
+grader: a separate project, in a separate repository, that scores how much a
+claim's chain of transmitters should be trusted and returns a verdict. A portal
+could feed its structural checks into ISNAD (or any grader of its choosing) and
+let that verdict inform whether to publish. Nothing about Live Verify requires
+ISNAD; the point is only that a portal's *own* approver bot can consume evidence
+from *some* grader and gate issuance on it. From Live Verify's side, all that
+matters is the resulting status.
 
 **If that had been in place back then.** The structural check that catches
 xz — tarball content absent from the tagged tree — fires at upload time.
 That is the same instant the Live Verify claim would be published. So the
 alert and the issuance decision are one moment, and the bot making the
-decision has the verdict in hand. On 24 February 2024 the sequence should
+decision has its evidence in hand. On 24 February 2024 the sequence should
 have been:
 
-1. 5.6.0 uploaded. Rebuild from tag `v5.6.0` does not reproduce the tarball;
-   the `m4` file has no commit. ISNAD: chain is *munqaṭiʿ*, capped `DAIF`,
-   decision `REVIEW`.
-2. The portal's Live Verify endpoint publishes the hash as:
+1. 5.6.0 uploaded. The portal's rebuild from tag `v5.6.0` does not reproduce
+   the tarball; the `m4` file has no commit. Whatever grader the portal
+   consults returns "not established / needs review" — the artifact does not
+   trace to its source.
+2. The portal's approver bot therefore does not publish `OK`. Its Live Verify
+   endpoint publishes the hash as:
 
    ```
    HTTP 200 OK
@@ -375,22 +388,33 @@ relying party was never obliged to treat that as more than self-attestation.
 the hash until checks pass" — a 404 until then. But a 404 is
 indistinguishable from forgery, and the person at the decision point needs
 to tell *"never heard of this artifact"* apart from *"we know it, we are
-checking, do not ship yet."* `PENDING` carries that distinction. It should
-render amber — red in Live Verify means revoked or tampered, a definite
-negative, and pending is "the issuer's own process is incomplete," which is
-the honest-amber posture. And it should never *expire* into `OK`: it flips
-only by explicit action — checks pass → `OK`; checks fail → never issued, or
+checking, do not ship yet."* `PENDING` carries that distinction. It renders
+amber — red in Live Verify means revoked or tampered, a definite negative,
+and pending is "the issuer's own process is incomplete," which is the
+honest-amber posture. And it never *expires* into `OK`: it flips only by
+explicit action — checks pass → `OK`; checks fail → never issued, or
 `RESTRICTED` with a reason code if the artifact is already in the wild.
 
-**The mapping.** ISNAD's decision at issuance should drive the Live Verify
-status directly:
+**The mapping is the portal's, not Live Verify's.** How an approver bot turns
+its grader's output into a status is the *portal's* policy — Live Verify only
+defines the four statuses a human might see. A portal whose grader is ISNAD
+might wire it up like this; a portal using something else maps its own
+verdicts to the same four states. Live Verify does not know or care which
+grader produced the decision:
 
-| ISNAD decision at upload | Live Verify issuer action |
+| Grader's verdict at upload (example: ISNAD) | Portal's Live Verify status |
 |---|---|
-| `SERVE` | publish, `Status: OK` |
-| `SERVE_WITH_CAVEAT` | publish, `Status: OK`, with `More:` pointing at the caveat |
-| `REVIEW` | publish, `Status: PENDING` (amber) |
-| `QUARANTINE` / `REJECT_AND_QUARANTINE_NARRATOR` | do not publish — or `RESTRICTED` with a fixed reason code if already in the wild |
+| clear to serve | `OK` |
+| serve, but with a caveat | `OK`, `More:` pointing at the caveat |
+| needs review / not yet established | `PENDING` (amber) |
+| quarantine / reject | do not publish — or `RESTRICTED` with a reason code if already in the wild |
+
+The left column uses ISNAD as a concrete example; those are *its* verdict
+names, in *its* repository, not Live Verify vocabulary. Live Verify's states
+stay deliberately few and plain — `OK`, `PENDING`, `REVOKED`, `RESTRICTED` —
+because the intended reader is a **human at a decision point**. A machine that
+wants the reasoning follows the `More:` link; the human just needs the colour
+and the word.
 
 **What `OK` must continue to mean.** "Checks passed" means the *structural*
 checks passed: the tarball matches the tag, provenance is attested, the
@@ -403,13 +427,59 @@ issuer is willing to stand behind an artifact; it does not change *what*
 standing behind it means. `PENDING` means "our process is incomplete."
 `OK` means "we stand behind this exact text." Nothing more, on either side.
 
-**The loop closes.** Until this section the composition ran one way: a Live
-Verify seal is a narrator input to ISNAD; a Live Verify revocation is an
-evidence record for ISNAD. This is the return direction: **ISNAD evidence
-gates Live Verify issuance.** A white-hat bot at the portal sits between
-the two, consuming ISNAD's decision and producing Live Verify's status, and
-the projects become a cycle rather than a hand-off — evidence in, status
-out, revocation back in as evidence.
+**The loop closes — through the portal, not between the projects directly.**
+Earlier the composition ran one way: a Live Verify seal is a strong narrator
+input for a grader like ISNAD, and a Live Verify revocation is an evidence
+record such a grader can consume. This is the return direction: a grader's
+evidence can gate Live Verify *issuance* — but always via the **portal's own
+approver bot**, which sits in the portal's pipeline, consults whatever grader
+it trusts, and produces a Live Verify status. Live Verify and any given grader
+never touch directly; the portal is the party that owns the decision, the bot,
+and the resulting claim. Evidence in, status out, revocation back in as
+evidence — with the portal, not Live Verify, doing the wiring.
+
+## Should Live Verify even be in the publishing stream? (and if so, in what form)
+
+The gating section above quietly assumes Live Verify is wired *into* the
+portal's publishing pipeline. That is a choice with real trade-offs, and it is
+worth stating both sides rather than treating it as settled — the package case
+is unusual among Live Verify use cases in that the primary consumer is a
+*machine* (the portal, the installer, CI), with the human a secondary reader.
+
+**In the stream — the portal issues and gates.** Pros: the status is live and
+authoritative, revocation is instant and portal-controlled, and issuance can be
+gated on evidence (the whole point above). Cons: the portal takes on
+operational load and liability it may not want (running an endpoint, standing
+behind a status, being the party that says `OK`), and it couples Live Verify to
+the portal's uptime and goodwill. A portal that declines to participate leaves
+the package with no Live Verify claim at all.
+
+**Out of the stream — a third party or the maintainer issues.** A rebuilder
+network, a security tracker, or the maintainer's own domain can publish claims
+about a release without the portal's involvement. Pros: no dependency on the
+portal opting in; multiple independent issuers can each speak. Cons: no gating
+at the chokepoint (the claim is published *about* an artifact already released,
+not as a gate on releasing it), and revocation is only as fast as whoever holds
+that endpoint.
+
+**Human-legible text vs. bot-first structured form.** Everything else in Live
+Verify is CR-delimited, human-readable claim text on purpose — because the
+canonical reader is a person with no tooling, carrying a claim between an email
+and a bug tracker. The package case may invert that. When the primary consumer
+is a portal, an installer, or a CI job, a **bot-first** form makes sense: a
+structured record (JSON/attestation-shaped) that a machine consumes directly,
+with the human-readable line as a *projection* of it rather than the source of
+truth. This is a genuine fork from the rest of the corpus, and it is honest to
+name it: for a receipt or a warrant card the newline-delimited prose *is* the
+artifact; for a package release the machine record may be primary and the prose
+secondary. The hash-and-lookup mechanism is identical either way — what changes
+is which representation is canonical and who is expected to read it first.
+
+The honest position is that **both placements and both forms are defensible**,
+and the case study does not pick one. It only observes that the package supply
+chain is the corpus's clearest example of a *machine-first* use case, and that
+Live Verify's usual "human reads plain text" default is a design assumption to
+revisit here, not a given.
 
 ## Spec gaps this case exposes
 
