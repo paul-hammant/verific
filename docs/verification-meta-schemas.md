@@ -82,6 +82,7 @@ Hosted at the `verify:` domain — the organization that creates and verifies cl
 | `authorizedFrom` | Optional | ISO date: endorsement start (e.g., "2023-01-01") |
 | `authorizedTo` | Optional | ISO date: endorsement end (e.g., "2028-12-31") |
 | `authorityBasis` | Optional | Short statement of what authority backs this issuer |
+| `endorsementLabel` | Optional | Locale-map overriding the displayed verb for this endorsement relationship (e.g. `{"en-GB": "Endorsed by", "en-US": "Authorized by"}`). The `endorsedBy`/`authorizedBy` **field name** never changes; only the human word shown does. See below. |
 | `charNormalization` | Optional | Character mappings for OCR error tolerance (e.g., accented → ASCII) |
 | `ocrNormalizationRules` | Optional | Array of regex pattern/replacement rules for OCR cleanup |
 | `responseTypes` | Optional | Custom verification statuses beyond "verified" |
@@ -138,6 +139,51 @@ It is the *policy* counterpart to [holder-controlled availability](holder-contro
 that feature stops the issuer being a continuous re-broadcast channel; `dataHandling` asks handlers not
 to *become* one. Neither can retrieve plaintext already copied or stolen — that exposure is no greater
 here than under any prior system — and both should be described that way.
+
+### `endorsementLabel` — one relationship, locally-worded
+
+The chain relationship is a single, stable thing: an authority above **vouches for** the issuer below.
+But the right English *word* for that act is regionally contested, and other languages need their own
+word entirely. The design separates the two cleanly:
+
+- **The field name is protocol, and never localised.** `endorsedBy` (with `authorizedBy` honoured as
+  its legacy alias) is a JSON key, like `status` or `claimType` — fixed, English-derived, not a word a
+  reader ever sees. It uses "endorse" because that is the linguistically accurate verb for *vouching
+  for legitimacy* (as opposed to "authorize", which implies the parent *granted the power* — in this
+  model the power comes from statute, and the parent merely attests the issuer is genuine).
+- **The displayed verb is a localisation concern, resolved at display time.**
+
+Two layers can supply the displayed word, in this precedence:
+
+1. **Issuer-declared `endorsementLabel`** (optional) — a locale-map in the issuer's
+   `verification-meta.json`, letting a jurisdiction choose the word that matches its own legal usage:
+
+   ```json
+   "endorsementLabel": {
+     "en-GB": "Endorsed by",
+     "en-US": "Authorized by",
+     "en": "Endorsed by"
+   }
+   ```
+
+2. **The client's own locale string** (the default) — every client already localises this: the browser
+   extension's `_locales/en` says "Endorsed by", `_locales/de` says "Befürwortet durch", and so on. The
+   **verifier's** language should normally win, because the reader should see their own language.
+
+3. **Fallback:** if neither resolves for the active locale, the client falls back to `en` ("Endorsed
+   by") — a correct word, never a raw field name.
+
+**Resolution rule (recommended):** use the issuer's `endorsementLabel` for the verifier's locale when
+present and the issuer explicitly wants to fix the wording (e.g. a US body that means "authorized" in
+the statutory sense); otherwise use the client's own locale string. Clients should treat this purely as
+a **label swap** — it never changes the verdict, the chain, or which field is read.
+
+**Honest-limit note — it is hash-committed issuer text.** Like `authorityBasis`, `endorsementLabel`
+lives inside the meta file the endorser hashes in full, so the endorser has implicitly signed off on
+the wording. An issuer therefore cannot unilaterally relabel its relationship in a way its endorser
+never sanctioned — changing the label changes the meta hash and requires re-endorsement. The label
+rides the same trust rail as the rest of the file; it is not a free-text field the issuer can quietly
+edit after the fact.
 
 ---
 

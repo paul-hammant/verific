@@ -1,5 +1,18 @@
 # TODO
 
+## Clients: implement `endorsementLabel` display precedence
+
+Spec added in `docs/verification-meta-schemas.md` (the `endorsementLabel` locale-map). Not yet wired
+into any client. When implementing:
+- Resolve the displayed chain verb as: issuer `endorsementLabel[locale]` (if present) → client's own
+  locale string ("Endorsed by" / "Befürwortet durch" / …) → `en` fallback. Never show the raw field name.
+- It is a **label swap only** — must not change the verdict, the chain walk, or which meta field is read.
+- Read the endorsement field as `meta.endorsedBy ?? meta.authorizedBy` (the field-name migration is a
+  separate, back-compat concern; `authorizedBy` remains the honoured wire name until/unless that
+  migration happens).
+- Applies to browser extension, iOS, Safari extension, Android — via the canonical logic + `sync-shared`
+  where relevant.
+
 ## iOS: Rich verification payload support
 
 Same gap as Android. `VerificationClient.swift` parses for "verified"/"VERIFIED" but
