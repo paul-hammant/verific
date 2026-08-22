@@ -31,6 +31,10 @@ in this document.
   **recants** its own claim (status flips to `REVOKED`); an endorser
   **restricts** an issuer it no longer backs (status `RESTRICTED`). Because the
   lookup is live, every later re-check sees the withdrawal.
+- **PENDING** — a third status this document argues for: the issuer knows the
+  artifact but has not finished its own checks, so it is not yet willing to
+  say `OK`. Shown amber. Distinct from a `404`, which cannot tell "never heard
+  of it" from "checking it."
 - **Amber / anchored** — a claim that verifies but whose endorsers are *not*
   a recognised government root shows **amber** ("verified, but judge the
   endorsers yourself"), versus green/**anchored** when the chain reaches a
@@ -147,6 +151,12 @@ The endpoint says nothing about *why* beyond the link. That is correct. The
 claim was "this is an official release"; the status says "we no longer stand
 behind that"; the link carries the detail. Enrichment beyond that would
 violate the no-echo rule for no gain.
+
+That `OK` → `REVOKED` sequence is the **project-as-issuer** path, where the
+endpoint belonged to the attacker and nothing gated it. It is not the
+sequence that should have happened. With the portal as issuer and evidence
+gating issuance — [below](#gating-issuance-on-evidence) — 5.6.0 never reaches
+`OK` at all.
 
 ## Who is the issuer?
 
@@ -311,7 +321,8 @@ Side by side:
 
 | | Live Verify | ISNAD |
 |---|---|---|
-| 24 Feb 2024 | `OK` — correctly; it was official | chain capped (tarball ≠ tag); release-manager grade short → caveats |
+| 24 Feb 2024, project as issuer | `OK` — correctly; it was official | chain capped (tarball ≠ tag); release-manager grade short → caveats |
+| 24 Feb 2024, portal as issuer, gated | `PENDING` — never `OK` | `REVIEW` drives the status; see [Gating issuance on evidence](#gating-issuance-on-evidence) |
 | 29 Mar 2024 | `REVOKED` / endorser `RESTRICTED`; every human re-check sees it | `HUMAN_REVIEW` → permanent integrity strike on the narrator |
 | Answers | "Is this what the issuer issued?" | "How much should I trust the hands it passed through?" |
 | Human | at the threshold, deciding | at the review queue, adjudicating |
@@ -322,6 +333,83 @@ was honest about it; ISNAD had structural caveats but no verdict. Together,
 the portal's quarantine becomes a human-legible status, the rebuilders'
 agreement becomes an independent-chain corroboration, and the eventual
 revocation becomes evidence that outlives the incident.
+
+## Gating issuance on evidence
+
+Everything above treats the Live Verify status as something the issuer sets
+by hand. It should not be. At a distribution portal, the decision to publish
+a hash — to say `OK` — should be made by a bot that has an ISNAD-style
+verdict on the artifact in front of it, and that bot should refuse to say
+`OK` until the verdict allows it.
+
+**If that had been in place back then.** The structural check that catches
+xz — tarball content absent from the tagged tree — fires at upload time.
+That is the same instant the Live Verify claim would be published. So the
+alert and the issuance decision are one moment, and the bot making the
+decision has the verdict in hand. On 24 February 2024 the sequence should
+have been:
+
+1. 5.6.0 uploaded. Rebuild from tag `v5.6.0` does not reproduce the tarball;
+   the `m4` file has no commit. ISNAD: chain is *munqaṭiʿ*, capped `DAIF`,
+   decision `REVIEW`.
+2. The portal's Live Verify endpoint publishes the hash as:
+
+   ```
+   HTTP 200 OK
+   Status: PENDING
+   More: https://pypi.org/checks/xz/5.6.0/
+   ```
+
+3. A Fedora maintainer reading Jia Tan's "please include 5.6.1" email
+   selects the claim, verifies, and sees amber: *"known to the portal;
+   checks not passed; do not ship."* Hans Jansen's Debian bug, same.
+4. 29 March. The endorsers `RESTRICT` with reason `cve-2024-3094`. The claim
+   that was never `OK` now also says why.
+
+Live Verify never stands behind 5.6.0. The "verified, then revoked"
+embarrassment in the earlier section does not occur, because the only
+issuer that would have said `OK` was the attacker's own domain, and a
+relying party was never obliged to treat that as more than self-attestation.
+
+**Why `PENDING` and not just a 404.** The simplest gate is "do not publish
+the hash until checks pass" — a 404 until then. But a 404 is
+indistinguishable from forgery, and the person at the decision point needs
+to tell *"never heard of this artifact"* apart from *"we know it, we are
+checking, do not ship yet."* `PENDING` carries that distinction. It should
+render amber — red in Live Verify means revoked or tampered, a definite
+negative, and pending is "the issuer's own process is incomplete," which is
+the honest-amber posture. And it should never *expire* into `OK`: it flips
+only by explicit action — checks pass → `OK`; checks fail → never issued, or
+`RESTRICTED` with a reason code if the artifact is already in the wild.
+
+**The mapping.** ISNAD's decision at issuance should drive the Live Verify
+status directly:
+
+| ISNAD decision at upload | Live Verify issuer action |
+|---|---|
+| `SERVE` | publish, `Status: OK` |
+| `SERVE_WITH_CAVEAT` | publish, `Status: OK`, with `More:` pointing at the caveat |
+| `REVIEW` | publish, `Status: PENDING` (amber) |
+| `QUARANTINE` / `REJECT_AND_QUARANTINE_NARRATOR` | do not publish — or `RESTRICTED` with a fixed reason code if already in the wild |
+
+**What `OK` must continue to mean.** "Checks passed" means the *structural*
+checks passed: the tarball matches the tag, provenance is attested, the
+rebuilders agree. The claim text still says "is an official release," not
+"is safe." The moment `OK` is read as "the bot scanned it and it is clean,"
+Live Verify has become the supply-chain-safety signal the honest-limit
+section refuses to be — and a semantic payload that passes every structural
+check would sail through under a green tick. The bot narrows *when* the
+issuer is willing to stand behind an artifact; it does not change *what*
+standing behind it means. `PENDING` means "our process is incomplete."
+`OK` means "we stand behind this exact text." Nothing more, on either side.
+
+**The loop closes.** Until this section the composition ran one way: a Live
+Verify seal is a narrator input to ISNAD; a Live Verify revocation is an
+evidence record for ISNAD. This is the return direction: **ISNAD evidence
+gates Live Verify issuance.** A white-hat bot at the portal sits between
+the two, consuming ISNAD's decision and producing Live Verify's status, and
+the projects become a cycle rather than a hand-off — evidence in, status
+out, revocation back in as evidence.
 
 ## Spec gaps this case exposes
 
@@ -339,6 +427,11 @@ None of these are proposals yet; they are where the case points.
    `reproduced-from-source`, `published-by-maintainer-of-record` are not in
    the spec. They are cheap to add and map one-to-one onto the structural
    checks that distribution portals already run.
+4. **A `PENDING` status.** The status vocabulary has `OK`, `REVOKED`,
+   `EXPIRED`, `RESTRICTED`. It needs a provisional state — *known to the
+   issuer, checks incomplete, not yet `OK`* — rendered amber, never
+   auto-promoting, so that a bot can gate issuance on evidence without
+   collapsing "we are checking" into a 404.
 
 ## Authority Chain
 
