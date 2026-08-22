@@ -97,6 +97,35 @@ positions in the stack, and they slot together cleanly:
   essentially the same design philosophy the Live Verify use-case corpus already applies** — the two
   projects independently arrived at the same discipline of refusing to over-claim.
 
+- **A Live Verify revocation is an ISNAD evidence record.** The seal-as-narrator-input point above is
+  the weaker half of the composition. The stronger half runs the other way: a status flip (`OK` →
+  `REVOKED`, or an endorser's `RESTRICTED` with a reason code) is a *fact* — "issuer X recanted artifact
+  Y at time T" — not a judgement. Isnad's cross-operator model is *share evidence, never grades*:
+  operators exchange facts and re-derive narrator grades under their own policy. A domain-anchored,
+  human-legible revocation is exactly that kind of fact.
+
+## Worked case: the xz-utils backdoor
+
+Both projects now carry one half of a single worked case — the 2024 xz-utils supply-chain compromise
+(CVE-2024-3094), in which a patient pseudonymous account earned maintainership over two years and then
+shipped a backdoor:
+
+- [xz-release-attestation-case-study.md](xz-release-attestation-case-study.md) (this repo) — what a
+  Live Verify release claim would have said on each side of the CVE, why it would correctly have said
+  `verified` for the backdoored release, the sideways endorser chain an open-source release can have
+  (build attestation + independent rebuilders), why that chain is amber-unanchored, and how revocation
+  must work from the endorser side when the issuer is the compromised party.
+- [ISNAD: case-study-xz-sleeper-narrator.md](https://github.com/alizahidraja/isnad/blob/main/docs/case-study-xz-sleeper-narrator.md)
+  — the same incident as a *sleeper narrator* attack on a grading registry: which of Isnad's mechanisms
+  (per-domain grades, chain completeness, madār detection, human-only integrity strikes) answer it,
+  which do not, and where the case points beyond the framework.
+
+The case is the cleanest illustration of the table above: Live Verify answers "is this what the issuer
+issued?" (yes — and that was the problem); Isnad answers "how much should I trust the hands it passed
+through?" (structural caveats, no verdict). Neither stops xz alone; together the portal's quarantine
+becomes a human-legible status, the rebuilders' agreement becomes independent-chain corroboration, and
+the revocation becomes evidence that outlives the incident.
+
 **Bottom line:** same philosophy (provenance plus honesty about limits), different trust primitive
 (graded reputation vs. cryptographic domain-anchoring), and different position in the stack
 (in-AI-pipeline vs. cross-org document). A hash-verified Live Verify artifact is a strong narrator in
