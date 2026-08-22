@@ -55,6 +55,51 @@ Shows the issuer domain (`ul.com`, `intertek.com`, `tuv.com`) and the listing st
 - **Recalled** — **CRITICAL:** Product has a safety defect; stop use immediately.
 - **Expired** — **ALERT:** The certification period has passed; re-testing required.
 
+### Scope enrichment: what the certificate actually covers
+
+A certificate is authentic and yet still be *over-applied* — a genuine cert for a small tested run
+waved through a far larger untested production run, or a cert for one model reused for a variant it
+never covered. Binding the model and standard into the hash defeats *editing* the certificate; it does
+not, on its own, tell a buyer whether the unit **in their hands** falls within what the cert covers.
+
+Because a safety certificate carries no personal data, the certifying body can safely **echo the scope
+of the certificate on verification** — the accountability facts the terse label had no room for. On a
+successful lookup, `ul.com`/`intertek.com` may return:
+
+```json
+{
+  "status": "verified",
+  "certificate": "UL-2026-992288",
+  "model": "XJ-9922",
+  "standards": ["UL 62368-1", "CAN/CSA C22.2", "IEC 60950-1"],
+  "run_covered": "LOT-2026-8844",
+  "run_size_certified": "up to 500,000 units",
+  "run_scope_note": "certification covers this production run; units beyond the certified quantity, or after retest_due, are not covered by this certificate",
+  "tested_on": "2026-03-15",
+  "retest_due": "2027-03-15",
+  "labs": ["verify:labtest-shenzhen.example/reports"],
+  "more": "https://ul.com/v/UL-2026-992288"
+}
+```
+
+This lets the buyer answer the questions that matter and the label could not carry:
+
+- **Is my unit in scope?** `run_covered` + `run_size_certified` make the covered run and quantity
+  explicit — so a buyer can see that unit 800,000 of a run certified "up to 500,000" is *outside* the
+  certificate, even though the certificate itself verifies.
+- **Is the PASS still current?** `tested_on` + `retest_due` surface the point-in-time nature of the
+  result — a certificate past its retest date is stale even when it looks fine (see
+  [point-in-time vs current](../../docs/point-in-time-vs-current.md)).
+- **What was actually tested?** The exact standards the samples met — so a cert for one standard cannot
+  be read as covering a stricter one it never addressed.
+
+This is a **model case of safe enrichment**: no personal data, and every field *reveals scope the terse
+claim withheld* rather than repeating it (see
+[verification-enrichment-hazards.md](../../docs/verification-enrichment-hazards.md) for when enrichment
+is legitimate). The certifier discloses only accountability facts it is entitled to publish; the effect
+is to stop a genuine, narrow certificate being over-read as a blanket guarantee — which is the core
+mechanism of certificate-scope fraud.
+
 ## Second-Party Use
 
 The **Manufacturer / Importer** benefits from verification.

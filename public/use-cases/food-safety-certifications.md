@@ -54,6 +54,19 @@ This certificate is the "License to Sell" to big retailers. Shady factories that
 
 Facility name, premises address, certification standard (e.g., SQF, BRCGS, HACCP), audit score/rating, scope of certification (e.g., "Dairy" vs "Dry Goods"), certification body name, issuance date, expiration date, serial number.
 
+### Scope enrichment: what the certificate actually covers
+
+The headline fraud here is *scope misrepresentation* — using a certificate for "Dry Legumes" to sell
+"High-Risk Prepared Salads." A food-safety certificate carries no personal data, so on verification the
+certification body can safely **echo the certified scope and freshness** — the exact
+`certified_scope` (e.g. "Processing of Perishable Prepared Foods (Ready-to-Eat)"), the `audit_date`,
+and the `recertification_due`. A buyer then sees the *actual* scope of the certificate rather than a
+broadened label, and cannot read a dry-goods certificate as covering high-risk prepared foods; and a
+certificate past its audit window reads as stale. Safe enrichment — no personal data, revealing the
+scope and freshness the terse claim withheld (see
+[safety-certifications](safety-certifications.md) and
+[verification-enrichment-hazards.md](../../docs/verification-enrichment-hazards.md)).
+
 **Document Types:**
 - **GFSI Audit Certificate:** The gold standard for global manufacturing.
 - **Organic Integrity Certificate:** Proving USDA/EU Organic status.

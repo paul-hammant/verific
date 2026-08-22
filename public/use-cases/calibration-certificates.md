@@ -80,6 +80,19 @@ Shows the issuer domain (the Accredited Lab) and the certification standing.
 - **Recalled** — Lab discovered an error in its own reference standards; all related certificates under review.
 - **Adjusted** — Instrument was modified/repaired during service; original accuracy may not apply.
 
+### Scope enrichment: what the lab is accredited to calibrate, and until when
+
+Calibration is inherently point-in-time (it drifts) and scope-bounded (a lab accredited for one
+instrument class may claim broader). A calibration certificate carries no personal data, so on
+verification the lab can safely **echo the accreditation scope and the calibration interval** —
+`accredited_scope` (the exact instrument classes the lab holds accreditation for),
+`calibrated_on`, and `recalibration_due`. This lets the user see that an instrument outside the lab's
+accredited scope, or past its recalibration date, is not covered by the certificate even though the
+certificate verifies — directly addressing the scope-fraud and stale-calibration cases above. Safe
+enrichment: no personal data, revealing scope and freshness the terse claim withheld (see
+[safety-certifications](safety-certifications.md) and
+[verification-enrichment-hazards.md](../../docs/verification-enrichment-hazards.md)).
+
 ## Second-Party Use
 
 The **Tool Owner / Quality Manager** (second party) receives the calibration certificate from the accredited lab (first party), **keeps it**, and may later hand it to third parties for various reasons, or never do so.

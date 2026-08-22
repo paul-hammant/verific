@@ -43,6 +43,19 @@ furtherDerivations: 1
 
 Manufacturer legal name, facility location, Notified Body ID (e.g., 0086), Certificate number, Device classification (I, IIa, IIb, III), specific model numbers, ISO standards met, issue date, expiration date, regulatory pathway (MDR/IVDR).
 
+### Scope enrichment: which device class, and which models
+
+The characteristic fraud is *scope misrepresentation* — a certificate for "Bandages" edited or reused
+to read "Surgical Implants" for a price premium. A device certificate carries no personal data, so on
+verification the Notified Body can safely **echo the exact covered scope** — the
+`device_classification`, the specific `models_covered`, the `standards`, and the
+`recertification_due`. A buyer then confirms the device *in front of them* is within the certificate's
+class and model list, so a Class I certificate cannot be read as covering a Class III implant, and a
+lapsed certificate reads as such. Safe enrichment — no personal data, revealing the scope the terse
+claim withheld (see
+[safety-certifications](safety-certifications.md) and
+[verification-enrichment-hazards.md](../../docs/verification-enrichment-hazards.md)).
+
 **Document Types:**
 - **CE Certificate of Conformity:** Mandatory for the European market.
 - **FDA 510(k) Clearance Letter:** For U.S. market entry.

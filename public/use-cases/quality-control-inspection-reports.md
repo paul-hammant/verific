@@ -58,6 +58,19 @@ Shows the issuer domain (`precision-alloys.com`, `sgs.com`, `intertek.com`) and 
 - **Quarantined** — **ALERT:** Batch is under investigation; do not use in production.
 - **Superseded** — A newer, corrected report exists.
 
+### Scope enrichment: which batch, and how much of it
+
+A QC report has no personal data, so on verification the issuer can safely **echo the batch scope** —
+the accountability facts that stop a genuine report being applied beyond what it covers. The classic
+fraud here is using a real report from a good batch to cover a cheaper one; echoing
+`batch_covered`, `quantity_certified`, and `tested_on`/`retest_due` makes the covered batch and
+quantity explicit, so a buyer can see that units outside the certified batch or quantity are *not*
+covered even though the report verifies. This is safe enrichment — no personal data, and each field
+reveals scope the terse claim withheld (see
+[safety-certifications](safety-certifications.md) for the model treatment and
+[verification-enrichment-hazards.md](../../docs/verification-enrichment-hazards.md) for when enrichment
+is legitimate).
+
 ## Second-Party Use
 
 The **Manufacturer (The Shop)** benefits from verification.

@@ -61,6 +61,17 @@ Shows the issuer domain (`apple.com`, `bosch.de`, `cyberdyne.be`) and current co
 - **Superseded** — New hardware version or standard update has invalidated this DoC.
 - **Invalid** — Model number or directive mismatch.
 
+### Scope enrichment: which standard was actually met
+
+The characteristic DoC fraud is *standard padding* — claiming a stricter standard (e.g. "Medical
+Device") than the product was actually tested against ("General Consumer"). A DoC carries no personal
+data, so on verification the issuer can safely **echo the exact standards and directives the product
+was assessed under**, plus `assessed_on`/`retest_due`. A buyer then sees the *actual* scope of the
+declaration rather than a padded label, and cannot read a general-consumer DoC as a medical-grade one.
+Safe enrichment — no personal data, revealing the scope the terse claim withheld (see
+[safety-certifications](safety-certifications.md) and
+[verification-enrichment-hazards.md](../../docs/verification-enrichment-hazards.md)).
+
 ## Second-Party Use
 
 The **Importer / Distributor** benefits from verification.

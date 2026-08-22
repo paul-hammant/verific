@@ -58,6 +58,17 @@ Shows the issuer domain (the Mill or Testing Lab) and current batch standing.
 - **Superseded** — Corrected report issued (e.g., due to typo in chemical list).
 - **Invalid** — Heat number or signature mismatch.
 
+### Scope enrichment: which heat, and how much of it
+
+An MTR certifies a specific *heat* (furnace batch). A real MTR for a good heat used to cover material
+from a different, cheaper one is the classic substitution fraud. An MTR carries no personal data, so on
+verification the mill can safely **echo the heat scope** — `heat_covered`, `quantity_certified`, and
+`tested_on` — so a buyer can confirm the steel in their hands falls within the certified heat and
+quantity, not merely that *some* heat with that number passed. Safe enrichment: no personal data,
+revealing the scope the terse claim withheld (see
+[safety-certifications](safety-certifications.md) and
+[verification-enrichment-hazards.md](../../docs/verification-enrichment-hazards.md)).
+
 ## Second-Party Use
 
 The **Structural Engineer / Fabricator** (second party) receives the material test report from the mill (first party), **keeps it**, and may later hand it to third parties for various reasons, or never do so.
