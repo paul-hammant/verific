@@ -133,13 +133,11 @@ and draws the panel:
   </div>
   <div style="padding: 16px 20px; color: #111;">
     <div style="font-size: 0.72em; letter-spacing: 0.06em; color: #6b7280; text-transform: uppercase; margin-bottom: 10px;">Ad placement provenance</div>
-
     <div style="font-size: 0.78em; color: #6b7280; margin-bottom: 4px;">The ad, as placed:</div>
     <div style="border: 1px solid #d8dbe0; background: #fff; border-radius: 6px; padding: 10px 12px; font-size: 0.9em; color: #222; margin-bottom: 14px;">
       🛏️ SleepWell Memory-Foam Mattresses — 50% OFF<br>
       Ends Sunday. Free next-day delivery. → Shop now
     </div>
-
     <div style="font-size: 0.78em; color: #6b7280; margin-bottom: 6px;">Placed on <strong>dailyexample-news.com / article-body-mid</strong>, 15 Jun 2026 11:04 UTC. Chain, origin&nbsp;→&nbsp;page (each vouched for the one below):</div>
     <pre style="margin: 0; font-family: ui-monospace, 'Courier New', monospace; font-size: 0.82em; line-height: 1.6; color: #111; white-space: pre;">  ▸ acme-mattresses.example      ADVERTISER
     ▸ brightreach.example        AD RESELLER
