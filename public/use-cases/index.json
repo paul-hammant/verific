@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-23T14:01:34.668Z",
+  "generated": "2026-08-23T14:23:17.831Z",
   "totalUseCases": 612,
   "totalFurtherDerivations": 936,
   "categories": {
@@ -160,7 +160,7 @@
       "category": "Novel Document Types",
       "volume": "Very Large",
       "retention": "Per-impression (ephemeral) to campaign-duration",
-      "verificationMode": "clip",
+      "verificationMode": "live",
       "furtherDerivations": 1,
       "snippet": "The placement reference, the publisher slot, the issue timestamp, the ordered provenance chain",
       "tags": [

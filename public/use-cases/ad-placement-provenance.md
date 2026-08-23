@@ -4,7 +4,7 @@ category: "Novel Document Types"
 volume: "Very Large"
 retention: "Per-impression (ephemeral) to campaign-duration"
 slug: "ad-placement-provenance"
-verificationMode: "clip"
+verificationMode: "live"
 tags: ["advertising", "provenance", "ad-network", "malvertising", "accountability", "authority-chain", "browser", "liability", "supply-chain"]
 furtherDerivations: 1
 ---
@@ -55,6 +55,39 @@ each vouching for the link below it. The user surfaces it by an explicit gesture
 The user took an action; the user got an answer. Nothing ran automatically, nothing was verified
 behind their back, and the result is attribution — not a safety verdict.
 
+## No clip path: ad provenance is live-only
+
+Every other Live Verify use case has a **clip / photograph / OCR** path — the claim is printed on a
+document, and the verifiable text (with its `verify:` line) travels with it, so a person can capture and
+check it anywhere. **Ad provenance has no such path, and cannot.** It is different in kind, for two
+reasons:
+
+- **The ad carries no visible `verify:` line or metadata.** The creative the reader sees is just the
+  ad — "SleepWell, 50% OFF." The provenance is bound to the *slot* out-of-band, never printed on the
+  advertiser's pixels. There is nothing on the ad to clip.
+- **The subject is adversarial and lives *inside the page*.** A malicious ad, or a malicious page,
+  could trivially draw its own fake "provenance: all clean" overlay if the mechanism were page
+  JavaScript. So the check **must not run in the DOM.** It runs from **outside the page — in browser
+  chrome (or an extension operating above the page)** — which the ad and the site cannot read,
+  intercept, suppress, or forge. This is the [safe-sequence](../../docs/safe-sequence-platform-disclosure.md)
+  model: the user turns verification inward via a gesture the page cannot touch, and the browser draws
+  the result over the page.
+
+That is why the panel above is styled as **browser chrome**, not as page content: it must be visually
+unmistakable that *the browser is saying this, not the page.* A page-drawn look-alike is exactly the
+attack this design exists to defeat.
+
+**The honest weakness — browsers signal chrome-vs-page poorly today.** This use case depends on the
+user being able to tell a browser-drawn panel from a page-drawn imitation, and current browsers are
+**weak at that distinction.** Beyond the URL-bar padlock and permission prompts, there is little
+consistent, spoof-resistant chrome vocabulary a page cannot mimic pixel-for-pixel inside its own
+viewport. A convincing in-page fake of this very panel is achievable today. So this use case is partly
+a **proposal to browser makers**: it needs a trustworthy, page-inaccessible surface for "the browser is
+telling you this" — the same gap that makes SSL-certificate details trustworthy (they live in chrome the
+page cannot write) but leaves most other browser-to-user messages forgeable. Until that surface is
+stronger, the mechanism is sound but its weakest link is the user's ability to know the panel is
+genuine.
+
 ## Example: The Provenance Reveal
 
 **Step 1 — the ad, as placed.** A reader is partway through an article on `dailyexample-news.com`. An
@@ -93,27 +126,33 @@ provenance."**
 **Step 3 — the reveal.** The browser reads the placement manifest bound to that slot, walks its chain,
 and draws the panel:
 
-<div style="max-width: 650px; margin: 24px auto; border: 1px solid #1a5f2a; background: #fff; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-  <span verifiable-text="start" data-for="adprovenance"></span>
-  <pre style="margin: 0; font-family: 'Courier New', monospace; font-size: 0.85em; white-space: pre; color: #000; line-height: 1.6;">AD PLACEMENT PROVENANCE
-═══════════════════════════════════════════════════════════════════
+<div style="max-width: 560px; margin: 24px auto; border: 1px solid #6b7280; border-radius: 10px; background: #f3f4f6; box-shadow: 0 10px 30px rgba(0,0,0,0.28); overflow: hidden; font-family: -apple-system, 'Segoe UI', sans-serif;">
+  <div style="background: #e5e7eb; border-bottom: 1px solid #cbd0d8; padding: 8px 16px; font-size: 0.8em; color: #4b5563; display: flex; align-items: center; gap: 8px;">
+    <span style="font-size: 1.1em;">🛡️</span>
+    <span>Drawn by your browser — not by this page. This panel cannot be altered by the site or the ad.</span>
+  </div>
+  <div style="padding: 16px 20px; color: #111;">
+    <div style="font-size: 0.72em; letter-spacing: 0.06em; color: #6b7280; text-transform: uppercase; margin-bottom: 10px;">Ad placement provenance</div>
 
-Placement Ref: PL-2026-0615-8841aa3c
-Slot:          dailyexample-news.com / article-body-mid
-As At:         15 Jun 2026 11:04 UTC
+    <div style="font-size: 0.78em; color: #6b7280; margin-bottom: 4px;">The ad, as placed:</div>
+    <div style="border: 1px solid #d8dbe0; background: #fff; border-radius: 6px; padding: 10px 12px; font-size: 0.9em; color: #222; margin-bottom: 14px;">
+      🛏️ SleepWell Memory-Foam Mattresses — 50% OFF<br>
+      Ends Sunday. Free next-day delivery. → Shop now
+    </div>
 
-Chain, origin to page (each party vouched for the one below it):
-
-  ▸ acme-mattresses.example      ADVERTISER
+    <div style="font-size: 0.78em; color: #6b7280; margin-bottom: 6px;">Placed on <strong>dailyexample-news.com / article-body-mid</strong>, 15 Jun 2026 11:04 UTC. Chain, origin&nbsp;→&nbsp;page (each vouched for the one below):</div>
+    <pre style="margin: 0; font-family: ui-monospace, 'Courier New', monospace; font-size: 0.82em; line-height: 1.6; color: #111; white-space: pre;">  ▸ acme-mattresses.example      ADVERTISER
     ▸ brightreach.example        AD RESELLER
       ▸ getcheapclicks.example   AD RESELLER
-        ▸ dailyexample-news.com  AD PRESENTER
-
-Salt: 7H2K9P4Q
-
-<span data-verify-line="adprovenance">verify:dailyexample-news.com/ad-provenance/v</span></pre>
-  <span verifiable-text="end" data-for="adprovenance"></span>
+        ▸ dailyexample-news.com  AD PRESENTER</pre>
+  </div>
 </div>
+
+The panel is **drawn by the browser, over the page — not by the page's own JavaScript** (see
+[No clip path: this use case is live-only](#no-clip-path-ad-provenance-is-live-only)). It shows **the ad
+exactly as placed** (the creative text is the other half of the evidence, alongside the chain), then the
+resolved chain of parties. There is no `verify:` line and nothing to clip: the browser already walked
+and verified the chain out-of-band to draw this — the panel is the *result*, not a fresh claim.
 
 Each role is a short label; hovering it (or tapping, on touch) shows what it means. The same
 explanations are written out below so nothing depends on a hover:
@@ -328,8 +367,10 @@ the platform (the ad supply chain) is the subject, the user turns verification i
 browser-drawn gesture the ad cannot intercept, and the *absence* of a manifest is itself the finding.
 
 The placement manifest is a small signed document bound to the ad slot at render time, carrying the
-ordered chain of vouching parties. The end-user verification is a deliberate **clip-style action** —
-the user invokes it; it does not run automatically. The walk reuses Live Verify's existing
+ordered chain of vouching parties. The end-user verification is a deliberate **live, browser-drawn
+action** — the user invokes the safe sequence; the browser (not the page) walks the chain and draws the
+result over the page. There is no clip, photograph, or OCR step (see
+[No clip path](#no-clip-path-ad-provenance-is-live-only)). The walk reuses Live Verify's existing
 machinery:
 
 - Each party publishes a `verification-meta.json`-style record with its `formalName` (identity only —
