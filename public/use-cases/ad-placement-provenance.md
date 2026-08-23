@@ -88,6 +88,25 @@ page cannot write) but leaves most other browser-to-user messages forgeable. Unt
 stronger, the mechanism is sound but its weakest link is the user's ability to know the panel is
 genuine.
 
+**This is the single thing browser makers must make much, much clearer:** a *visual, spoof-resistant
+separation* between UI a website drew (DOM-rendered) and UI the browser or an extension drew
+(chrome-rendered), so a user always knows the **source and trust boundary** of what they are looking
+at. The figure below sketches the distinction and six concrete design patterns a browser could adopt —
+a top-bar chip, a connected border tying the panel to a chrome anchor, a side panel, a bottom sheet, a
+modal carrying the browser's own identity, or a permission-bubble style — each making it unmistakable
+that the panel is *"Secure UI from the browser, not from this page."*
+
+![DOM-rendered vs chrome/extension-rendered UI: clear visual separation so users know the source and
+trust boundary. Six alternate designs for browser-drawn UI — top-bar chip, connected border, side
+panel, bottom sheet, modal with browser identity, and permission-bubble style — each labelled as coming
+from the browser, not the page.](../non-dom-chrome-prompts.png)
+
+Today none of these is standardised, and the two that come closest (the padlock, permission prompts)
+cover only a narrow set of messages. An ad-provenance panel — like any browser-to-user statement that a
+malicious page has motive to fake — needs one of these treatments to be *reliably* distinguishable from
+a page-drawn imitation. The mechanism in this use case is only as trustworthy as that boundary, and the
+boundary is a browser-platform gap, not something a page or an extension can close on its own.
+
 ## Example: The Provenance Reveal
 
 **Step 1 — the ad, as placed.** A reader is partway through an article on `dailyexample-news.com`. An
