@@ -104,15 +104,24 @@ As At:         15 Jun 2026 11:04 UTC
 
 Chain, origin to page (each party vouched for the one below it):
 
-  ▸ acme-mattresses.example      ADVERTISER — this ad exists to sell their product
-    ▸ brightreach.example        AD RESELLER — resold the placement onward
-      ▸ getcheapclicks.example   AD RESELLER — resold the placement onward
-        ▸ dailyexample-news.com  AD PRESENTER — put this ad on the page you are reading
+  ▸ acme-mattresses.example      ADVERTISER
+    ▸ brightreach.example        AD RESELLER
+      ▸ getcheapclicks.example   AD RESELLER
+        ▸ dailyexample-news.com  AD PRESENTER
 
 Salt: 7H2K9P4Q
 
 <span data-verify-line="adprovenance">verify:dailyexample-news.com/ad-provenance/v</span></pre>
   <span verifiable-text="end" data-for="adprovenance"></span>
+</div>
+
+Each role is a short label; hovering it (or tapping, on touch) shows what it means. The same
+explanations are written out below so nothing depends on a hover:
+
+<div style="max-width: 650px; margin: 8px auto 24px; font-family: -apple-system, sans-serif; font-size: 0.9em; line-height: 1.55; color: #333; border-left: 3px solid #1a5f2a; padding: 6px 16px;">
+  <p style="margin: 6px 0;"><strong title="This ad exists to sell their product or service, or to entice you to click or tap for some reason.">ADVERTISER</strong> — this ad exists to sell their product or service, or to entice you to click or tap for some reason.</p>
+  <p style="margin: 6px 0;"><strong title="Passed the ad's placement onward toward the page. There may be many, chained one after another; the depth is itself the signal.">AD RESELLER</strong> — passed the placement onward toward the page. There may be many, chained one after another; how deep the reselling goes is itself the signal.</p>
+  <p style="margin: 6px 0;"><strong title="Put this ad on the page you are reading. The party a complaint lands on, and the one held to account.">AD PRESENTER</strong> — put this ad on the page you are reading. The party a complaint lands on, and the one held to account.</p>
 </div>
 
 The chain reads **origin to page**: the **advertiser** at the top is why the ad exists; each **ad
