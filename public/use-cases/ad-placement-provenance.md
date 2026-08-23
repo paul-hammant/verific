@@ -171,6 +171,39 @@ exactly as placed** (the creative text is the other half of the evidence, alongs
 resolved chain of parties. There is no `verify:` line and nothing to clip: the browser already walked
 and verified the chain out-of-band to draw this — the panel is the *result*, not a fresh claim.
 
+**Contrast — a Google-served ad.** The same gesture on a different ad often reveals a much *shorter*
+chain. When a slot is filled directly by a single, integrated ad platform — here Google Ads on a Google
+property — the presenter, the ad-serving party, and the reseller are all the same operator, so the chain
+collapses to two named, recognisable hops:
+
+<div style="max-width: 560px; margin: 24px auto; border: 1px solid #6b7280; border-radius: 10px; background: #f3f4f6; box-shadow: 0 10px 30px rgba(0,0,0,0.28); overflow: hidden; font-family: -apple-system, 'Segoe UI', sans-serif;">
+  <div style="background: #e5e7eb; border-bottom: 1px solid #cbd0d8; padding: 8px 16px; font-size: 0.8em; color: #4b5563; display: flex; align-items: center; gap: 8px;">
+    <span style="font-size: 1.1em;">🛡️</span>
+    <span>Drawn by your browser — not by this page. This panel cannot be altered by the site or the ad.</span>
+  </div>
+  <div style="padding: 16px 20px; color: #111;">
+    <div style="font-size: 0.72em; letter-spacing: 0.06em; color: #6b7280; text-transform: uppercase; margin-bottom: 10px;">Ad placement provenance</div>
+    <div style="font-size: 0.78em; color: #6b7280; margin-bottom: 4px;">The ad, as placed:</div>
+    <div style="border: 1px solid #d8dbe0; background: #fff; border-radius: 6px; padding: 10px 12px; font-size: 0.9em; color: #222; margin-bottom: 14px;">
+      <span style="font-size: 0.72em; color: #4b7a2b; border: 1px solid #b7d59a; border-radius: 3px; padding: 0 4px;">Ad</span>&nbsp; Northlake Running Shoes — new season trainers<br>
+      northlakesports.co.uk · Free returns · Shop the range
+    </div>
+    <div style="font-size: 0.78em; color: #6b7280; margin-bottom: 6px;">Placed on <strong>weather-today.example / sidebar-top</strong>, 15 Jun 2026 11:06 UTC. Chain, origin&nbsp;→&nbsp;page (each vouched for the one below):</div>
+    <pre style="margin: 0; font-family: ui-monospace, 'Courier New', monospace; font-size: 0.82em; line-height: 1.6; color: #111; white-space: pre;">  ▸ northlakesports.co.uk    ADVERTISER   (verified Google Ads account)
+    ▸ ads.google.com         AD RESELLER  (served and presented by Google Ads)
+      ▸ ads.google.com       AD PRESENTER</pre>
+  </div>
+</div>
+
+Two things stand out against the SleepWell example. First, **the chain is short** — one advertiser, one
+integrated platform that both resold and presented the ad. There are no anonymous re-sellers stacked in
+the middle, and *that shortness is itself the signal*: the fewer, more recognisable the hops, the less
+room for a murky party to hide. Second, **the presenter is a party the reader recognises and can hold to
+account** — Google, not a throwaway domain. The panel does not say this ad is *better* or *safer*; it
+says the accountability chain is short and named, which is exactly the judgement the reader wanted to be
+able to make. A long chain through `getcheapclicks.example` and a short chain through `ads.google.com`
+tell very different accountability stories, and the gesture surfaces both honestly.
+
 Each role is a short label; hovering it (or tapping, on touch) shows what it means. The same
 explanations are written out below so nothing depends on a hover:
 
