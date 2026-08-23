@@ -55,8 +55,41 @@ behind their back, and the result is attribution — not a safety verdict.
 
 ## Example: The Provenance Reveal
 
-A reader on `dailyexample-news.com` right-clicks a banner and chooses "Show ad provenance." The
-panel shows:
+**Step 1 — the ad, as placed.** A reader is partway through an article on `dailyexample-news.com`. An
+injected banner sits mid-article — the reader has no idea which of hundreds of possible parties put it
+there:
+
+<div style="max-width: 650px; margin: 24px auto; font-family: -apple-system, sans-serif; border: 1px solid #ddd; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+  <div style="padding: 16px 20px; color: #222; font-size: 0.9em; line-height: 1.5;">
+    …the council confirmed the roadworks would continue into September, with
+    diversions in place along the High Street. Residents are advised to&nbsp;…
+  </div>
+  <div style="margin: 0 20px 8px; border: 1px dashed #c9a13b; background: #fffdf3; padding: 18px; text-align: center; position: relative;">
+    <div style="position: absolute; top: 4px; left: 8px; font-size: 0.65em; color: #b9902f; letter-spacing: 0.05em;">ADVERTISEMENT</div>
+    <div style="font-size: 1.15em; font-weight: 700; color: #1a4f8a;">🛏️ SleepWell Memory-Foam Mattresses — 50% OFF</div>
+    <div style="font-size: 0.85em; color: #555; margin-top: 4px;">Ends Sunday. Free next-day delivery. → Shop now</div>
+  </div>
+  <div style="padding: 8px 20px 16px; color: #222; font-size: 0.9em; line-height: 1.5;">
+    …use alternative routes where possible. The works are part of a wider
+    resurfacing programme scheduled to complete by year end.
+  </div>
+</div>
+
+**Step 2 — the right-click.** Wondering who is behind the banner (or having landed on a scam version of
+it), the reader **right-clicks the ad** (long-press on mobile). The context menu is drawn by the
+*browser*, not the page, so the ad cannot suppress or fake it — the reader chooses **"Show ad
+provenance."**
+
+<div style="max-width: 300px; margin: 24px auto; font-family: -apple-system, sans-serif; border: 1px solid #bbb; border-radius: 8px; background: #fff; box-shadow: 0 6px 20px rgba(0,0,0,0.18); overflow: hidden; font-size: 0.9em;">
+  <div style="padding: 9px 16px; color: #333; border-bottom: 1px solid #eee;">Open image in new tab</div>
+  <div style="padding: 9px 16px; color: #333; border-bottom: 1px solid #eee;">Copy image</div>
+  <div style="padding: 9px 16px; color: #333; border-bottom: 1px solid #eee;">Save image as…</div>
+  <div style="padding: 9px 16px; color: #0b57d0; background: #eef4ff; font-weight: 600;">🔎 Show ad provenance</div>
+  <div style="padding: 9px 16px; color: #333; border-top: 1px solid #eee;">Inspect</div>
+</div>
+
+**Step 3 — the reveal.** The browser reads the placement manifest bound to that slot, walks its chain,
+and draws the panel:
 
 <div style="max-width: 650px; margin: 24px auto; border: 1px solid #1a5f2a; background: #fff; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
   <span verifiable-text="start" data-for="adprovenance"></span>
@@ -86,6 +119,35 @@ the auction ran on `openbid.example`, the network that actually placed the creat
 `brightreach.example`, and the advertiser was `acme-mattresses.example`. If the banner had instead
 been a malware dropper or a scam, the same panel names every party that handled it — the publisher
 can no longer say "nothing to do with us," because their own domain anchors the chain.
+
+### Where each line in the overlay comes from
+
+The overlay is not authored by any one party — no single actor could be trusted to write it, since the
+whole point is to attribute the ones who might deny involvement. Each line is assembled by the browser
+from a **different domain**, walked live:
+
+- **The chain's *shape* comes from the manifest bound to the slot.** When the ad is placed, the slot
+  carries a short placement manifest naming the immediate party below (the publisher's proxy → the
+  exchange it accepted → the network that won → the advertiser). Each party's record carries an
+  `authorizedBy`-style pointer to the party it accepted its placement from — the same walk Live Verify
+  uses for credential [authority chains](../../docs/authority-chain-app-display.md), here expressing
+  *liability* rather than authorisation.
+- **Each *role description* is self-published by the party it describes, on that party's own domain.**
+  "Ad exchange that ran the auction" is text `openbid.example` published about itself in its
+  `verification-meta.json`; "Ad network that placed this creative" is `brightreach.example`'s own
+  `description`; and so on. The browser fetches each party's record from *its own* domain as it walks —
+  so the exchange cannot describe the network, and no upstream party can put words in a downstream
+  party's mouth. (Tapping a line can reveal that party's `formalName` — the registered company behind
+  the domain — where published.)
+- **A line is *confirmed* only if the party above it attests the one below.** `brightreach.example`
+  appears as "placed this creative" only because `openbid.example` — the party above it — actually
+  vouched that it accepted brightreach's placement. A re-seller cannot insert itself as "placed by a
+  reputable network" unless that network signed for it; an unconfirmed link renders **struck**, not
+  hidden (see [Status Indications](#data-visible-after-verification)).
+
+So the five lines are five independent GETs to five domains, stitched by the walk: the manifest gives
+the order, each domain gives its own description, and each upstream attestation confirms (or fails to
+confirm) the link below it. The browser is the neutral assembler; no party writes the whole overlay.
 
 ## Why the Publisher Anchors the Chain
 
