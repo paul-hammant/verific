@@ -89,17 +89,14 @@ stronger, the mechanism is sound but its weakest link is the user's ability to k
 genuine.
 
 **This is the single thing browser makers must make much, much clearer:** a *visual, spoof-resistant
-separation* between UI a website drew (DOM-rendered) and UI the browser or an extension drew
+indicator* between UI a website drew (DOM-rendered) and UI the browser or an extension drew
 (chrome-rendered), so a user always knows the **source and trust boundary** of what they are looking
-at. The figure below sketches the distinction and six concrete design patterns a browser could adopt —
-a top-bar chip, a connected border tying the panel to a chrome anchor, a side panel, a bottom sheet, a
-modal carrying the browser's own identity, or a permission-bubble style — each making it unmistakable
+at. The mockup below sketche the distinction and a concrete design pattern browsers could adopt —
+a top-bar chip, a connected border tying the panel to a chrome anchor. Hopefully making it unmistakable
 that the panel is *"Secure UI from the browser, not from this page."*
 
-![DOM-rendered vs chrome/extension-rendered UI: clear visual separation so users know the source and
-trust boundary. Six alternate designs for browser-drawn UI — top-bar chip, connected border, side
-panel, bottom sheet, modal with browser identity, and permission-bubble style — each labelled as coming
-from the browser, not the page.](../non-dom-chrome-prompts.png)
+![DOM-rendered vs chrome/extension-rendered UI: clear visual linkage so users know the source of the overlay and
+trust implications](../non-dom-chrome-prompts.png)
 
 Today none of these is standardised, and the two that come closest (the padlock, permission prompts)
 cover only a narrow set of messages. An ad-provenance panel — like any browser-to-user statement that a
