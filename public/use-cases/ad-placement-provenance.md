@@ -98,11 +98,15 @@ that the panel is *"Secure UI from the browser, not from this page."*
 ![DOM-rendered vs chrome/extension-rendered UI: clear visual linkage so users know the source of the overlay and
 trust implications](../non-dom-chrome-prompts.png)
 
-Today none of these is standardised, and the two that come closest (the padlock, permission prompts)
+Today none of that is standardised, and the two that come closest (the padlock, permission prompts)
 cover only a narrow set of messages. An ad-provenance panel — like any browser-to-user statement that a
 malicious page has motive to fake — needs one of these treatments to be *reliably* distinguishable from
 a page-drawn imitation. The mechanism in this use case is only as trustworthy as that boundary, and the
-boundary is a browser-platform gap, not something a page or an extension can close on its own.
+boundary is a browser-platform gap, not something a page or an extension can close on its own. On Windows 
+Microsoft used to talk of "a safe sequence" to allow the user to be confident they were dealing with 
+something from the operating system itself and not something from an application throwing up a plausible
+looking dialog. That was Ctrl-Alt-Del and would bring up an overlay that would allow you to lock a screen
+or continue doing password-entering functions. MacOS does not have such a sequence, but contrast.
 
 ## Example: The Provenance Reveal
 
