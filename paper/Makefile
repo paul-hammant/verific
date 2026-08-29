@@ -25,6 +25,10 @@
 TECTONIC ?= tectonic
 SITE_PDF = ../public/paper/live-verify-paper.pdf
 
+# Reproducible output: pin the PDF's embedded timestamps (and \today) to the
+# last commit touching paper/, so rebuilding without changes is a no-op in git.
+export SOURCE_DATE_EPOCH := $(shell git log -1 --format=%ct -- .)
+
 .PHONY: all generated pdf publish clean
 
 all: publish
