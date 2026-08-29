@@ -37,6 +37,11 @@ A `404` hash lookup could mean any of:
 
 The spec says "some 404s will happen after OCR errors in the camera apps, and people will get used to trying again after repositioning the phone." This conflates a serious security signal (forgery) with a routine UX hiccup (OCR noise). A verifier who dismisses a 404 because "OCR is flaky" may accept a forged document.
 
+**This is a design problem, not a documentation gap** — and the sharp form of it is: *a security signal you have trained users to retry past is not a security signal.* Listing the five meanings in an audit does not fix the trained retry reflex. Two things bear on it:
+
+- **The OCR-noise floor has already been shrunk** (so the "404s will happen routinely" premise is now partly stale): `LineAssembler` fixed the reading-order/truncation class, the `textAfterVerifyLine` block stops truncation masquerading as an issuer 404, NFC normalization removed the encoding-mismatch case (meaning #5 above is largely gone), and the editable Normalized pane turns "OCR error" (meaning #2) into a visible, correctable read rather than a bare "not found → retry." Note the residual OCR failure is **glyph confusion** (`é`→`e`, `a`→`o`, `rn`→`m`), which is human-fixable and improves with the on-device models — not an encoding problem.
+- **The actual fix is to split the signal by read-confidence, so retry is only offered where it's correct.** A `404` after a *low-confidence* read is a read failure ("reposition / edit / re-verify"). A `404` after a *clean, confirmed* read is **terminal** — "not a document the issuer stands behind" — and must **not** offer "reposition and scan again," because offering retry there is exactly what trains users to dismiss the real negative. This is a client-UX change tracked in `apps/ios/LiveVerify/TODO.md` (retry-vs-terminal 404 signal); it is the real answer, not more audit prose.
+
 ### 4. Cold-start / adoption has no strategy
 
 The spec assumes issuers will stand up verification endpoints. But:

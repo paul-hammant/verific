@@ -1,5 +1,47 @@
 # iOS App — TODO (OCR reading-order & truncation)
 
+## Editing panel: offer common fixes / make hand-editing the pre-hash text easy
+
+The editable "Normalized" pane already lets a human correct an OCR misread and re-verify. Two
+improvements (cross-client — extension and Android too, not just iOS):
+
+- **Offer common glyph fixes as one-tap suggestions.** OCR fails at *glyph confusion* — reads `é`→`e`,
+  `a`→`o`, `rn`→`m`, `8`→`B`, `l`→`1`, `0`→`O`, drops a diacritic, etc. When a clean read still 404s, the
+  panel could surface the likely confusable substitutions for the low-confidence characters ("did you
+  mean `Beyoncé`?") as tappable fixes, rather than making the verifier hunt for the wrong character by
+  hand. (NOTE: this is *re-reading assistance*, presenting candidate corrections to the human — it is
+  NOT auto-guessing text variants and hashing each until one 200s. That "re-guess until it verifies" is
+  the confirmation-oracle anti-pattern and must never be automated; see
+  `docs/spoofing-countermeasures.md` and the enumeration limit in the README.)
+- **At minimum, make hand-editing the pre-hash text frictionless** — good caret placement, monospace,
+  visible whitespace/newlines, so the verifier can fix the exact bytes about to be hashed without
+  fighting the editor.
+
+## Retry-vs-terminal 404 signal (design)
+
+A `404` currently reads the same whether it followed a *low-confidence* read (retry-able — "read it
+better") or a *clean, confident* read (terminal — "the issuer does not stand behind this exact text;
+this is the security-relevant negative"). Training users to retry past every `404` turns the security
+signal into noise. Split it:
+
+- **Low-confidence read → 404:** present as a *read failure* — "reposition / edit / re-verify" is the
+  right response.
+- **Clean, confirmed read → 404:** present as *terminal* — "not a document the issuer stands behind" —
+  and **do NOT offer 'reposition and scan again'** there. Offering retry on a clean-read failure is the
+  exact anti-pattern.
+
+The app already has the inputs to make this split (OCR confidence per character; whether the human
+edited the Normalized text). Optional: honest **auto-re-read** — capture again on a low-confidence
+result, and if a cleaner read verifies, signal *"verified on 2nd read — corrected a low-confidence
+`e`→`é`"* (caveat load-bearing, disclosed). Auto-re-READ (fresh honest OCR pass) is fine; auto-re-GUESS
+(hashing text variants until one verifies) is forbidden — same reason as above.
+
+Note: the *encoding* case (precomposed vs decomposed `é`) is already handled by NFC normalization in
+`normalize.js` and is NOT an OCR failure — OCR outputs a character, not a Unicode form. These items are
+about *glyph* confusion, which is a real OCR error class that improves as the on-device models improve.
+
+
+
 Context: a mock e-ink credential failed to verify because OCR mis-assembled the lines, and a real claim
 line ended up *after* the `verify:` line and was silently dropped from the hash. Full write-up (with
 screenshots and the deterministic reproduction) is in the blog post
