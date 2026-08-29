@@ -56,6 +56,23 @@ When OCR extracts `vfy:rcpts.domain.com/hotel/abc123`:
 
 If `verification-meta.json` is not found or fetch fails, standard normalization is used without document-specific rules.
 
+### The invariant — and the honest limit on it
+
+Live Verify's pitch is that **what you see is what gets hashed**: change the displayed text and the hash changes. Document-specific normalization is the one place that needs a precise caveat, because these rules run on the text *before* hashing and are supplied by the issuer's own `verification-meta.json`.
+
+The exact invariant is therefore: **displayed text == hashed text, *modulo published, meaning-preserving normalization*.** In practice that qualifier is small, and it should stay small:
+
+- **Normalization exists to absorb OCR/rendering *noise*, never to change *meaning*.** `charNormalization` folds a rendering variant onto its canonical form — `é → e`, a curly quote onto a straight one, a thin space onto a regular one — so that a camera reading `café` as `cafe` still verifies. That is its entire legitimate purpose.
+- **In clip mode — the primary mode — these rules are almost never needed at all.** Clip mode selects the actual digital text; there is no OCR and therefore no noise to absorb. `é` is already `é`. Document-specific normalization earns its keep essentially only on the **camera/OCR** path. A clip-mode issuer shipping `charNormalization` at all is unusual; shipping accent-folding like `é→e` for clip mode would almost never be done.
+- **A rule that changes what a human reads is an attack, not a feature.** `é→e` is meaning-preserving folding. A rule that turned `Wolf` into `wolf`, or `£100` into `£900`, or any displayed claim into a different string, is not normalization — it is precisely the thing the invariant exists to prevent. Legitimate rules are the boring, meaning-preserving, character-folding kind; anything else is a red flag.
+
+**Where the current implementation does not *enforce* this:** `charNormalization` is constrained by the code to single-character → single-character (or → empty) folds, which cannot rewrite meaning. But `ocrNormalizationRules` accepts **arbitrary issuer-supplied regex pattern/replacement pairs**, so a hostile or compromised issuer *could* ship a rule that rewrites the on-screen claim into whatever string it has hashed. So "displayed == hashed" is, for arbitrary `ocrNormalizationRules`, an **intent the protocol does not currently enforce**, not a guaranteed invariant. Two things bound the risk today, and one is roadmap:
+
+- **The rules are hash-committed.** Because an endorser's `authorizedBy` walk commits to the issuer's *entire* `verification-meta.json` (see [verification-meta-schemas.md](verification-meta-schemas.md)), a rewrite rule is part of what the endorser signed — an **endorsed (green-chain)** issuer cannot ship one secretly. The exposure is confined to **self-verified (amber)** issuers, which the app already tells the verifier to judge for themselves.
+- **The normalized text is inspectable.** The apps show the exact text about to be hashed (the "Normalized" tab), so a divergence between the displayed claim and what is hashed is *visible* to a human who looks — the same fail-loudly principle used elsewhere.
+- **Roadmap:** the honest fix is to make the invariant *enforced* rather than intended — restrict issuer-supplied rules to a closed, client-owned folding table rather than arbitrary regex (which also removes the ReDoS surface noted in [spoofing-countermeasures.md](spoofing-countermeasures.md)). See that doc for the threat write-up.
+- **A cheap interim guard the clients can apply now: cap the rule count.** A legitimate accent/whitespace-folding meta needs only a handful of rules; a meta shipping *many* `ocrNormalizationRules` is either doing something meaning-altering or is a ReDoS payload. The phone apps (and every client) can refuse to apply a `verification-meta.json` carrying more than a small fixed number of rules — a low, blunt ceiling that a normal issuer never approaches but a hostile-rewrite or ReDoS meta does — and surface it as a loud "this issuer's normalization looks abnormal" signal rather than silently applying it. This does not fully enforce meaning-preservation, but it bounds the blast radius cheaply until the closed-folding-table fix lands.
+
 ## 2. Unicode Character Normalization
 
 OCR often produces Unicode variants of standard ASCII characters. These are normalized first:

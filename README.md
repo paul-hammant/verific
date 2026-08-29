@@ -22,9 +22,17 @@ Anyone can verify any document presented to them — no special equipment, no cr
 | Hashed                         | SHA-256 computed                              | On device |
 | Verified                       | Only the hash sent via HTTPS GET              | Network   |
 | Hash reversed to original text | Mathematically impossible                     | —         |
-| **PII transmitted**            | **None. Ever.**                               | —         |
+| **Document content transmitted** | **None** — only a hash crosses the wire     | —         |
 
-This is architecturally non-negotiable. Cloud OCR services see your degree certificates, medical licenses, salary receipts, and passport photos. Live Verify never does. The verification endpoint receives a hash — a one-way fingerprint that reveals nothing about the document. There are tens of thousands of PhDs with deep cryptographic competency who could be expert witnesses if needed in a court case to defend the one way nature of hashing.
+This is architecturally non-negotiable. Cloud OCR services see your degree certificates, medical licenses, salary receipts, and passport photos. Live Verify never does. The verification endpoint receives a hash, and the document's text never crosses the wire.
+
+**But be precise about what "only a hash" does and does not protect**, because the honest limit matters:
+
+- **Content confidentiality holds unconditionally** — SHA-256 is one-way, so the document text cannot be recovered from the hash. That is not in dispute.
+- **Privacy holds only for *unguessable* preimages.** SHA-256's one-wayness is irrelevant when the input is *guessable*. For a low-entropy, templated document — a coffee-shop receipt, a standard licence line, a payslip on a known template — an attacker can enumerate plausible texts, hash each, and `GET` the endpoint: a `200` confirms the guess. The issuer's endpoint becomes a **confirmation oracle**. This is a preimage-entropy problem, not a hashing problem, and "hashing is one-way" does nothing about it. The mitigation is entropy: a document that is *intrinsically high-entropy* — one whose text an attacker cannot plausibly guess because it carries enough unpredictable detail, such as a bank statement (unique account number, exact balances to the penny, specific transaction IDs, precise timestamps) or a detailed itemised receipt — or, for documents that would otherwise be guessable, one carrying a per-document **salt** (a short random string, as the [e-ink badge](public/e-ink-id-cards.md) and other use cases already specify) so its hash cannot be pre-computed or enumerated. See [docs/weaknesses_audit.md](docs/weaknesses_audit.md) for the open items (salt-spec consistency, timing enumeration, a full threat model) this connects to.
+- **The lookup pattern still leaks.** Even with high entropy, the issuer learns *which* document was checked, *when*, and *from what IP* — every verification of a medical licence or a benefit letter is logged by the party with the most incentive to profile it. Live Verify does not yet blind this. The known fixes are standard and worth adopting: a **k-anonymity hash-prefix range lookup** (send a prefix, receive a bucket, disambiguate on-device — the approach *Have I Been Pwned* shipped in 2018), an **OPRF** (the issuer answers without learning the input at all), or **batching** to hide which query mattered. These are on the roadmap, not in the protocol today, and the README should not imply otherwise.
+
+So: **no document content ever leaves the device — but "no metadata, ever" would be an over-claim.** Content confidentiality is unconditional; query-privacy depends on preimage entropy and on blinding the lookup, and the latter is future work.
 
 On-device AI (Apple Vision, ML Kit, NPUs) continues to improve OCR accuracy without changing the privacy model. See [docs/ocr-limitations.md](docs/ocr-limitations.md) for the trajectory.
 
@@ -40,7 +48,7 @@ The `verify:` line in a document signals that verification is available. The pip
 
 Both modes follow the same core pipeline. See [docs/how-it-works.md](docs/how-it-works.md) for detailed flowcharts and design principles (multi-page documents, nested hashes, domain transparency).
 
-Unlike QR codes, Live Verify binds the **visible text itself** to the verification — if you change the text, the hash changes, and verification fails. See [docs/text-is-king.md](docs/text-is-king.md) for the full comparison with QR codes, blockchain, and other verification technologies.
+Unlike QR codes, Live Verify binds the **visible text itself** to the verification — if you change the text, the hash changes, and verification fails. (More precisely: displayed text == hashed text *modulo published, meaning-preserving normalization* — e.g. folding `é→e` for OCR tolerance. That qualifier is meant to stay small; see [docs/NORMALIZATION.md](docs/NORMALIZATION.md#the-invariant--and-the-honest-limit-on-it) for where it's enforced and where it's only intended.) See [docs/text-is-king.md](docs/text-is-king.md) for the full comparison with QR codes, blockchain, and other verification technologies.
 
 ## Platform Integration
 
@@ -140,7 +148,7 @@ The method is not merely unencumbered — it is **unpatentable**: it was publicl
 
 ## Tech Stack
 
-All verification happens client-side — no PII ever leaves your device.
+All verification happens client-side — the document's content never leaves your device; only a hash is sent (see the privacy caveats above: query-privacy depends on preimage entropy and on blinding the lookup).
 
 | Component         | Technologies                                            |
 |-------------------|---------------------------------------------------------|

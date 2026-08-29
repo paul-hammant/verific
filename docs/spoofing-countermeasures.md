@@ -127,6 +127,22 @@ This is specifically relevant to the "authority-issued claim on a third-party si
 - **Banner disclaimer**: "screencaps of this are not proof of anything" reminds users that the in-page UI is not tamper-proof evidence.
 - **Badge count per tab**: The `X/N` toolbar badge is set via the Chrome extension API, which page JS cannot access or spoof.
 
+### Known threat: issuer-supplied normalization can break "displayed == hashed"
+
+Live Verify's central promise is that **what a human reads is what gets hashed** — change the text, change the hash. Document-specific normalization is the one place that promise needs a caveat, because the [normalization rules](NORMALIZATION.md) run on the text *before* hashing and are supplied by the issuer's own `verification-meta.json`.
+
+**The attack.** `charNormalization` is safely constrained by the client to single-character folds (`é→e`), which cannot rewrite meaning. But `ocrNormalizationRules` accepts **arbitrary issuer-supplied regex pattern/replacement pairs**. A hostile or compromised issuer can therefore ship a rule that rewrites the on-screen claim into a *different* string — the one it actually hashed — so that a claim reading one thing to the human verifies as another. For that issuer, "displayed == hashed" no longer holds. This is a real gap: the invariant that is the whole pitch is, for arbitrary `ocrNormalizationRules`, an intent the protocol does not currently *enforce*.
+
+**Same code path is a ReDoS surface.** `new RegExp(rule.pattern, 'g')` runs an unbounded, issuer-supplied regex in the client. A crafted catastrophic-backtracking pattern is a denial-of-service against the verifying device, independent of any rewrite intent.
+
+**What bounds it today:**
+
+- **Hash-commitment confines the exposure to amber issuers.** An endorser's `authorizedBy` walk commits to the issuer's *entire* `verification-meta.json`, so a rewrite rule is part of what the endorser signed — an **endorsed (green-chain)** issuer cannot ship one secretly. The risk is confined to **self-verified (amber)** issuers, which the app already flags as "judge this domain yourself."
+- **The normalized text is inspectable** — the apps show the exact bytes about to be hashed (the "Normalized" tab), so a divergence is visible to a human who looks.
+- **Interim client guard: cap the rule count.** A legitimate folding meta needs a handful of rules; a meta shipping *many* is either meaning-altering or a ReDoS payload. Clients (the phone apps especially) can refuse to apply a `verification-meta.json` with more than a small fixed number of `ocrNormalizationRules` and surface it as a loud "abnormal normalization" signal. Cheap, blunt, bounds the blast radius.
+
+**Roadmap fix:** replace arbitrary issuer regex with a **closed, client-owned folding table** (accents, Unicode confusables, whitespace) that the issuer cannot extend — enforcing meaning-preservation and removing the ReDoS surface in one move. See [NORMALIZATION.md](NORMALIZATION.md#the-invariant--and-the-honest-limit-on-it).
+
 ### Implemented: `allowedDomains` response field
 
 For claims designed to appear on third-party sites, the verification response includes an `allowedDomains` field:
