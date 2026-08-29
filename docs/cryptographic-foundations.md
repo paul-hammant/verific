@@ -28,6 +28,21 @@ Blockchain (Bitcoin, 2008) uses Merkle trees and hash functions as building bloc
 
 Live Verify uses the same cryptographic primitives (SHA-256) without requiring distributed consensus, cryptocurrency, or transaction fees. The trust anchor is the organization's domain (backed by DNS/TLS), not a blockchain.
 
+## What the base protocol is — and is not
+
+Be precise about this, because it is the boundary the rest of the system's evidentiary claims sit on:
+
+**The base protocol is a *live confirmation*, not *cryptographic evidence*.** A verification is a hash sent to the issuer's domain and a plain response — `{"status":"verified"}` or `404` — returned over TLS. The response is **not signed by the issuer**. TLS proves you reached the domain securely; it does not produce an artifact the issuer cryptographically committed to. Four consequences follow, and they must not be papered over:
+
+- **Trust equals whoever controls the domain at lookup time.** The answer's authority is entirely "who currently controls `issuer.example`." A DNS takeover, an expired-and-re-registered domain, a compromised server, or a rogue insider all produce an answer indistinguishable from the genuine one. There is no issuer-held key signing the response, so "verified" means "whoever holds the domain right now said so," not "the issuer, provably, said so." (Directive **d** below proposes systems to *detect* takeover — but detection is not a signature.)
+- **No transferable proof.** A relying party who sees ✓ cannot hand that proof to a third party; the third party must re-do the lookup against the live server. There is no signed object to forward and check offline.
+- **No non-repudiation.** The issuer signed nothing, so nothing ties *them* to a "verified" answer at a point in time. They can later deny the response was ever returned, and there is no cryptographic rebuttal.
+- **Deniable by deletion.** Where the endpoint is a static file named after the hash, an issuer can make a past verification vanish by deleting the file — it now `404`s, with no record it existed. *This is partly deliberate*: the same property is what makes **revocation instant and honest** (a permanently-signed "verified" could not be cleanly revoked). It is a real trade-off of the live-answer model, not purely a flaw — but the trade-off must be owned, not hidden behind evidentiary language.
+
+**This is a feature for its actual purpose.** Live Verify answers "is this claim, *right now*, one the issuer's domain stands behind?" — the same shape as a courier tracking-number lookup, where real-time revocability is the point. Weakly, a TLS session plus a timestamp plus the response *is* evidence — on the order of "a screenshot of the issuer's website," which courts do admit — but it is **repudiable** evidence, far short of a signature. Anywhere a doc needs *durable, transferable, non-repudiable* proof, the base protocol does not provide it, and the doc must say so.
+
+**The proposed fixes are unimplemented.** Two mechanisms in these docs would supply what the base protocol lacks — [third-party witnessing](./WITNESSING-THIRD-PARTIES.md) (an independent party keeps an immutable, timestamped ledger of hashes/status-changes, able to testify a hash was live at time T regardless of the issuer) and [Merkle anchoring](#merkle-trees-for-database-anchoring) (periodically committing a Merkle root of all issued hashes to a public tamper-evident log, so history cannot be silently rewritten). **Both are design proposals, not shipped code.** Wherever a document relies on non-repudiation, tamper-evidence, or transferable proof, it is relying on one of these *unimplemented* layers, and should mark it as such rather than imply the property already holds.
+
 ## Endorsement (`authorizedBy`) — Merkle Commitment
 
 While `parentAuthorities` provides passive links for humans to browse, `authorizedBy` is a **verifiable claim** — the endorser's attestation of the issuer can be independently checked via the same `verify:` protocol. The client hashes the issuer's **entire** `verification-meta.json` (canonicalized), not just the domain. This binds the endorsement to the exact content of the issuer's self-description — any change invalidates the hash and requires re-endorsement.
@@ -47,7 +62,7 @@ The demo at `public/c/verification-meta.json` shows this: Unseen University clai
 
 A SaaS verification provider (or any operator of a hash vault) can periodically anchor their database state to a public ledger (e.g., Hedera HCS, Ethereum) by computing a Merkle root over all stored hashes and committing that single root. This provides tamper-evidence independent of the operator — if hashes are silently added, removed, or altered, the root won't match.
 
-This solves the same non-repudiation problem as [witnessing](./WITNESSING-THIRD-PARTIES.md) — preventing issuers from denying they published a hash — but through mathematics rather than third-party testimony. The two approaches are complementary; see the "Public Blockchain" section in that doc for how witnessing firms use Merkle rollups.
+This *would* solve the same non-repudiation problem as [witnessing](./WITNESSING-THIRD-PARTIES.md) — preventing issuers from denying they published a hash — through mathematics rather than third-party testimony. **Both remain design proposals; neither is implemented.** Until one ships, the base protocol has no non-repudiation (see [What the base protocol is — and is not](#what-the-base-protocol-is--and-is-not)). The two approaches are complementary; see the "Public Blockchain" section in that doc for how witnessing firms would use Merkle rollups.
 
 ### Construction
 

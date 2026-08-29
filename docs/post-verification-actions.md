@@ -49,9 +49,17 @@ X-Verify-Retain-Reason: service-of-process
 X-Verify-Retain-Reason-Further-Details: https://courts.maricopa.gov/verify/retain/service-info
 ```
 
-The recipient's GET request against the verification endpoint *is* the provable event. The issuer's server logs the lookup; the recipient's device retains the result for the specified period. Both sides have independent proof of delivery and acknowledgment.
+The recipient's GET is a **logged event on both sides**: the issuer's server records the lookup, and the recipient's device retains the result. Each side holds a *corroborating record* that a device in the recipient's possession engaged with the claim at a time.
 
-**Use cases:** Service of process (court summons), loan disclosure acknowledgment, eviction notices, informed consent, product recall notifications, data breach notifications, employment policy acknowledgments. See [Verification Response Format](Verification-Response-Format.md) for the full pattern and header specification.
+**Be precise about the evidentiary weight, because this is legal machinery on an unsigned GET.** The base protocol returns an *unsigned* response over TLS — it produces **no signature, no non-repudiation, and no transferable proof** (see [cryptographic-foundations.md](cryptographic-foundations.md#what-the-base-protocol-is--and-is-not)). So verification-as-acknowledgment is **a strong point of evidence, analogous to signed-for delivery — not irrefutable proof of personal receipt**, and not a cryptographic acknowledgment:
+
+- The **issuer's server log** is the issuer's own record — it corroborates a lookup but the issuer controls it, and could omit or lose it; it is not an independently non-repudiable artifact.
+- The **recipient's retained result** is likewise a local copy, not a signed receipt they can hand to a third party who can verify it offline.
+- A malformed or absent server log, a deleted static endpoint, or a domain takeover all weaken or erase the record — the same base-protocol limits above.
+
+To reach genuine non-repudiation (a "strong presumption of receipt" that survives an issuer's later denial), this pattern needs the **[witnessing](WITNESSING-THIRD-PARTIES.md) or [Merkle-anchoring](cryptographic-foundations.md#merkle-trees-for-database-anchoring) layer — both of which are unimplemented proposals.** Until one ships, describe this as corroborating evidence of engagement, not as conclusive proof.
+
+**Use cases:** Service of process (court summons), loan disclosure acknowledgment, eviction notices, informed consent, product recall notifications, data breach notifications, employment policy acknowledgments — in each, treat the verification as *supporting* evidence of receipt (like a delivery-tracking scan), corroborated by other means, not as standalone conclusive proof. See [Verification Response Format](Verification-Response-Format.md) for the full pattern and header specification.
 
 ## Charitable Donations
 

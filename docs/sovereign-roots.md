@@ -228,6 +228,53 @@ This is survivable precisely because it is a solved problem in an adjacent domai
 free, and a design that bundles the list without an update/revocation channel has shipped a root
 store that can never be corrected.
 
+## Takeover detection: compensating for the missing signature (proposal)
+
+> **Status:** design proposal, not implemented.
+
+The base protocol returns an *unsigned* answer, so at lookup time trust reduces to "whoever controls
+this domain right now" (see
+[cryptographic-foundations.md](cryptographic-foundations.md#what-the-base-protocol-is--and-is-not)). A
+signature would let a verifier detect a takeover directly. Absent one, the next-best thing is a system
+that makes takeover — and hacker *insertion* short of full takeover — **loud and quickly detectable**,
+so a captured issuer or intermediate is caught and pulled from the anchor/endorser graph fast. The
+sovereign roots are the natural operators of that system, because they already anchor the chains and
+already need an update/revocation channel.
+
+The proposal has three layers, each a continuous integrity check that a root (and every intermediate)
+runs on the parties below it:
+
+- **Continuity monitoring per issuer/intermediate.** A root (or an endorser) records a rolling
+  fingerprint of each domain it vouches for: the TLS certificate chain and issuing CA, the hosting
+  ASN/IP block, the `verification-meta.json` content hash, the DNS delegation, and the set of
+  `authorizedBy` links. A takeover almost always changes one of these abruptly — a new CA, a new
+  hosting provider, a re-registered domain, a rewritten meta file. An abrupt, uncorroborated change to
+  a *previously stable* party is flagged: the anchor/endorser can drop to **amber** ("this issuer's
+  infrastructure changed unexpectedly on [date]; treat with caution") pending re-confirmation, rather
+  than continuing to vouch green for a node an attacker may now control. This is the CA-world's
+  certificate-transparency instinct applied to issuer *infrastructure*.
+- **Cross-checking, so one compromised checker is not enough.** No single monitor is trusted. Multiple
+  independent parties (peer roots, the endorsers in the chain, third-party witnesses) each run the
+  continuity check and **agree** on a party's fingerprint; a change corroborated by many is a genuine
+  legitimate migration, while a change one party sees and others do not is the signature of a localized
+  compromise (a single hijacked resolver, a single poisoned CDN edge). This directly targets **hacker
+  insertion without full takeover** — an attacker who compromises one path to one intermediate, not the
+  domain itself — because the honest majority still sees the unchanged fingerprint and the divergence
+  surfaces as an alarm.
+- **Fast revocation down the graph.** When a takeover or insertion is confirmed, the root removes the
+  captured node via the same out-of-band update/revocation channel the section above already requires —
+  and, because endorsement is a *graph* (`authorizedBy`), every chain transiting the captured node goes
+  amber at once, not just the node itself. The blast radius is bounded by how fast the update feed
+  propagates, which is the same latency the CA-distrust mechanism already accepts.
+
+**What this is and is not.** It does **not** turn an unsigned GET into cryptographic evidence — a
+verifier still cannot hold a signed, transferable proof, and a *fast, total, simultaneous* takeover of
+a domain and all its monitors would still briefly answer as genuine. What it does is shrink the window
+in which a captured issuer or intermediate can pass as trusted, and make the common cases (CA change,
+re-hosting, meta rewrite, single-path insertion) *detectable* rather than silent. It is a **detection
+and containment** layer, not a substitute for the signing/witnessing/Merkle layers those docs describe
+— and, like them, it is a proposal here, not shipped.
+
 ## Scope: what this doc is and isn't
 
 This is the **design note**. It specifies the list's format, the three-state semantics, the
