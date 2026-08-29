@@ -168,6 +168,9 @@ All verification happens client-side — the document's content never leaves you
 
 | Document | Audience | Content |
 |----------|----------|---------|
+| [docs/SPEC.md](docs/SPEC.md) | Implementers, standards reviewers | **The normative protocol spec** — verify-line ABNF, canonicalization algorithm, hash, lookup URL, response/affirmation rules, endorsement walk, conformance |
+| [docs/SECURITY-CONSIDERATIONS.md](docs/SECURITY-CONSIDERATIONS.md) | Security reviewers | Consolidated threat model with implemented/proposed/open status per item |
+| [normalization-hashes/](normalization-hashes/) | Implementers | The conformance corpus — pinned test vectors all implementations must pass |
 | [docs/platform_integration.md](docs/platform_integration.md) | Platform vendors | Apple/Google/Microsoft/Adobe integration details |
 | [docs/issuer-guide.md](docs/issuer-guide.md) | Organizations | Creating verifiable documents, verification-meta.json |
 | [docs/verification-meta-schemas.md](docs/verification-meta-schemas.md) | Implementers | Issuer vs authority schema for verification-meta.json |
