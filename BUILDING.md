@@ -162,10 +162,6 @@ live-verify/
 │   └── android/                     # Native Android app (Kotlin)
 │       └── app/
 │
-├── native/                          # Native platform data models
-│   ├── ios/LiveVerifyPrototype/     # Swift VerificationMeta, Pipeline
-│   └── android/                     # Kotlin VerificationMeta, data classes
-│
 ├── scripts/
 │   ├── sync-shared.js               # Generates extension shared/ from canonical public/ sources
 │   ├── count-and-update-derivations.js # Updates use-case derivation counts

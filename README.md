@@ -2,7 +2,7 @@
 
 **Verify digital and printed claims**
 
-![Jest and Playwright tests, then deploy to GitHub Pages](https://github.com/live-verify/live-verify/actions/workflows/deploy.yml/badge.svg)
+![Deploy to GitHub Pages](https://github.com/live-verify/live-verify/actions/workflows/deploy.yml/badge.svg)
 ![Code License](https://img.shields.io/badge/code-Apache--2.0-blue) ![Content License](https://img.shields.io/badge/content-CC--BY--SA--4.0-lightgrey)
 
 **Issuer-attested verification of on-screen and printed claims.** Select text on screen or scan it on paper — both produce instant cryptographic verification.

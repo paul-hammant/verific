@@ -106,6 +106,23 @@ function extractVerificationUrl(rawText) {
  * @param {Object} [meta] - Optional verification-meta.json contents
  * @returns {string} - Full HTTPS verification URL
  */
+/**
+ * Choose http vs https for a `verify:`/`vfy:` target.
+ *
+ * ONLY loopback (localhost / 127.0.0.1), as the actual HOST, gets plaintext http —
+ * everything else is https. Must parse the hostname: a substring test like
+ * `.includes('localhost')` matches the path too, so `verify:attacker.example/localhost/x`
+ * would be downgraded to plaintext http against attacker.example. That is the bug this fixes.
+ *
+ * @param {string} hostAndPath - the part after the scheme prefix, e.g. "example.com/c" or "localhost:8080/c"
+ * @returns {'http'|'https'}
+ */
+function schemeForTarget(hostAndPath) {
+    // Host is everything before the first '/'; drop any :port to compare the bare host.
+    const host = String(hostAndPath).split('/')[0].split(':')[0].toLowerCase();
+    return (host === 'localhost' || host === '127.0.0.1') ? 'http' : 'https';
+}
+
 function buildVerificationUrl(baseUrl, hash, meta) {
     const lowerBase = baseUrl.toLowerCase();
 
@@ -122,14 +139,14 @@ function buildVerificationUrl(baseUrl, hash, meta) {
     // If it starts with verify:, convert to https:// (or http:// for local test)
     if (lowerBase.startsWith('verify:')) {
         const withoutPrefix = baseUrl.substring(7); // Remove "verify:"
-        const protocol = (withoutPrefix.includes('localhost') || withoutPrefix.includes('127.0.0.1')) ? 'http' : 'https';
+        const protocol = schemeForTarget(withoutPrefix);
         return `${protocol}://${withoutPrefix}/${hash}${suffix}`;
     }
 
     // If it starts with vfy:, convert to https://
     if (lowerBase.startsWith('vfy:')) {
         const withoutPrefix = baseUrl.substring(4); // Remove "vfy:"
-        const protocol = (withoutPrefix.includes('localhost') || withoutPrefix.includes('127.0.0.1')) ? 'http' : 'https';
+        const protocol = schemeForTarget(withoutPrefix);
         return `${protocol}://${withoutPrefix}/${hash}${suffix}`;
     }
 
@@ -302,11 +319,11 @@ function buildMetaUrl(baseUrl) {
 
     if (lowerBase.startsWith('verify:')) {
         const withoutPrefix = baseUrl.substring(7);
-        const protocol = (withoutPrefix.includes('localhost') || withoutPrefix.includes('127.0.0.1')) ? 'http' : 'https';
+        const protocol = schemeForTarget(withoutPrefix);
         httpsBase = `${protocol}://${withoutPrefix}`;
     } else if (lowerBase.startsWith('vfy:')) {
         const withoutPrefix = baseUrl.substring(4);
-        const protocol = (withoutPrefix.includes('localhost') || withoutPrefix.includes('127.0.0.1')) ? 'http' : 'https';
+        const protocol = schemeForTarget(withoutPrefix);
         httpsBase = `${protocol}://${withoutPrefix}`;
     } else if (!lowerBase.startsWith('http')) {
         httpsBase = `https://${baseUrl}`;
