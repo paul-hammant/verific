@@ -71,7 +71,16 @@ function applyDocSpecificNorm(text, metadata) {
 
 // Text normalization function (as per the document rules)
 function normalizeText(text, metadata = null) {
-    // Apply document-specific normalization FIRST (before standard normalization)
+    // Unicode canonical composition FIRST. The same glyph can be encoded two ways —
+    // precomposed "é" (U+00E9) vs decomposed "e" + combining acute (U+0065 U+0301) —
+    // which look identical but are different byte sequences and hash differently.
+    // Different OCR engines / text sources emit different forms, so without this the
+    // same document can produce different hashes on iOS vs Android. NFC folds both to
+    // the canonical precomposed form. Native clients MUST apply the SAME form:
+    // Swift .precomposedStringWithCanonicalMapping, Kotlin/Java Normalizer NFC.
+    text = text.normalize('NFC');
+
+    // Apply document-specific normalization (before standard normalization)
     // This ensures user-typed text gets the same treatment as OCR text
     text = applyDocSpecificNorm(text, metadata);
 

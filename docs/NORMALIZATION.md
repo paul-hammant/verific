@@ -75,7 +75,13 @@ The exact invariant is therefore: **displayed text == hashed text, *modulo publi
 
 ## 2. Unicode Character Normalization
 
-OCR often produces Unicode variants of standard ASCII characters. These are normalized first:
+### Step 0: Canonical composition (NFC)
+
+Before any other step, `normalizeText()` applies **`String.prototype.normalize('NFC')`**. The same glyph can be encoded two ways — precomposed `é` (U+00E9) or decomposed `e` + combining acute (U+0065 U+0301) — that render identically but are different byte sequences and would otherwise hash differently. Because different OCR engines and text sources emit different forms, the *same* document could hash differently on iOS vs Android without this. NFC folds both to the canonical precomposed form. All clients (web, iOS, Android) run this same canonical `normalize.js` via a JS bridge, so NFC is applied identically everywhere. (NFC does not resolve every ambiguity — Turkish İ/I, German ß/ss, and fullwidth/halfwidth forms remain; see [weaknesses_audit.md](weaknesses_audit.md).)
+
+### Ad-hoc ASCII folds
+
+OCR often produces Unicode variants of standard ASCII characters. These are normalized next:
 
 ### Quotation Marks
 - **Left double quote** (`"` U+201C) → `"` (straight double quote, U+0022)
