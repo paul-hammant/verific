@@ -1,0 +1,227 @@
+% Live Verify — arXiv-track paper. Build with `make` (tectonic).
+% Draft: sections marked [PLANNED] await their studies; do not submit before removing them
+% or completing the work they describe.
+\documentclass[11pt]{article}
+
+\usepackage[margin=1.1in]{geometry}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{amssymb}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+
+\input{generated/conformance-summary}
+
+\title{Live Verify: Verifying Printed and Displayed Text\\
+Against Issuer Domains by Canonicalized Hashing\thanks{Draft. Reference
+implementations, the normative specification, and the conformance corpus are at
+\url{https://github.com/live-verify/live-verify}.}}
+\author{Paul Hammant}
+\date{Draft of \today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Documents that circulate as paper, PDF, or on-screen text routinely outlive any
+channel that could vouch for them: a determination letter is photographed, a
+license is framed on a wall, a bank statement is forwarded. Live Verify is a
+deliberately low-fidelity bridge from such artifacts back to the party that
+issued them. A document carries a human-readable \texttt{verify:} line naming
+the issuer's domain; a verifier's client canonicalizes the visible text,
+hashes it with SHA-256, and performs an HTTPS GET for that hash at the issuer's
+domain. A 200 response with an affirming status means the issuer, \emph{now},
+stands behind exactly that text. The design trades cryptographic evidence for
+radical deployability: there are no signatures, no key ceremonies, and nothing
+to install on the document side beyond one printable line. We specify the
+canonicalization pipeline that makes camera-captured and clipboard-captured
+text hash identically across implementations, publish a conformance corpus of
+hash-pinned vectors that three implementations pass, and give an honest
+account of the trust model's limits: verification is a live confirmation, not
+transferable proof; it is deniable by deletion; and public hash endpoints act
+as confirmation oracles for guessable documents, which constrains the class of
+documents the scheme should carry.
+\end{abstract}
+
+\section{Introduction}
+
+Institutions already know how to publish facts on their own domains, and the
+web's public-key infrastructure already binds those domains to organizational
+identity well enough for banking. What is missing is a bridge from a
+\emph{document in hand} --- paper, screenshot, forwarded PDF --- to that
+issuer-controlled surface. Existing bridges either carry opaque payloads (QR
+codes, NFC chips) that a human cannot audit and a printer cannot always
+reproduce, or demand heavyweight adoption (digital signatures, verifiable
+credentials) from issuers whose documents are still fundamentally text.
+
+Live Verify's premise is that the document's own visible text can be the
+payload. The scheme adds one line:
+
+\begin{center}
+\texttt{verify:example.com/path}
+\end{center}
+
+A verifying client captures the text above that line by camera or clipboard,
+canonicalizes it (\S\ref{sec:canon}), hashes it, and asks the named domain
+whether it stands behind that hash. The answer is rendered against the
+\emph{authority domain} --- the domain printed on the document --- never
+against whichever host happened to serve bytes.
+
+\paragraph{Contributions.}
+\begin{enumerate}
+  \item A protocol for text-first document verification whose entire
+        issuer-side deployment is static file hosting
+        (\S\ref{sec:design}).
+  \item A canonicalization pipeline reconciling OCR capture and digital
+        clipboard capture into one hash space, with the order of operations
+        specified normatively (\S\ref{sec:canon}).
+  \item A published, append-only conformance corpus in which each vector's
+        filename \emph{is} its pinned SHA-256, and cross-implementation
+        results over it (\S\ref{sec:eval}).
+  \item An explicit negative result offered as a design position: what a
+        live-lookup scheme \emph{cannot} provide (non-repudiation,
+        transferable proof, resistance to deletion), and why naming those
+        limits is a precondition for deploying it safely
+        (\S\ref{sec:limits}).
+\end{enumerate}
+
+\section{Related Work}\label{sec:related}
+
+\paragraph{Domain-anchored transparency.} Certificate Transparency
+\cite{rfc6962} demonstrated that append-only, publicly auditable logs can
+discipline an existing trust ecosystem without redesigning it. Live Verify
+shares the instinct of anchoring trust in operational domain control rather
+than new key material, but deliberately omits the log: the issuer's live
+endpoint is the (revocable, deniable) source of truth, with third-party
+witnessing left as an optional layer.
+
+\paragraph{Hash-prefix privacy.} Have I Been Pwned's $k$-anonymity range
+queries \cite{ali2018hibp} showed that a hash-lookup service can avoid
+learning which exact record was queried. Live Verify's baseline lookup is a
+full-hash GET and therefore leaks the queried hash to the issuer; adopting
+prefix range queries is designed but unimplemented
+(\S\ref{sec:limits}).
+
+\paragraph{Verifiable credentials.} The W3C VC model \cite{w3cvc} carries
+cryptographic proof inside the credential, achieving non-repudiation and
+offline verification at the cost of issuer-side signing infrastructure and
+holder-side wallets. Live Verify occupies the opposite corner of the design
+space: nothing travels with the document but text.
+
+\paragraph{Provenance grading.} The Isn\=ad--Rij\=al framework
+\cite{raja2026isnad} grades chains of transmission in multi-agent knowledge
+systems, importing classical hadith methodology. Its concerns are
+complementary: Live Verify authenticates a leaf artifact against its issuer,
+while isn\=ad-style grading evaluates the chain through which derived
+knowledge traveled. The overlap and its limits are examined in the
+repository's comparative documents.
+
+\section{Protocol Design}\label{sec:design}
+
+\subsection{The verify line}
+The verify line is the last content line of a claim, in ABNF \cite{rfc5234}:
+\begin{verbatim}
+verify-line = scheme ":" verify-target
+scheme      = "verify" / "vfy"
+\end{verbatim}
+Recognition is tolerant (case-insensitive, whitespace around the colon,
+bottom-up scan) because the line must survive OCR. A verify line immediately
+preceded by \texttt{>} is \emph{quoted} --- a claim reproduced inside another
+claim --- and is inert; OCR artifact cleanup deliberately does not strip
+\texttt{>} so that quotation survives the camera path.
+
+\subsection{Canonicalization}\label{sec:canon}
+Camera capture and clipboard capture of the same document must reach the same
+bytes. A conforming implementation applies, in order: (1) OCR artifact
+cleanup, camera path only --- stripping border characters and scan debris;
+(2) Unicode canonical composition (NFC) \cite{uax15}, since precomposed and
+decomposed encodings of the same glyph otherwise hash differently; (3)
+issuer-declared single-character folds; (4) issuer-declared OCR regex rules,
+treated as untrusted input and guarded; (5) a fixed punctuation fold table
+(curly quotes, en/em dashes, no-break space, ellipsis); (6) line processing
+--- trim, collapse internal whitespace, drop blank lines, rejoin with LF, no
+trailing newline. The hash is SHA-256 \cite{fips180} over the UTF-8 encoding
+of the result, rendered as 64 lowercase hex characters.
+
+\subsection{Lookup and affirmation}
+The client GETs \texttt{https://host[/path]/\{hash\}} --- HTTPS
+unconditionally, with a parsed-hostname (never substring) exception for
+\texttt{localhost} development. A claim is verified iff the response is HTTP
+200 and its status affirms, either as JSON \texttt{status:"verified"} or via
+an issuer-declared response-type whose class is \texttt{affirming}. Responses
+never echo document content: the verifier already holds the document, and an
+endpoint that repeats content is a data leak.
+
+\subsection{Endorsement}
+An issuer's metadata may name an endorser. The endorsement commits to a hash
+of the issuer's \emph{entire} metadata file, so any change to the issuer's
+self-description invalidates it; clients walk at most three links and render
+unendorsed domains as self-verified with an explicit caution.
+
+\section{Trust Model}\label{sec:trust}
+
+Verification here means: \emph{the issuer's domain, at this moment, affirms
+this exact text}. That is a live confirmation with the strength --- and only
+the strength --- of WebPKI domain authentication plus the issuer's
+operational integrity. The repository's security document treats each threat
+in turn (query privacy, transport and DNS posture, issuer-supplied
+normalization, spoofing); \S\ref{sec:limits} summarizes what survives
+honest scrutiny.
+
+\section{Evaluation}\label{sec:eval}
+
+\subsection{Cross-implementation hash determinism}
+The conformance corpus currently contains \VectorTotal{} vectors:
+\TextVectorCount{} text vectors (each filename a pinned SHA-256) and
+\ImageVectorCount{} image vectors exercising the full camera pipeline on
+Android (ML~Kit) and iOS (Vision). The reference JavaScript implementation
+passes \TextVectorPasses/\TextVectorCount{} text vectors; the table in
+Appendix~\ref{app:vectors} is \emph{generated by executing the implementation
+against the corpus at paper build time}, so the numbers cannot drift from the
+code. Vectors are discriminating by design --- the NFC vector's body is
+decomposed Unicode, and an implementation that skips canonical composition
+fails it.
+
+\subsection{OCR field failure study [PLANNED]}
+Which characters do production OCR stacks actually confuse on real documents
+(e-ink, laser print, screens), and does the issuer-fold mechanism cover the
+observed failure classes? This study is planned; anecdotal evidence from
+development (e.g.\ e-ink capture) motivates it but is not evidence.
+
+\subsection{Confirmation-oracle entropy analysis [PLANNED]}
+For which document classes is the plaintext guessable enough that a public
+hash endpoint becomes a confirmation oracle? A quantified entropy analysis
+across the use-case corpus is planned; the security document currently
+handles this qualitatively (high-entropy fields, optional salt).
+
+\section{Limitations}\label{sec:limits}
+
+Live Verify's verification is not evidence. There is no signature, hence no
+non-repudiation: an issuer can delete a hash and deny ever having affirmed
+it. Confirmation is not transferable: a verifier cannot prove to a third
+party that verification succeeded. The full-hash lookup leaks query patterns
+to issuers; $k$-anonymity range queries \cite{ali2018hibp} and OPRF-based
+lookups are designed but not implemented. An HTTP 404 is both ``retry after
+network trouble'' and ``the issuer denies this document''; treating a
+security signal as retryable trains verifiers past it, and client design must
+separate the two. These properties bound the scheme's honest use: it
+complements, and does not replace, signature-bearing schemes where evidence
+must outlive the issuer's cooperation.
+
+\section{Conclusion}
+
+Live Verify makes one narrow bet: for documents that are already text, the
+cheapest verification bridge that institutions will actually deploy is a
+printable line, a canonicalization discipline, and static file hosting on a
+domain they already defend. The specification, three reference
+implementations, and a hash-pinned conformance corpus are published; the two
+planned studies above are the empirical work that remains.
+
+\bibliographystyle{plain}
+\bibliography{refs}
+
+\appendix
+\section{Conformance vectors (generated)}\label{app:vectors}
+\input{generated/conformance-vectors}
+
+\end{document}
