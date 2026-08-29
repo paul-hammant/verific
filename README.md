@@ -81,6 +81,11 @@ See [docs/platform_integration.md](docs/platform_integration.md) for vendor-spec
 
 iOS and Android reference apps get deleted when Apple and Google take over development (and agree on a standard).
 
+**Conformance:** all implementations — including independent ones — prove hash agreement against the
+published vector corpus in [`normalization-hashes/`](normalization-hashes/): for every vector, a
+conforming implementation must produce byte-identical normalized output and the SHA-256 pinned in the
+vector's filename. The three reference implementations run against it in their test suites.
+
 ## Use Cases
 
 If a claim is aimed at humans reading it — whether digital or printed — it is a candidate for Live Verify.

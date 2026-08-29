@@ -1,6 +1,32 @@
-# Normalization Hash Test Fixtures
+# Conformance Corpus — Normalization & Hash Vectors
 
-Cross-platform test cases ensuring all implementations produce identical hashes.
+This directory is the Live Verify **conformance corpus**: the published test vectors against which
+any implementation — the three in this repository or an independent one — proves hash agreement.
+
+## The contract
+
+> For every text vector in this directory, a conforming implementation MUST produce byte-identical
+> normalized output and an identical SHA-256 hash. **The filename is the pinned expected hash.**
+> An implementation that fails any vector does not conform, and two implementations that both pass
+> every vector will agree on the hash of any claim they both normalize.
+
+Rules that make the corpus trustworthy as a reference:
+
+- **Vectors are append-only.** A vector, once published, is never edited — editing one changes its
+  hash and therefore its filename, which is by construction a *new* vector. If a protocol change
+  (e.g. a normalization-rule change) invalidates old vectors, that is a **breaking protocol change**
+  and is handled by versioning the corpus, not by silently rewriting history.
+- **Vectors are discriminating by design.** Each covers a normalization behaviour an implementation
+  could plausibly get wrong; a vector that every wrong implementation would still pass is not doing
+  its job. Example: the NFC vector's body contains *decomposed* Unicode (base letters + combining
+  accents) — an implementation that skips canonical composition produces a different hash and fails.
+- **Three implementations already run against this corpus** (JS via Jest; Android and iOS via
+  instrumented tests, including the OCR image vectors). Independent implementers should wire it into
+  their own CI the same way.
+
+Coverage currently includes: line/whitespace collapsing, blank-line removal, curly-quote /
+en-em-dash / NBSP / ellipsis folds, Unicode NFC canonical composition (decomposed input), issuer
+`charNormalization` folds, `ocrNormalizationRules`, and full-pipeline OCR image vectors.
 
 ## Fixture Types
 
