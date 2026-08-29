@@ -121,26 +121,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the insurer, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change (current to superseded), or even a 404 (record deleted)
-- Receives structured content/metadata (plan names, deductible amounts, copay tiers, network IDs, effective dates)
-- Does **NOT** receive plaintext (subscriber names, member IDs, claims history)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to policyholders/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Insurer cannot deny issuing the SBC or the coverage terms
-- **Timestamp proof:** Plan terms existed at a specific time (critical for coverage disputes and regulatory compliance)
-- **Regulatory audit:** State insurance departments or CMS can inspect the witness ledger for consumer protection violations
-- **Resilience:** Verification works even if insurer's systems go down or the company is acquired
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Insurer domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the insurer's hashes and status changes plus structured metadata (plan names, deductible amounts, copay tiers, network IDs, effective dates) — never subscriber names, member IDs, or claims history — providing non-repudiation of the SBC and coverage terms.
 
 ## Competition vs. Healthcare.gov (Federal Registry)
 

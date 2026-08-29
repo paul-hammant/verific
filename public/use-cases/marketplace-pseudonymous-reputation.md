@@ -357,10 +357,4 @@ Real names expose sellers/creators to:
 - Reputation portability may violate ToS
 - Legal challenges to restrictive terms ongoing
 
-**Public Blockchain (Non-Party)**
-
-Witnessing firms may periodically commit reputation rollups to a public blockchain, providing:
-- Proof that reputation existed at specific time
-- Tamper-evidence if escrow provider fails
-- True portability independent of any single company
-- User-controlled reputation that survives platform death
+For rollup mechanics — periodic public-blockchain commitments giving existence proof and tamper-evidence independent of the witnessing firm — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md).

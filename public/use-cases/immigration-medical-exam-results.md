@@ -27,14 +27,14 @@ furtherDerivations: 1
       <strong>Date of Exam:</strong> March 15, 2026</p>
 <div style="background: #f1f8e9; border: 1px solid #c5e1a5; padding: 15px; margin: 15px 0; border-radius: 4px;">
         <p><strong>Civil Surgeon:</strong> Dr. Leslie Thompkins (ID #9982-BC)<br>
-        <strong>Clinic:</strong> Gotham Community Health Center</p>
+        <strong>Clinic:</strong> Fairport Community Health Center</p>
         <p><strong>Results Summary:</strong> Class A/B Conditions: NONE DETECTED. All required vaccinations confirmed and current.</p>
       </div>
 <p style="font-size: 0.85em; font-weight: bold; color: #d32f2f;">DO NOT OPEN ENVELOPE. INTERNAL RECORD VERIFICATION ONLY.</p>
     </div>
 <div data-verify-line="im-med" style="border-top: 1px dashed #999; margin-top: 30px; padding-top: 10px; font-family: 'Courier New', monospace; font-size: 0.8em; color: #555; text-align: center;"
       title="Demo only: Civil Surgeon portal doesn't yet offer verification&#10;endpoints, so this is illustrative">
-      <span data-verify-line="im-med">verify:gotham-health.org/uscis/v</span> <span verifiable-text="end" data-for="im-med"></span>
+      <span data-verify-line="im-med">verify:fairport-health.org/uscis/v</span> <span verifiable-text="end" data-for="im-med"></span>
     </div>
   </div>
 </div>
@@ -76,7 +76,7 @@ The **Applicant** benefits from verification.
 ## Third-Party Use
 
 **USCIS Officers**
-**Intake Integrity:** When an officer receives a "Sealed I-693 Envelope," they currently have to trust the physical seal hasn't been tampered with. Live Verify allows the officer to scan the hash on the form *before* opening. "Verified by Gotham Health" ensures the contents match the surgeon's original digital filing, stopping "Envelope Tampering" fraud.
+**Intake Integrity:** When an officer receives a "Sealed I-693 Envelope," they currently have to trust the physical seal hasn't been tampered with. Live Verify allows the officer to scan the hash on the form *before* opening. "Verified by Fairport Health" ensures the contents match the surgeon's original digital filing, stopping "Envelope Tampering" fraud.
 
 **Immigration Attorneys**
 **Quality Control:** Verifying that the Civil Surgeon is actually on the USCIS-approved list and that their license was active on the date of the signature.
@@ -116,26 +116,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the issuer, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change, or even a 404 (record deleted)
-- Receives structured content/metadata (key identifiers and dates)
-- Does **NOT** receive plaintext or sensitive personal information
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to document holders/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Issuer cannot deny issuing the document
-- **Timestamp proof:** Document existed at a specific time
-- **Regulatory audit:** Jurisdictions can inspect the witness ledger for fraud detection
-- **Resilience:** Verification works even if issuer's systems go down
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Issuer domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the civil surgeon's hashes and status changes plus structured metadata (applicant A-Number, date of exam, vaccination status, result status) — never sensitive personal medical information — providing non-repudiation of the medical exam results.
 
 
 ## Competition vs. e-Medical (State Dept)

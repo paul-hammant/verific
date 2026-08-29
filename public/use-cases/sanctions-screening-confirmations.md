@@ -122,37 +122,4 @@ This review documentation is also verifiable — proving the firm didn't just ig
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the issuer, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change, or even a 404 (record deleted)
-- Receives structured content/metadata (key identifiers and dates)
-- Does **NOT** receive plaintext or sensitive personal information
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to document holders/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Issuer cannot deny issuing the document
-- **Timestamp proof:** Document existed at a specific time
-- **Regulatory audit:** Jurisdictions can inspect the witness ledger for fraud detection
-- **Resilience:** Verification works even if issuer's systems go down
-
-**Jurisdictional Requirements (International/Cross-Border)**
-
-Documents crossing national borders require multi-jurisdictional witnessing:
-
-**Treaty Partners:** When documents are shared between treaty partners (e.g., US-EU, Canada-US), witnessing firms must:
-- Be located in neutral jurisdictions recognizable to both parties
-- Comply with both nations' discovery/transparency requirements
-- Maintain audit trails accessible to both tax/regulatory authorities
-
-**Non-Treaty Jurisdictions:** For documents involving non-OECD nations or jurisdictions with weak international cooperation frameworks:
-- Use witnesses from OECD member states
-- Deploy blockchain rollups to public ledgers (e.g., Ethereum) for immutable proof
-- Consider additional apostille/certification requirements under the Hague Apostille Convention
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Issuer domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the financial firm's hashes and status changes plus structured metadata (screened party name, screening timestamp, reference number, lists checked with versions) — never plaintext or sensitive personal information — providing non-repudiation of the screening confirmation and an audit trail regulators can inspect.

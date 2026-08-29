@@ -109,35 +109,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the issuer, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change, or even a 404 (record deleted)
-- Receives structured content/metadata (key identifiers and dates)
-- Does **NOT** receive plaintext or sensitive personal information
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to document holders/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Issuer cannot deny issuing the document
-- **Timestamp proof:** Document existed at a specific time
-- **Regulatory audit:** Jurisdictions can inspect the witness ledger for fraud detection
-- **Resilience:** Verification works even if issuer's systems go down
-
-**Jurisdictional Requirements (Catastrophe Insurance/Reinsurance)**
-
-Catastrophe claims require specialized witnessing:
-- **Immediate claims (hours after event):** May use issuer-generated hashes with blockchain rollups for speed
-- **Detailed claims (days later):** Independent witness firms from jurisdictions outside the primary issuer's domicile
-- **Cross-border catastrophes:** Multiple witness firms from affected nations' OECD partners
-
-**Lloyd's of London & International Reinsurance:** Expect witness firms for all catastrophe claims, especially those triggering industry-wide retrocessions.
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Issuer domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the issuer's hashes and status changes plus structured metadata (key identifiers, dates) — never plaintext or sensitive personal information — providing non-repudiation of the report it recorded.
 
 
 ## Competition vs. Blockchain (RiskStream)

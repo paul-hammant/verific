@@ -106,26 +106,7 @@ The homeowner (second party) may hand the verified document to various third par
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the servicer, and any subsequent changes to the escrow analysis as they happen—which may manifest as a new hash, a status change (amended, in-dispute), or even a 404 (record deleted)
-- Receives structured content/metadata (loan numbers, disbursement amounts, balance changes, payment adjustments)
-- Does **NOT** receive plaintext (homeowner names, property addresses, personal financial details)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to homeowners/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Servicer cannot deny issuing the statement or the calculations
-- **Timestamp proof:** Statement hash existed at a specific time (critical for RESPA compliance disputes)
-- **Regulatory audit:** CFPB can inspect the witness ledger for systemic escrow mismanagement
-- **Resilience:** Verification works even if servicer's systems go down or the company exits servicing
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Servicer domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the servicer's hashes and status changes plus structured metadata (loan number, disbursement amounts, balance changes, payment adjustments) — never homeowner names, property addresses, or personal financial details — providing non-repudiation of the escrow statement issuance and immutable proof critical for RESPA compliance disputes.
 
 ## Competition vs. Servicer Portals
 
@@ -258,35 +239,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the title company, and any subsequent changes to wire instructions as they happen—which may manifest as a new hash, a status change (changed, closed), or even a 404 (record deleted)
-- Receives structured content/metadata (escrow numbers, transaction amounts, wire dates, title company IDs)
-- Does **NOT** receive plaintext (buyer/seller names, property addresses, bank account details)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to buyers/sellers/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Title company cannot deny issuing the wire instructions
-- **Timestamp proof:** Instructions hash existed at a specific time (critical for wire fraud investigations)
-- **Regulatory audit:** State insurance commissioners can inspect the witness ledger for fraud patterns
-- **Resilience:** Verification works even if title company's systems go down or are compromised
-
-**Jurisdictional Requirements (United States)**
-
-The IRS does not mandate or recognize third-party witnessing firms for federal tax documents. The IRS maintains authoritative records within its own systems, and verification occurs via direct query to IRS endpoints.
-
-However:
-- **State tax authorities** may have different requirements (e.g., state-level charity registration requires independent witness firms)
-- **International stakeholders** (foreign tax authorities, treaty partners) may demand independent verification from witness firms not located in the US
-- **FATCA compliance** (Foreign Account Tax Compliance Act) may require US documents to be witnessed by non-US firms when shared across borders
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Title company domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the title company's hashes and status changes plus structured metadata (escrow number, transaction amount, wire date, title company ID) — never buyer/seller names, property addresses, or bank account details — providing non-repudiation of wire instruction issuance and immutable proof critical for wire fraud investigations.
 
 ## Competition vs. Secure Portals (Qualia)
 

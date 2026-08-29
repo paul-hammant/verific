@@ -112,26 +112,7 @@ The borrower / employee (second party) may hand the verified document to various
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the employer, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change (terminated, on-leave), or even a 404 (record deleted)
-- Receives structured content/metadata (job titles, salary ranges, employment dates, verification IDs)
-- Does **NOT** receive plaintext (employee names, SSNs, home addresses)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to employees/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Employer cannot deny issuing the verification
-- **Timestamp proof:** Hash existed at a specific time
-- **Regulatory audit:** Housing agencies can inspect the witness ledger for employment fraud patterns
-- **Resilience:** Verification works even if employer's systems go down
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Employer domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the employer's hashes and status changes plus structured metadata (job title, employment status, employment dates, verification ID) — never employee names, salary amounts, or SSNs — providing non-repudiation of employment verification issuance.
 
 ## Competition vs. The Work Number (Equifax)
 
@@ -253,35 +234,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the payroll processor, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change (amended, void), or even a 404 (record deleted)
-- Receives structured content/metadata (pay periods, gross amounts, YTD totals, verification IDs)
-- Does **NOT** receive plaintext (employee names, SSNs, home addresses, bank account details)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to employees/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Employer cannot deny issuing the paystub
-- **Timestamp proof:** Hash existed at a specific time
-- **Regulatory audit:** IRS and housing agencies can inspect the witness ledger for income fraud patterns
-- **Resilience:** Verification works even if payroll processor's systems go down
-
-**Jurisdictional Requirements (United States)**
-
-The IRS does not mandate or recognize third-party witnessing firms for federal tax documents. The IRS maintains authoritative records within its own systems, and verification occurs via direct query to IRS endpoints.
-
-However:
-- **State tax authorities** may have different requirements (e.g., state-level charity registration requires independent witness firms)
-- **International stakeholders** (foreign tax authorities, treaty partners) may demand independent verification from witness firms not located in the US
-- **FATCA compliance** (Foreign Account Tax Compliance Act) may require US documents to be witnessed by non-US firms when shared across borders
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Payroll processor domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the payroll processor's hashes and status changes plus structured metadata (pay periods, gross amounts, YTD totals, verification IDs) — never employee names, SSNs, addresses, or bank details — providing non-repudiation of paystub issuance.
 
 ## Competition vs. The Work Number (Equifax)
 

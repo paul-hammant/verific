@@ -480,9 +480,4 @@ Different use cases have different legal frameworks:
 - **Reviews:** Defamation law, CDA Section 230 implications
 - **Tips:** May be protected by anti-retaliation policies
 
-**Public Blockchain (Non-Party)**
-
-Witnessing firms may periodically commit hash rollups to a public blockchain, providing:
-- Proof the report/review/tip existed at a specific time
-- Tamper-evidence if records are altered
-- Independence from any single organization
+For rollup mechanics — periodic public-blockchain commitments giving existence proof and tamper-evidence independent of the witnessing firm — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md).

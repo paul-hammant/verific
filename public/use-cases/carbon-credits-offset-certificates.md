@@ -121,26 +121,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the registry, and any subsequent changes to the credit as they happen—which may manifest as a new hash, a status change (retired, cancelled, buffer pool), or even a 404 (record deleted)
-- Receives structured content/metadata (quantities, vintages, project IDs, retirement dates, beneficiary names)
-- Does **NOT** receive plaintext (proprietary project verification details, pricing information)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to credit buyers/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Registry cannot deny issuing the retirement certificate
-- **Timestamp proof:** Retirement hash existed at a specific time
-- **Regulatory audit:** Environmental agencies can inspect the witness ledger for compliance patterns
-- **Resilience:** Verification works even if registry's systems go down
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Registry domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the registry's hashes and status changes plus structured metadata (certificate ID, quantity in tonnes CO2e, vintage year, project name, retirement date, retiring entity) — never project-level financial or proprietary verification details — providing non-repudiation of credit retirement and an audit trail for environmental agencies and corporate ESG compliance.
 
 ## Competition vs. Blockchain (Climate Ledger)
 

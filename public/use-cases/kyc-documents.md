@@ -152,26 +152,7 @@ AI-generated deepfake documents and synthetic identities are emerging as the nex
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the bank or KYC provider, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change (verified to suspended/blacklisted), or even a 404 (record deleted)
-- Receives structured content/metadata (verification dates, document types, PEP status, sanctions check results)
-- Does **NOT** receive plaintext (customer names, addresses, passport numbers, biometric data)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to customers/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Bank cannot deny performing KYC verification or the results
-- **Timestamp proof:** Verification existed at a specific time (critical for AML compliance and regulatory examinations)
-- **Regulatory audit:** FinCEN, banking regulators, or law enforcement can inspect the witness ledger for compliance patterns
-- **Resilience:** Verification works even if bank's systems go down or the institution is acquired
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Bank domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the bank or KYC provider's hashes and status changes plus structured metadata (verification dates, document types, PEP status, sanctions check results) — never plaintext such as customer names or passport numbers — providing non-repudiation of performing KYC verification.
 
 ## Competition vs. ID Verification APIs (Onfido)
 

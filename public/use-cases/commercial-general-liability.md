@@ -118,26 +118,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the carrier, and any subsequent changes to the policy as they happen—which may manifest as a new hash, a status change (cancelled, lapsed, pending audit), or even a 404 (record deleted)
-- Receives structured content/metadata (policy numbers, coverage limits, business descriptions, policy dates)
-- Does **NOT** receive plaintext (business financial details, loss histories, underwriting notes)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to business owners/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Carrier cannot deny issuing the policy
-- **Timestamp proof:** Policy hash existed at a specific time
-- **Regulatory audit:** State insurance departments can inspect the witness ledger
-- **Resilience:** Verification works even if carrier's systems go down
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Carrier domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the carrier's hashes and status changes plus structured metadata (policy numbers, coverage limits, business descriptions, policy dates) — never business financial details, loss histories, or underwriting notes — providing non-repudiation of the policy it issued.
 
 ## Competition vs. Broker Confirmation Calls
 

@@ -114,26 +114,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the certifying agency, and any subsequent changes to the certification as they happen—which may manifest as a new hash, a status change (test expired, banned lot), or even a 404 (record deleted)
-- Receives structured content/metadata (lot numbers, variety names, germination rates, purity percentages, test dates)
-- Does **NOT** receive plaintext (grower names, field locations, purchase volumes)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to farmers/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Certifying agency cannot deny issuing the certification
-- **Timestamp proof:** Certification existed at a specific time (critical for PVP disputes and crop insurance claims)
-- **Regulatory audit:** Agricultural departments can inspect the witness ledger for seed quality compliance and IP protection
-- **Resilience:** Verification works even if certifying agency's systems go down or the agency dissolves
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Certifying agency domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the certifying agency's hashes and status changes plus structured metadata (lot number, tag ID, variety name, germination rate, purity percentage, test date) — never plaintext like grower names or field locations — providing non-repudiation of the seed certification.
 
 ### When a Farmer Plants the Wrong Seed
 

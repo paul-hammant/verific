@@ -229,26 +229,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the institution, and any subsequent changes to the payload as they happen — which may manifest as a new hash, a status change (RESCHEDULED, CANCELLED, EXCUSED), or a 404 (record deleted)
-- Receives structured content/metadata (date, institution type, reference number)
-- Does **NOT** receive plaintext (patient names, medical details, case details)
-- Provides an immutable, timestamped audit trail — available to the jurisdiction on demand, to individuals/employers during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Institution cannot deny issuing the confirmation
-- **Timestamp proof:** Confirmation existed at a specific time (critical for employment disputes about protected absence)
-- **Regulatory audit:** Healthcare regulators or court administrators can inspect issuing patterns
-- **Resilience:** Verification works even if the institution changes booking systems
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Institution domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the court or issuing authority's hashes and status changes plus structured metadata (case number, appointment date) — never plaintext or sensitive personal information — providing non-repudiation of the document.
 
 ## Further Derivations
 

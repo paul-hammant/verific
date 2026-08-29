@@ -121,26 +121,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the platform, and any subsequent changes to the agreement as they happen—which may manifest as a new hash, a status change (satisfied, default), or even a 404 (record deleted)
-- Receives structured content/metadata (amounts, percentages, dates, UCC filing numbers)
-- Does **NOT** receive plaintext (merchant names, bank account details)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to merchants/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Platform cannot deny issuing the financing terms
-- **Timestamp proof:** Agreement hash existed at a specific time (critical for UCC priority)
-- **Regulatory audit:** State banking commissions can inspect the witness ledger for predatory lending patterns
-- **Resilience:** Verification works even if platform's systems go down or the platform exits the market
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Platform domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the lender's hashes and status changes plus structured metadata (loan agreement number, loan amount, interest rate, term length, disbursement date, status) — never borrower identifying information or bank account details — providing non-repudiation of platform lending agreement issuance.
 
 ## Rationale
 

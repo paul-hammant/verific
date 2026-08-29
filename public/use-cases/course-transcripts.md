@@ -120,26 +120,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the university, and any subsequent changes to the transcript as they happen—which may manifest as a new hash, a status change (grade amendment), or even a 404 (record deleted)
-- Receives structured content/metadata (course codes, credit hours, degree programs, graduation dates)
-- Does **NOT** receive plaintext (student names, social security numbers, detailed grade histories)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to students/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** University cannot deny issuing the transcript or grades
-- **Timestamp proof:** Transcript hash existed at a specific time (critical for degree conferral disputes)
-- **Regulatory audit:** Department of Education can inspect the witness ledger for FERPA compliance
-- **Resilience:** Verification works even if university's systems go down or the institution closes
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **University domain** — Direct check against the Registrar
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the university's hashes and status changes plus structured metadata (student ID, course codes, credit hours, grades, degree program, graduation date) — never student name, social security number, or detailed personal academic history — providing non-repudiation of the transcript issuance and immutable proof critical for degree conferral disputes.
 
 ## Competition vs. Official Electronic Delivery (Parchment)
 

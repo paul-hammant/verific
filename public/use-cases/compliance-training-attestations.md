@@ -531,13 +531,7 @@ Platforms that aggregate credentials from multiple sources:
 
 ---
 
-## Public Blockchain (Non-Party)
-
-Training attestations benefit from blockchain anchoring:
-- Proof training existed at specific date (statute of limitations)
-- Independence from employer or provider system changes
-- Long-term verification (employment disputes years later)
-- Portability beyond any single platform
+For rollup mechanics — periodic public-blockchain commitments giving existence proof and tamper-evidence independent of the witnessing firm — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md).
 
 ---
 

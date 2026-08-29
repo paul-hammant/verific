@@ -124,26 +124,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the startup, and any subsequent changes to the SAFE as they happen—which may manifest as a new hash, a status change (converted, amended, rescinded), or even a 404 (record deleted)
-- Receives structured content/metadata (amounts, valuation caps, discount rates, investor classes)
-- Does **NOT** receive plaintext (investor names, board resolutions, side letter details)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to investors/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Startup cannot deny issuing the SAFE terms
-- **Timestamp proof:** SAFE hash existed at a specific time (critical for cap table priority disputes)
-- **Regulatory audit:** State securities commissions can inspect the witness ledger for compliance with exemptions (Reg D, Reg CF)
-- **Resilience:** Verification works even if startup's systems go down or the company dissolves
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Startup domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the startup's hashes and status changes plus structured metadata (amounts, valuation caps, discount rates, investor classes) — never plaintext (investor names, board resolutions, side letter details) — providing non-repudiation of the SAFE terms and an audit trail securities commissions can inspect.
 
 ## Rationale
 

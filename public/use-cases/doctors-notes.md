@@ -179,26 +179,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the practice, and any subsequent changes to the payload as they happen — which may manifest as a new hash, a status change (EXTENDED, RETURNED, CANCELLED), or even a 404 (record deleted)
-- Receives structured content/metadata (date ranges, practice identifier, note type)
-- Does **NOT** receive plaintext (patient names, diagnoses, medical details)
-- Provides an immutable, timestamped audit trail — available to the jurisdiction on demand, to patients/employers during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Practice cannot deny issuing the note
-- **Timestamp proof:** Note existed at a specific time (critical for employment disputes)
-- **Regulatory audit:** Healthcare regulators can inspect issuing patterns for anomalies
-- **Resilience:** Verification works even if the practice closes or changes systems
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Practice domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the medical practice's hashes and status changes plus structured metadata (date ranges, practice identifier, note type, assessment date, fitness period) — never plaintext patient names or diagnoses — providing non-repudiation of the doctor's note.
 
 ## Further Derivations
 

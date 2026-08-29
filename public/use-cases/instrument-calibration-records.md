@@ -112,26 +112,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the calibration lab, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change (certified to expired), or even a 404 (record deleted/retracted)
-- Receives structured content/metadata (instrument IDs, calibration dates, pass/fail results, reference standard IDs, technician credentials)
-- Does **NOT** receive plaintext (client names, laboratory addresses, proprietary measurement details)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to labs/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Calibration lab cannot deny issuing the certificate or the results
-- **Timestamp proof:** Calibration existed at a specific time (critical for data integrity in research and regulatory submissions)
-- **Regulatory audit:** FDA, ISO accreditation bodies, or quality authorities can inspect the witness ledger for compliance patterns
-- **Resilience:** Verification works even if calibration lab's systems go down or the business closes
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Calibration lab domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the calibration lab's hashes and status changes plus structured metadata (instrument IDs, calibration dates, pass/fail results, reference standard IDs, technician credentials) — never client names, laboratory addresses, or proprietary measurement details — providing non-repudiation of the certificate and the results and an audit trail state quality authorities can inspect.
 
 ## Competition vs. LIMS (Lab Information Mgmt)
 

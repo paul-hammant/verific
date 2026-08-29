@@ -123,26 +123,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the inspection firm, and any subsequent changes to the certificate as they happen—which may manifest as a new hash, a status change (red tag, conditional pass), or even a 404 (record deleted)
-- Receives structured content/metadata (equipment serial numbers, inspection dates, pass/fail status, load test results)
-- Does **NOT** receive plaintext (owner names, site locations)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to crane owners/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Inspection firm cannot deny issuing the certificate
-- **Timestamp proof:** Certificate hash existed at a specific time (critical for accident liability)
-- **Regulatory audit:** OSHA can inspect the witness ledger for compliance patterns
-- **Resilience:** Verification works even if inspection firm's systems go down or the company closes
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Inspection firm domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the inspection firm's hashes and status changes plus structured metadata (equipment serial number, inspection date, pass/fail status, load test results, next inspection due date, inspector ID) — never owner names or site locations — providing non-repudiation of the inspection and an audit trail for OSHA compliance and accident liability protection.
 
 ## Competition vs. QR Stickers
 

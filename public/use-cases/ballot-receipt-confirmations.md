@@ -180,23 +180,4 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the election authority, and any subsequent changes to the payload as they happen — which may manifest as a new hash, a status change (received → counted, or received → rejected), or even a 404 (record deleted)
-- Receives structured content/metadata (voter ID, election date, ballot status, timestamps)
-- Does **NOT** receive plaintext (voter name, address, or — critically — selections in Variant 2)
-- Provides an immutable, timestamped audit trail — available to the jurisdiction on demand, to voters during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Election authority cannot deny sending a notification
-- **Timestamp proof:** Notification was sent at a specific time (critical for cure deadlines)
-- **Regulatory audit:** State election oversight can inspect the witness ledger for notification failures
-- **Resilience:** Verification works even if election authority's systems go down during high-traffic election periods
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Election authority domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the election authority's hashes and status changes plus structured metadata (voter ID, election date, ballot status, timestamps) — never voter name, address, or selections — providing non-repudiation of the notification.

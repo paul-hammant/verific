@@ -131,15 +131,4 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the issuer, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change, or even a 404 (record deleted)
-- Receives structured content/metadata (key identifiers and dates)
-- Does **NOT** receive plaintext or sensitive personal information
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to document holders/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** HMRC cannot deny issuing the registration
-- **Timestamp proof:** Registration was active at a specific time
-- **Regulatory audit:** Jurisdictions can inspect the witness ledger for supervision integrity
-- **Resilience:** Verification works even if issuer's systems go down
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive HMRC's hashes and status changes plus structured metadata (business name, HMRC supervision reference, supervised activity type, registration date, registration status) — never plaintext business addresses or personal financial details — providing non-repudiation of HMRC's registration decisions.

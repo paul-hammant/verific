@@ -341,10 +341,4 @@ Identity escrow provides:
 - Can't retaliate for survey responses
 - Third-party escrow strengthens legal protection
 
-**Public Blockchain (Non-Party)**
-
-Witnessing firms may periodically commit rollups to a public blockchain, providing:
-- Proof that election occurred and votes were counted
-- Tamper-evidence for election results
-- Transparency for election integrity
-- Independence from any single organization
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the organization's hashes and status changes plus structured metadata (election ID, vote count, result announced date) — never individual ballots, voter identities, or voting patterns — providing non-repudiation of the election and an audit trail members can inspect.

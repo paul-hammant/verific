@@ -142,28 +142,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the issuer, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change, or even a 404 (record deleted)
-- Receives structured content/metadata (taxpayer TIN, tax year, treaty reference, certificate number)
-- Does **NOT** receive plaintext or sensitive personal information
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to document holders/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Tax authority cannot deny issuing the certificate
-- **Timestamp proof:** Certificate existed and was verified at a specific time
-- **Regulatory audit:** Jurisdictions can inspect the witness ledger for fraud detection
-- **Resilience:** Verification works even if issuer's systems go down
-
-Tax residency certificates have particular witnessing value for **audit defense**. If a company applied reduced withholding based on a certificate that later turns out to be forged, the witnessing record proves they verified at the time of the transaction. HMRC or the IRS may still assess the tax shortfall, but the company can demonstrate it acted in good faith — the difference between a penalty and a reassessment.
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Tax authority domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the tax authority's hashes and status changes plus structured metadata (taxpayer TIN, tax year, country of residence, treaty reference, certificate number, issue date) — never plaintext or sensitive personal information — providing non-repudiation of the tax residency certificate. Tax residency certificates have particular witnessing value for **audit defense** — the witnessing record proves verification occurred at the time of the withholding decision, demonstrating good faith even if the certificate later proves forged.
 
 ## Further Derivations
 

@@ -122,26 +122,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the insurer, and any subsequent changes to the policy as they happen—which may manifest as a new hash, a status change (lapsed, in-claim), or even a 404 (record deleted)
-- Receives structured content/metadata (benefit amounts, occupation classes, policy periods, elimination periods)
-- Does **NOT** receive plaintext (insured names, medical information, specific claim details)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to policyholders/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Insurer cannot deny issuing the policy or benefit terms
-- **Timestamp proof:** Policy hash existed at a specific time (critical for benefit disputes)
-- **Regulatory audit:** State insurance departments can inspect the witness ledger for market conduct
-- **Resilience:** Verification works even if insurer's systems go down or the company exits the market
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Insurer domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the insurer's hashes and status changes plus structured metadata (policy number, occupation class, monthly benefit amount, elimination period, benefit period, effective date) — never insured names, medical information, or claim history — providing non-repudiation of the policy issuance and benefit terms.
 
 ## Competition vs. Broker Confirmation
 

@@ -359,9 +359,4 @@ Traditional billing reveals identity. Solutions:
 - But privilege isn't waived by using pseudonym
 - Courts may require identity disclosure in litigation
 
-**Public Blockchain (Non-Party)**
-
-Witnessing firms may periodically commit rollups to a public blockchain, providing:
-- Proof that professional relationship existed at specific time
-- Tamper-evidence for disputes about what was agreed
-- Continuity if escrow provider fails
+For rollup mechanics — periodic public-blockchain commitments giving existence proof and tamper-evidence independent of the witnessing firm — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md).

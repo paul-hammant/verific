@@ -194,26 +194,7 @@ The strongest claim is not "trust the card." It is "bridge human-readable covera
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the issuer, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change, or even a 404 (record deleted)
-- Receives structured content/metadata (member ID, group number, effective dates, plan type)
-- Does **NOT** receive plaintext or sensitive personal information
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to members/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Insurer cannot deny issuing the card or the coverage it represents
-- **Timestamp proof:** Coverage status existed at a specific time (critical for billing disputes)
-- **Regulatory audit:** State insurance commissioners can inspect the witness ledger for fraud detection and compliance monitoring
-- **Resilience:** Verification works even if insurer's systems go down
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Insurer domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the health insurer's hashes and status changes plus structured metadata (member ID, group number, effective dates, plan type) — never plaintext or sensitive personal information — providing non-repudiation of issuing the insurance card.
 
 ## Further Derivations
 

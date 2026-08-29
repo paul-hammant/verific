@@ -117,26 +117,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the inspector, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change (closed, red tagged, expired), or even a 404 (record deleted)
-- Receives structured content/metadata (structure IDs, HIC scores, compliance statuses, inspection dates)
-- Does **NOT** receive plaintext (inspector home addresses, internal maintenance notes)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to park directors/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Inspector cannot deny issuing the safety certificate
-- **Timestamp proof:** Hash existed at a specific time
-- **Regulatory audit:** CPSC can inspect the witness ledger for safety compliance patterns
-- **Resilience:** Verification works even if city's systems go down
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Parks department domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the inspector's hashes and status changes plus structured metadata (structure IDs, HIC scores, compliance statuses, inspection dates) — never plaintext such as inspector home addresses — providing non-repudiation of issuing the safety certificate.
 
 ## Rationale
 

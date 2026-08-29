@@ -125,18 +125,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the QI, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change (void, amended), or even a 404 (record deleted)
-- Receives structured content/metadata (exchanger name, property addresses, identification dates, fair market values)
-- Does **NOT** receive plaintext (social security numbers, bank account details)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to exchangers/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** QI cannot deny issuing the identification form
-- **Timestamp proof:** Form existed at a specific time (critical for 45-day deadline compliance)
-- **Regulatory audit:** IRS can inspect the witness ledger for backdating fraud
-- **Resilience:** Verification works even if QI's systems go down or the QI goes out of business
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the QI's hashes and status changes plus structured metadata (exchanger name, property addresses, identification dates, fair market values) — never social security numbers or bank account details — providing non-repudiation of the identification form.
 
 **Jurisdictional Requirements (United States / IRS)**
 
@@ -154,14 +143,6 @@ The FATCA/CRS frameworks require geographic separation (independent witness firm
 The IRS maintains its own verification infrastructure for federal tax documents (1031 determinations, EIN assignments, tax rulings). These documents are verified through direct IRS system queries rather than through independent witness firms. This represents a different verification model—issuer-maintained records for domestic purposes, with the expectation that treaty partners will conduct direct verification with the IRS.
 
 Both models serve distinct purposes: FATCA/CRS-style geographic separation prevents collusion when documents enter non-issuing jurisdictions; issuer-maintained systems provide efficient verification for routine domestic transactions. As international document verification evolves, blockchain-based rollups and decentralized architectures may converge these models into infrastructure-neutral standards applicable across jurisdictions.
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **QI domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
 
 ## Competition vs. QR/NFC
 

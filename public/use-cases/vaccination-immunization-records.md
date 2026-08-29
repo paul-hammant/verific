@@ -127,26 +127,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the healthcare provider, and any subsequent changes to the record as they happen—which may manifest as a new hash, a status change (lot recalled, series incomplete), or even a 404 (record deleted)
-- Receives structured content/metadata (vaccine types, lot numbers, administration dates, dose numbers)
-- Does **NOT** receive plaintext (patient names, dates of birth, provider identities)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to patients/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Healthcare provider cannot deny administering the vaccine
-- **Timestamp proof:** Immunization existed at a specific time (critical for outbreak investigations and school enrollment disputes)
-- **Regulatory audit:** Public health departments can inspect the witness ledger for vaccination compliance and lot tracking
-- **Resilience:** Verification works even if healthcare provider's systems go down or the provider closes
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Healthcare provider domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive healthcare providers' hashes and status changes plus structured metadata (vaccine types, lot numbers, administration dates, dose numbers) — never plaintext (patient names, dates of birth, provider identities) — providing non-repudiation that the vaccine was administered. This is critical for outbreak investigations and school enrollment disputes; the witness's records survive even if the healthcare provider's systems go down or the provider closes.
 
 ## Jurisdictional Variation
 

@@ -292,10 +292,4 @@ If authority fails to act:
 
 The verified acknowledgement becomes evidence for escalation.
 
-## Public Blockchain (Non-Party)
-
-Witnessing services or authorities may commit submission hashes to a public blockchain, providing:
-- Proof submissions existed at specific times
-- Accountability if authority claims they never received evidence
-- Pattern visibility (without revealing content) for oversight bodies
-- Independence from any single authority's record-keeping
+For rollup mechanics — periodic public-blockchain commitments giving existence proof and tamper-evidence independent of the witnessing firm — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md).

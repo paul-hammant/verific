@@ -111,26 +111,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the testing organization, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change (certified to under review/expired), or even a 404 (record deleted)
-- Receives structured content/metadata (test dates, score ranges, section breakdowns, test center IDs)
-- Does **NOT** receive plaintext (test taker names, addresses, passport numbers)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to test takers/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Testing organization cannot deny issuing the scores or the results
-- **Timestamp proof:** Scores existed at a specific time (critical for expiration verification and cheating investigations)
-- **Regulatory audit:** Educational authorities or immigration departments can inspect the witness ledger for testing irregularities
-- **Resilience:** Verification works even if testing organization's systems go down or scoring policies change
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Testing organization domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the testing organization's hashes and status changes plus structured metadata (test dates, score ranges, section breakdowns, test center IDs) — never plaintext such as test taker names — providing non-repudiation of issuing the language proficiency certificate.
 
 ## Competition vs. Official Score Reports (Electronic)
 

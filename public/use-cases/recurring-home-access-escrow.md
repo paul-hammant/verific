@@ -332,9 +332,6 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 - Workers may need own insurance
 - Homeowner policy may cover some incidents
 
-**Public Blockchain (Non-Party)**
+## Jurisdictional Witnessing (Optional)
 
-Witnessing firms may periodically commit rollups to a public blockchain, providing:
-- Proof of service history at specific times
-- Portable reputation if escrow provider fails
-- Tamper-evidence for dispute resolution
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the escrow provider's hashes and status changes plus structured metadata (provider ID, service type, verification dates, incident logs) — never plaintext or sensitive personal information — providing non-repudiation of the service provider verification and access authorization.

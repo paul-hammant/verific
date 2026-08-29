@@ -117,26 +117,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the scale operator, and any subsequent changes to the ticket as they happen—which may manifest as a new hash, a status change (voided, out of calibration), or even a 404 (record deleted)
-- Receives structured content/metadata (gross weights, tare weights, net weights, timestamps, scale IDs, ticket numbers)
-- Does **NOT** receive plaintext (vehicle plates, driver names, commodity types, shipper/receiver identities)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to drivers/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Scale operator cannot deny issuing the weight measurement
-- **Timestamp proof:** Weight ticket existed at a specific time (critical for DOT compliance and billing disputes)
-- **Regulatory audit:** Weights & Measures departments can inspect the witness ledger for calibration compliance and fraud prevention
-- **Resilience:** Verification works even if scale operator's systems go down or the facility closes
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Scale operator domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the scale operator's hashes and status changes plus structured metadata (gross weights, tare weights, net weights, timestamps, scale IDs, ticket numbers) — never vehicle plates, driver names, commodity types, or shipper/receiver identities — providing non-repudiation of issuing the weight measurement.
 
 ## Rationale
 

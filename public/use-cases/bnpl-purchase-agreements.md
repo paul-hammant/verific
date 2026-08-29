@@ -107,26 +107,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the BNPL provider, and any subsequent changes to the loan as they happen—which may manifest as a new hash, a status change (paid, in-arrears, charged-off), or even a 404 (record deleted)
-- Receives structured content/metadata (loan amounts, APR, payment schedules, merchant names)
-- Does **NOT** receive plaintext (borrower SSN, full address, bank account details)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to borrowers/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** BNPL provider cannot deny issuing the loan terms
-- **Timestamp proof:** Agreement hash existed at a specific time
-- **Regulatory audit:** CFPB or state consumer protection agencies can inspect the witness ledger
-- **Resilience:** Verification works even if BNPL provider's systems go down or the company exits the market
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **BNPL provider domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the BNPL provider's hashes and status changes plus structured metadata (loan amounts, APR, payment schedules, merchant names) — never plaintext (borrower SSN, full address, bank account details) — providing non-repudiation of the loan terms.
 
 ## Rationale
 

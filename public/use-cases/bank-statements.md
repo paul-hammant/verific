@@ -22,9 +22,9 @@ Verifying a bank statement directly against the bank's domain ensures that the b
 JPMorgan Chase Bank, N.A.
 
 Account Holder:                         Account Number:
-WAYNE ENTERPRISES, INC.                 ****-****-9982
+NORTHBRIDGE INDUSTRIES, INC.             ****-****-9982
 1007 Mountain Drive                     Period: Mar 01 - Mar 31, 2026
-Gotham City, NY 10001
+Fairport, NY 10001
 
 ACCOUNT SUMMARY
 ───────────────────────────────────────────────────────────
@@ -111,36 +111,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the issuer, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change, or even a 404 (record deleted)
-- Receives structured content/metadata (key identifiers and dates)
-- Does **NOT** receive plaintext or sensitive personal information
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to document holders/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Issuer cannot deny issuing the document
-- **Timestamp proof:** Document existed at a specific time
-- **Regulatory audit:** Jurisdictions can inspect the witness ledger for fraud detection
-- **Resilience:** Verification works even if issuer's systems go down
-
-**Jurisdictional Requirements (Banking)**
-
-**US Banks:** Do not mandate witnessing firms for domestic statements. However:
-- **International stakeholders** receiving US bank statements may demand independent verification
-- **FATCA/CRS compliance:** Cross-border sharing may require witness firms not located in the US
-- **Litigation:** Court proceedings require certified witness statements, superseding bank verification
-
-**EU Banks:** May require witness firms for cross-border statements under GDPR and banking regulations.
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Issuer domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
-
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the bank's hashes and status changes plus structured metadata (account number, statement period, balance) — never plaintext or sensitive personal information — providing non-repudiation of the document.
 
 ## Competition vs. Open Banking (Plaid/Finicity)
 

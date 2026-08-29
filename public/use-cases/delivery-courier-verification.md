@@ -116,26 +116,7 @@ The courier (second party) may hand the verified credential to various third par
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the courier company, and any subsequent changes to employment status as they happen—which may manifest as a new hash, a status change (off-duty, suspended, terminated), or even a 404 (record deleted)
-- Receives structured content/metadata (employee IDs, hub assignments, on-duty status, route zones)
-- Does **NOT** receive plaintext (driver full names, home addresses, specific delivery routes)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to drivers/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Courier company cannot deny issuing credentials or employment status
-- **Timestamp proof:** Badge hash existed at a specific time (critical for incident investigations)
-- **Regulatory audit:** Labor departments can inspect the witness ledger for contractor misclassification
-- **Resilience:** Verification works even if courier company's systems go down
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Courier company domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the courier company's hashes and status changes plus structured metadata (employee ID, hub assignment, on-duty status, route zone) — never driver full names, home addresses, or specific delivery routes — providing non-repudiation of credentials and employment status, with immutable timestamp proof critical for incident investigations.
 
 ## Privacy-Preserving Badge Design
 

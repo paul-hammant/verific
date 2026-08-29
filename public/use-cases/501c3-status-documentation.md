@@ -123,26 +123,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the IRS, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change (revoked, suspended), or even a 404 (record deleted)
-- Receives structured content/metadata (organization name, EIN, exemption date, public charity classification)
-- Does **NOT** receive plaintext (donor information, financial details)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to organizations/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** IRS cannot deny issuing the determination letter
-- **Timestamp proof:** Exemption existed at a specific time
-- **Regulatory audit:** State charity bureaus can inspect the witness ledger for fraud detection
-- **Resilience:** Verification works even if IRS systems go down
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **IRS domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the IRS's hashes and status changes plus structured metadata (organization name, EIN, exemption date, classification) — never donor or financial plaintext — providing non-repudiation of the determination letter and an audit trail state charity bureaus can inspect.
 
 ## Competition vs. QR/NFC and IRS Search
 

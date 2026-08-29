@@ -133,26 +133,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the property manager, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change (terminated, eviction filing, renewed), or even a 404 (record deleted)
-- Receives structured content/metadata (agreement IDs, rent amounts, lease terms, property addresses)
-- Does **NOT** receive plaintext (tenant names, SSNs, employment details)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to tenants/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Property manager cannot deny issuing the lease terms
-- **Timestamp proof:** Hash existed at a specific time
-- **Regulatory audit:** Housing authorities can inspect the witness ledger for rental fraud patterns
-- **Resilience:** Verification works even if property manager's systems go down
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Property manager domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the property manager's hashes and status changes plus structured metadata (agreement ID, rent amount, lease start date, lease end date, property address, status) — never plaintext or tenant details like names or SSNs — providing non-repudiation of the lease terms.
 
 ## Competition vs. Scanned PDFs
 

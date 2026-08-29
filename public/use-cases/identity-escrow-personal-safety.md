@@ -292,17 +292,4 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-A jurisdiction may license or regulate identity escrow providers for consumer protection. Requirements might include:
-
-- Secure identity storage standards
-- Defined disclosure procedures
-- Audit trail retention
-- Data breach notification requirements
-- Clear user consent flows
-
-**Public Blockchain (Non-Party)**
-
-Witnessing firms may periodically commit rollups to a public blockchain, providing:
-- Timestamp proof that the encounter/exchange was logged
-- Tamper-evidence if records are later altered
-- Long-term archival independent of any single company
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the escrow provider's hashes and status changes plus structured metadata (disclosure dates, authorized parties, consent records) — never sensitive personal information or identity details — providing non-repudiation of identity release events.

@@ -121,26 +121,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the scouting bureau, and any subsequent changes to the report as they happen—which may manifest as a new hash, a status change (suspended, recanted), or even a 404 (record deleted)
-- Receives structured content/metadata (performance metrics, test dates, ratings, scouting org IDs)
-- Does **NOT** receive plaintext (athlete names, addresses, medical details)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to athletes/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Scouting organization cannot deny issuing the evaluation
-- **Timestamp proof:** Report existed at a specific time (critical for eligibility and age-fraud prevention)
-- **Regulatory audit:** Athletic commissions can inspect the witness ledger for minor protection and anti-fraud compliance
-- **Resilience:** Verification works even if scouting organization's systems go down or the organization dissolves
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Scouting organization domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the scouting bureau's hashes and status changes plus structured metadata (athlete name, position, test results, ratings, scout ID, evaluation date) — never plaintext or sensitive personal information — providing non-repudiation of the scouting report and performance evaluation.
 
 ## Rationale
 

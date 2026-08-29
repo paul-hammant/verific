@@ -111,18 +111,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the carrier, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change (void, disputed), or even a 404 (record deleted)
-- Receives structured content/metadata (policy numbers, adjustment periods, premium amounts, loss figures)
-- Does **NOT** receive plaintext (insured company names, specific claim details)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to insureds/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Carrier cannot deny issuing the premium adjustment
-- **Timestamp proof:** Calculation existed at a specific time
-- **Regulatory audit:** State insurance commissioners can inspect the witness ledger for rate manipulation
-- **Resilience:** Verification works even if carrier's systems go down
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the carrier's hashes and status changes plus structured metadata (policy numbers, adjustment periods, premium amounts, loss figures) — never insured company names or specific claim details — providing non-repudiation of the premium adjustment.
 
 **Jurisdictional Requirements (Insurance/Reinsurance)**
 
@@ -132,14 +121,6 @@ Retrospective premium calculations in international reinsurance require:
 - **Bermuda Captive Insurance:** Non-US witness firms required for policies involving US insureds to satisfy double-trigger documentation rules
 
 **Cross-border reinsurance:** EU Solvency II requires witness firms for cross-border policy documents.
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Carrier domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
 
 ## Competition vs. Broker Portals
 

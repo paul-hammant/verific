@@ -530,20 +530,7 @@ INSPECTIONS:
 
 ---
 
-## Public Blockchain (Non-Party)
-
-Witnessing services may commit construction attestation hashes to a public blockchain, providing:
-- Proof that attestations existed at specific times
-- Independence from developer record-keeping
-- Tamper-evidence if any party alters records
-- Long-term verification (decades) beyond any single company's lifespan
-- Buyer confidence in construction provenance
-
-This is particularly important because:
-- Developers may go bankrupt or dissolve
-- Trades may cease operating
-- Digital records may be lost
-- But blockchain anchors persist
+For rollup mechanics — periodic public-blockchain commitments giving existence proof and tamper-evidence independent of the witnessing firm — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md).
 
 ---
 

@@ -19,16 +19,16 @@ It allows a reader to scan the text and see a green "VERIFIED" status from an in
 
 <div style="max-width: 600px; margin: 24px auto; font-family: 'Times New Roman', Georgia, serif; border: 1px solid #ccc; background: #fffef8; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
   <div style="background: #1a1a2e; color: white; padding: 15px 20px; text-align: center;">
-    <div style="font-size: 2.2em; font-weight: bold; letter-spacing: 3px;"><span verifiable-text="start" data-for="fact"></span>THE DAILY PLANET</div>
-    <div style="font-size: 0.85em; margin-top: 4px; opacity: 0.8;">METROPOLIS • TRUTH, JUSTICE, AND VERIFIED FACTS</div>
+    <div style="font-size: 2.2em; font-weight: bold; letter-spacing: 3px;"><span verifiable-text="start" data-for="fact"></span>THE DAILY LEDGER</div>
+    <div style="font-size: 0.85em; margin-top: 4px; opacity: 0.8;">FAIRPORT • TRUTH, JUSTICE, AND VERIFIED FACTS</div>
   </div>
   <div style="padding: 25px;">
-    <h2 style="font-size: 1.6em; margin: 0 0 10px 0; line-height: 1.2; color: #1a1a2e;">LexCorp Tower Fire: 47 Rescued, No Casualties</h2>
+    <h2 style="font-size: 1.6em; margin: 0 0 10px 0; line-height: 1.2; color: #1a1a2e;">Northbridge Tower Fire: 47 Rescued, No Casualties</h2>
     <div style="font-size: 0.9em; color: #666; margin-bottom: 16px;">
       By <strong>Lois Lane</strong> | Metro Desk | March 15, 2026
     </div>
     <div style="font-size: 1em; line-height: 1.6; color: #333; text-align: justify;">
-      <p>A fire broke out on the 38th floor of LexCorp Tower yesterday evening, prompting the evacuation of 47 employees. Metropolis Fire Department responded within 4 minutes of the initial alarm.</p>
+      <p>A fire broke out on the 38th floor of Northbridge Tower yesterday evening, prompting the evacuation of 47 employees. Fairport Fire Department responded within 4 minutes of the initial alarm.</p>
       <p>"All personnel were evacuated safely," said Fire Chief Marcus Stone. "The sprinkler system contained the blaze until our units arrived."</p>
     </div>
 <div style="margin-top: 25px; padding: 10px; border: 1px solid #1a1a2e; background: #f0f0f5; font-size: 0.8em; color: #1a1a2e; font-style: italic; text-align: center;">
@@ -85,7 +85,7 @@ The **News Organization / Journalist** benefits from verification.
 **The "Memory Hole" Fraud Problem**
 
 - **Silent Editing:** A publication quietly changing a quote or a number in an old article after a scandal breaks, to pretend they "were right all along."
-- **Screenshot Forgery:** Scammers creating fake news "Screenshots" that look like they come from the NY Times or Daily Planet to manipulate stock prices or elections.
+- **Screenshot Forgery:** Scammers creating fake news "Screenshots" that look like they come from the NY Times or Daily Ledger to manipulate stock prices or elections.
 - **Deepfake Quotes:** Attributing fabricated statements to real public figures using realistic-looking web templates.
 
 **Issuer Types** (First Party)
@@ -112,27 +112,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the issuer, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change, or even a 404 (record deleted)
-- Receives structured content/metadata (key identifiers and dates)
-- Does **NOT** receive plaintext or sensitive personal information
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to document holders/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Issuer cannot deny issuing the document
-- **Timestamp proof:** Document existed at a specific time
-- **Regulatory audit:** Jurisdictions can inspect the witness ledger for fraud detection
-- **Resilience:** Verification works even if issuer's systems go down
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Issuer domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
-
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the fact-checker's hashes and status changes plus structured metadata (article text digests, author names, publication dates, fact-checker organizations, source timestamps) — never source identities, unnamed source locations, or attribution details — providing non-repudiation of the fact-check verdict and an audit trail regulators and historians can inspect.
 
 ## Competition vs. Community Notes (X)
 

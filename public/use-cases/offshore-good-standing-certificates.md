@@ -151,24 +151,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the issuer, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change, or even a 404 (record deleted)
-- Receives structured content/metadata (company number, jurisdiction, certificate type)
-- Does **NOT** receive plaintext or sensitive personal information
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to document holders/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Registry cannot deny issuing the certificate
-- **Timestamp proof:** Certificate existed and was valid at a specific time
-- **Status history:** Record of when an entity went from Good Standing to Struck Off
-- **Resilience:** Verification works even if registry's systems go down
-
-Good standing certificates have particular witnessing value for **banking disputes**. When a bank closes an account citing "entity no longer in good standing," the witnessing record proves whether the entity was or wasn't in good standing at the time — resolving disputes that currently devolve into he-said-she-said between the bank and the registered agent.
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the registry's hashes and status changes plus structured metadata (company number, issue date, validity period, status) — never shareholder names, beneficial owners, or registered agent details — providing non-repudiation of the certificate and an audit trail banks and regulators can inspect.
 
 ## Further Derivations
 

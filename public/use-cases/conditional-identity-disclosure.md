@@ -313,10 +313,4 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 - Some assets (small accounts, joint property) may bypass probate
 - Pre-authorized access speeds process but doesn't replace legal requirements
 
-**Public Blockchain (Non-Party)**
-
-For decades-long escrow, blockchain provides:
-- Proof that escrow was established at a specific time
-- Independence from any single institution
-- Tamper-evidence if records are altered
-- Verification possible even if original escrow provider fails
+For rollup mechanics — periodic public-blockchain commitments giving existence proof and tamper-evidence independent of the witnessing firm — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md).

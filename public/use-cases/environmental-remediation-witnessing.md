@@ -346,18 +346,7 @@ Property owners (current or future) are bag carriers for environmental issues:
 
 ---
 
-## Public Blockchain (Non-Party)
-
-Environmental contamination has uniquely long timescales:
-- Groundwater plumes: decades to centuries
-- Landfills: centuries
-- Radioactive contamination: millennia
-
-For records that must survive generations:
-- Blockchain anchoring outlasts any single organization
-- Future investigators can verify historical work
-- Institutional knowledge survives personnel turnover
-- Regulatory agencies can verify compliance decades later
+For rollup mechanics — periodic public-blockchain commitments giving existence proof and tamper-evidence independent of the witnessing firm — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md).
 
 ---
 

@@ -143,15 +143,4 @@ The UK's DAML consent mechanism is largely unique. Most peer jurisdictions opera
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the issuer, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change, or even a 404 (record deleted)
-- Receives structured content/metadata (key identifiers and dates)
-- Does **NOT** receive plaintext or sensitive personal information
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to document holders/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** NCA cannot deny issuing consent; firm cannot deny lacking consent
-- **Timestamp proof:** Consent decision existed at a specific time (critical for s.335 defence)
-- **Regulatory audit:** Jurisdictions can inspect the witness ledger for consent integrity
-- **Resilience:** Verification works even if issuer's systems go down
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive NCA's hashes and status changes plus structured metadata (DAML reference, SAR reference, date of decision, reporting entity name, FCA firm reference) — never client identity, transaction amount, or nature of suspicion — providing non-repudiation of NCA's consent decisions.

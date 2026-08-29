@@ -173,28 +173,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the issuer, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change, or even a 404 (record deleted)
-- Receives structured content/metadata (entity registration number, filing period, relevant activity type)
-- Does **NOT** receive plaintext or sensitive personal information
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to document holders/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Registrar cannot deny accepting the filing
-- **Timestamp proof:** Filing existed and was accepted at a specific time
-- **Regulatory audit:** Home jurisdictions can inspect the witness ledger
-- **Resilience:** Verification works even if registrar's systems go down
-
-Economic substance declarations have particular witnessing value for **cross-jurisdictional enforcement**. When the Cayman DITC reports a non-compliant entity to HMRC under spontaneous exchange of information, the witnessing record provides independent proof of what was originally filed — the entity can't claim the registrar fabricated the non-compliance finding.
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Registrar domain** — Direct check against the issuing authority
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive registrars' hashes and status changes plus structured metadata (entity name, registration number, relevant activity type, filing period, employee count, operating expenditure, premises address, number of board meetings held in jurisdiction, directors resident in jurisdiction, CIMA-directed activity status, date of filing) — never plaintext or sensitive personal information — providing non-repudiation of the economic substance declaration filing. Economic substance declarations have particular witnessing value for cross-jurisdictional enforcement: when the Cayman DITC reports a non-compliant entity to HMRC under spontaneous exchange of information, the witnessing record provides independent proof of what was originally filed.
 
 ## Further Derivations
 

@@ -127,26 +127,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-A safety case carries a long liability tail, which makes an independent witness layer genuinely useful here. When used, the witnessing firm:
-
-- Receives all hashes from the supplier, and any subsequent changes — a new hash (revised evidence), a status change (Superseded/Withdrawn), or a 404 (record deleted)
-- Receives structured metadata (item ID, release, ASIL, issue date)
-- Does **NOT** receive plaintext (proprietary coverage data, source identifiers, customer-specific detail)
-- Provides an immutable, timestamped trail — available to the OEM and regulator on demand, and as expert-witness evidence in product-liability proceedings
-
-This provides:
-- **Non-repudiation:** Supplier cannot deny issuing the evidence it shipped
-- **Timestamp proof:** Evidence existed in this exact form at release time
-- **Regulatory audit:** Assessors and type-approval bodies can inspect the witness ledger
-- **Resilience:** Verification survives the supplier reorganising or retiring systems years later
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism — optional, not inherent. Verification paths would then be:
-
-1. **Supplier domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the supplier's hashes and status changes plus structured metadata (item ID, release, ASIL, issue date) — never plaintext such as proprietary coverage data — providing non-repudiation of issuing the safety evidence.
 
 ## Competition vs. ALM Suites and Blockchain
 

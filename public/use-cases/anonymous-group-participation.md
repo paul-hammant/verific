@@ -329,9 +329,4 @@ After verification, the escrow service can provide:
 - Violence Against Women Act protections
 - Safe at Home type programs
 
-**Public Blockchain (Non-Party)**
-
-Witnessing firms may periodically commit hash rollups to a public blockchain, providing:
-- Proof that safety reports existed at specific times
-- Tamper-evidence if escrow provider is compromised
-- Accountability if escrow provider fails to act on reports
+For rollup mechanics — periodic public-blockchain commitments giving existence proof and tamper-evidence independent of the witnessing firm — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md).

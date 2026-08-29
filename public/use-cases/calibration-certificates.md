@@ -157,26 +157,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the lab, and any subsequent changes to the certificate as they happen—which may manifest as a new hash, a status change (retracted, recalled), or even a 404 (record deleted)
-- Receives structured content/metadata (instrument IDs, measurement results, calibration dates, uncertainty values)
-- Does **NOT** receive plaintext (client company names, proprietary measurement techniques)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to tool owners/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Lab cannot deny issuing the calibration certificate
-- **Timestamp proof:** Certificate hash existed at a specific time
-- **Regulatory audit:** ISO accreditation bodies can inspect the witness ledger
-- **Resilience:** Verification works even if lab's systems go down or lab loses accreditation
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Lab domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the lab's hashes and status changes plus structured metadata (instrument IDs, measurement results, calibration dates, uncertainty values) — never plaintext (client company names, proprietary measurement techniques) — providing non-repudiation of the calibration certificate.
 
 ## Competition vs. Physical Tamper Seals
 

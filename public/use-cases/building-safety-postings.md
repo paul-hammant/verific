@@ -170,27 +170,8 @@ Building safety is about "Passive Trust." By turning every safety placard into a
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the issuer, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change, or even a 404 (record deleted)
-- Receives structured content/metadata (key identifiers and dates)
-- Does **NOT** receive plaintext or sensitive personal information
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to document holders/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Issuer cannot deny issuing the document
-- **Timestamp proof:** Document existed at a specific time
-- **Regulatory audit:** Jurisdictions can inspect the witness ledger for fraud detection
-- **Resilience:** Verification works even if issuer's systems go down
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the building department's hashes and status changes plus structured metadata (equipment ID, inspection date, expiration date) — never plaintext or sensitive information — providing non-repudiation of the inspection certificate and an audit trail state safety jurisdictions can inspect.
 
 ### Why Would You Scan an Elevator Certificate?
 
 You wouldn't — until the day something feels wrong. The elevator jerks between floors. The fire extinguisher in the hallway looks ancient. The carbon monoxide detector in your apartment has a blank inspection sticker. In that moment, the posted certificate is the only artifact connecting you to the inspector's actual finding. If the certificate is stale or fabricated, you have no way to know. If it is verifiable, a five-second scan from your phone tells you whether the inspection actually happened, when it happened, and whether the equipment passed. The person most likely to scan is not a regulator on a scheduled visit — it is a tenant, a parent in a daycare, or a hotel guest who noticed something off and wants a fast, independent answer.
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Issuer domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion

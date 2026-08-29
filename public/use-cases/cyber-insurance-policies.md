@@ -121,26 +121,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the insurer, and any subsequent changes to the policy as they happen—which may manifest as a new hash, a status change (cancelled, claim active), or even a 404 (record deleted)
-- Receives structured content/metadata (coverage limits, policy periods, industry codes, security attestations)
-- Does **NOT** receive plaintext (company names, specific system details, breach histories)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to insured businesses/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Insurer cannot deny issuing the policy or coverage terms
-- **Timestamp proof:** Policy hash existed at a specific time (critical for breach coverage disputes)
-- **Regulatory audit:** State insurance departments can inspect the witness ledger for market conduct
-- **Resilience:** Verification works even if insurer's systems go down or the company exits the market
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Insurer domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the insurer's hashes and status changes plus structured metadata (policy number, coverage limits, policy period, issue date, industry codes) — never company names, system details, or breach history — providing non-repudiation of the cyber insurance policy issuance and immutable proof of coverage terms critical for breach disputes.
 
 ## Competition vs. Automated Security Scans (Bitsight)
 

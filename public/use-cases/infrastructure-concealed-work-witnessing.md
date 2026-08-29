@@ -366,18 +366,7 @@ Market rewards quality, punishes corner-cutting
 
 ---
 
-## Public Blockchain (Non-Party)
-
-For 50-100 year infrastructure life:
-- Construction companies may cease to exist
-- Digital systems will be replaced multiple times
-- Records must survive organizational changes
-
-Blockchain anchoring provides:
-- Proof attestations existed at specific dates
-- Independence from any single record-keeper
-- Verification possible by future engineers/investigators
-- Pattern detection across similar structures (anonymized)
+For rollup mechanics — periodic public-blockchain commitments giving existence proof and tamper-evidence independent of the witnessing firm — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md).
 
 ---
 

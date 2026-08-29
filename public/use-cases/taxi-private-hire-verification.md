@@ -177,27 +177,7 @@ The Sarah Everard case (2021) heightened awareness of predatory unlicensed drive
 
 ## Jurisdictional Witnessing (Optional)
 
-A jurisdiction (TfL, local council) may require issuing platforms to retain a **witnessing firm** for regulatory compliance. The witnessing firm:
-
-- Receives all hashes from the issuer, and any subsequent changes to driver status as they happen—which may manifest as a new hash, a status change (suspended, revoked, expired, terminated), or even a 404 (record deleted or deactivated)
-- Receives structured content/metadata (licence numbers, vehicle details, operator affiliations, DBS check dates, expiry dates)
-- Does **NOT** receive plaintext (driver full names, home addresses, passenger trip data, GPS routes)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to drivers during disputes, or as expert witness testimony in legal proceedings (especially critical in assault or harassment cases)
-
-This provides:
-
-- **Non-repudiation:** TfL cannot deny issuing a licence or status change.
-- **Timestamp proof:** Licence existed and was active at a specific time (critical for incident investigations—"Was the driver licensed when the assault occurred?").
-- **Regulatory audit:** TfL can inspect the witness ledger for fraud detection and compliance gaps.
-- **Victim Protection:** In cases of assault by unlicensed drivers, the witness ledger proves definitively whether the perpetrator was operating illegally—supporting criminal prosecution.
-- **Resilience:** Verification works even if TfL's systems go down.
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **TfL domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the licensing authority's hashes and status changes plus structured metadata (licence numbers, vehicle details, operator affiliations, DBS check dates, expiry dates) — never plaintext (driver full names, home addresses, passenger trip data, GPS routes) — providing non-repudiation of the driver licence and an audit trail regulators can inspect for fraud and safety incidents.
 3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
 
 ## Authority Chain

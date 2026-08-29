@@ -313,14 +313,7 @@ The patient is the ultimate bag carrier. Attestation protects them:
 
 ---
 
-## Public Blockchain (Non-Party)
-
-Witnessing services may commit procedure attestation hashes to a public blockchain, providing:
-- Proof that records existed at specific times
-- Independence from provider record-keeping
-- Survival beyond practice closure, retirement
-- Patient-controlled access to their own attestations
-- Long-term verification (decades) beyond any single system
+For rollup mechanics — periodic public-blockchain commitments giving existence proof and tamper-evidence independent of the witnessing firm — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md).
 
 ---
 

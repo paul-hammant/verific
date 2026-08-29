@@ -118,26 +118,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the airline, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change, or even a 404 (record deleted)
-- Receives structured content/metadata (mileage balances, tier status, transaction dates, award redemptions)
-- Does **NOT** receive plaintext (passenger names, contact details, travel itineraries)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to members/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Airline cannot deny issuing the statement or the mileage balance
-- **Timestamp proof:** Hash existed at a specific time (critical for status match claims and asset valuations)
-- **Regulatory audit:** Aviation regulators or consumer protection agencies can inspect the witness ledger
-- **Resilience:** Verification works even if airline's systems go down or the loyalty program is sold/merged
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Airline domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the airline's hashes and status changes plus structured metadata (loyalty IDs, mileage balances, tier statuses, transaction dates, award redemptions) — never member names or travel itineraries — providing non-repudiation of the statement and mileage balance and an audit trail regulators can inspect.
 
 ## Competition vs. Loyalty Apps
 

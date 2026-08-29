@@ -115,26 +115,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the insurer, and any subsequent changes to the policy as they happen—which may manifest as a new hash, a status change (suspended, cancelled, terminated), or even a 404 (record deleted)
-- Receives structured content/metadata (project values, coverage limits, construction dates, policy numbers)
-- Does **NOT** receive plaintext (contractor financial details, project owner private information)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to contractors/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Insurer cannot deny issuing the coverage
-- **Timestamp proof:** Certificate hash existed at a specific time
-- **Regulatory audit:** State insurance departments can inspect the witness ledger
-- **Resilience:** Verification works even if insurer's systems go down
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Insurer domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the insurer's hashes and status changes plus structured metadata (project values, coverage limits, construction dates, policy numbers) — never contractor financial details or project owner private information — providing non-repudiation of the coverage it issued.
 
 ## Competition vs. Project Management Software (Procore)
 

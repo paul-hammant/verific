@@ -196,28 +196,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the issuer, and any subsequent changes to the payload as they happen — which may manifest as a new hash, a status change, or even a 404 (record deleted)
-- Receives structured content/metadata (reference number, dates, issuing authority)
-- Does **NOT** receive plaintext or sensitive personal information (no conviction details, no applicant addresses)
-- Provides an immutable, timestamped audit trail — available to the jurisdiction on demand, to document holders/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Issuer cannot deny issuing the certificate
-- **Timestamp proof:** Certificate existed at a specific time
-- **Regulatory audit:** Jurisdictions can inspect the witness ledger for fraud detection
-- **Resilience:** Verification works even if issuer's systems go down
-
-Particularly valuable for international certificates where the issuing authority is in a different jurisdiction from the receiving authority. When an Australian immigration officer verifies a French police certificate, the witnessing firm provides an independent third-party confirmation that doesn't depend on the French government's server being available at that moment.
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Issuer domain** — Direct check against the issuing police authority
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the police authority's hashes and status changes plus structured metadata (certificate number, applicant name, date of issue, clearance status, issuing authority) — never conviction details or applicant addresses — providing non-repudiation of police clearance certificate issuance.
 
 ## Further Derivations
 

@@ -258,13 +258,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives hashes of verification events (not photos, not PII)
-- Provides aggregate audit capability without individual tracking
-- Enables dispute resolution ("I was verified at location X at time Y")
-
-For ephemeral claims, witnessing is lighter-touch than for persistent documents—the goal is system integrity, not individual transaction logging.
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive hashes of verification events plus structured metadata (state authority ID, verification timestamp, photo date) — never photos or personally identifiable information — providing non-repudiation through aggregate audit without individual tracking.
 
 ## NFC and Other Transmission Methods
 

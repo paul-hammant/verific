@@ -166,26 +166,7 @@ The authority chain is what exposes ESA letter mills and other fraudulent certif
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the certifying physician, and any subsequent changes to the certification as they happen — which may manifest as a new hash, a status change (REVIEW_DUE, EXPIRED, REVOKED, SUPERSEDED), or even a 404 (record deleted)
-- Receives structured content/metadata (certification type, functional limitation category, accommodation type, validity dates)
-- Does **NOT** receive plaintext (patient names, diagnoses, specific medical details)
-- Provides an immutable, timestamped audit trail — available to the jurisdiction on demand, to patients/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Certifying physician cannot deny issuing the certification
-- **Timestamp proof:** Certification existed at a specific time (critical for employment disputes and accommodation denial claims)
-- **Regulatory audit:** Jurisdictions can inspect the witness ledger for patterns of fraudulent certification — a single physician issuing thousands of ESA letters, for instance
-- **Resilience:** Verification works even if the certifying physician's practice closes, the physician retires, or their systems go down
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Certifying physician's domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the certifying physician's hashes and status changes (REVIEW_DUE, EXPIRED, REVOKED, SUPERSEDED) plus structured metadata (certification type, functional limitation category, accommodation type, validity dates) — never patient names, diagnoses, or medical details — providing non-repudiation of the certification and an audit trail regulators can inspect for patterns of fraudulent certification, resilient to the physician's practice closing.
 
 ## Further Derivations
 

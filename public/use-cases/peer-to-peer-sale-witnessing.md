@@ -151,26 +151,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Verifies government-issued ID for both parties
-- Records transaction details with timestamps
-- Retains identity information under strict access controls
-- Discloses identity only via legal process or mutual consent
-- Provides an immutable, timestamped audit trail
-
-This provides:
-- **Accountability:** Neither party can deny the transaction occurred
-- **Recourse:** Buyers can reach sellers after the fact
-- **Deterrence:** Sellers of stolen goods know their identity is on file
-- **Evidence:** Courts and police have a reliable record
-
-**Public Blockchain (Non-Party)**
-
-Witnessing firms may periodically commit transaction hash rollups to a public blockchain, providing:
-- Proof that the transaction record existed at a specific time
-- Tamper-evidence if the witnessing firm's records are later altered
-- Long-term archival independent of any single company
+An independent witness layer is the core of this use case — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the general mechanism. Here the witnessing firm goes further than hash custody: it verifies government-issued ID for both parties, records transaction details with timestamps, and retains identity information under strict access controls, disclosing it only via legal process or mutual consent. That gives both sides accountability (neither party can deny the transaction occurred), recourse (buyers can reach sellers after the fact), deterrence (sellers of stolen goods know their identity is on file), and evidence courts and police can rely on.
 
 ## Competition vs. Existing Solutions
 

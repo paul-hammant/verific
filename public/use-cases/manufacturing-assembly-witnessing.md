@@ -341,18 +341,7 @@ With lot-level witnessing:
 
 ---
 
-## Public Blockchain (Non-Party)
-
-For products with 20-40 year lifespans:
-- Manufacturers may be acquired, go bankrupt
-- Digital systems replaced multiple times
-- Records must survive organizational changes
-
-Blockchain anchoring provides:
-- Proof attestations existed at manufacturing date
-- Independence from manufacturer record-keeping
-- Verification possible decades later
-- Pattern detection across fleet (anonymized)
+For rollup mechanics — periodic public-blockchain commitments giving existence proof and tamper-evidence independent of the witnessing firm — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md).
 
 ---
 

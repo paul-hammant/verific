@@ -116,26 +116,7 @@ See [Authority Chain Specification](../../docs/authority-chain-spec.md) for the 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the modeling firm, and any subsequent changes to the report as they happen—which may manifest as a new hash, a status change (outdated, in-dispute), or even a 404 (record deleted)
-- Receives structured content/metadata (PML values, return periods, portfolio descriptions, model versions)
-- Does **NOT** receive plaintext (detailed location data, proprietary model parameters)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to brokers/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Modeling firm cannot deny issuing the PML report
-- **Timestamp proof:** Model results hash existed at a specific time
-- **Regulatory audit:** Insurance regulators can inspect the witness ledger for market stability
-- **Resilience:** Verification works even if modeling firm's systems go down
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Modeling firm domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the modeling firm's hashes and status changes plus structured metadata (PML values, return periods, portfolio descriptions, model versions) — never plaintext (detailed location data, proprietary model parameters) — providing non-repudiation of the PML report.
 
 ## Competition vs. API Data Feeds
 

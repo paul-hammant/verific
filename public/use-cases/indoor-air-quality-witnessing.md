@@ -418,20 +418,7 @@ Witnessed air quality creates the evidence trail.
 
 ---
 
-## Public Blockchain (Non-Party)
-
-Air quality records serve multiple stakeholders over time:
-- Building buyers (due diligence)
-- Tenants (lease negotiations)
-- Employees (workplace safety)
-- Regulators (compliance verification)
-- Litigants (transmission event claims)
-
-Blockchain anchoring provides:
-- Proof records existed at specific times
-- Independence from building owner record-keeping
-- Long-term verification beyond system changes
-- Tamper-evidence for disputed claims
+For rollup mechanics — periodic public-blockchain commitments giving existence proof and tamper-evidence independent of the witnessing firm — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md).
 
 ---
 

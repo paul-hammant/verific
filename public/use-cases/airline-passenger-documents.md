@@ -95,26 +95,7 @@ Verifying that "travel expenses" were actually incurred and not just fabricated 
 
 ## Jurisdictional Witnessing (Optional)
 
-Some jurisdictions, contracts, or multi-party workflows may add an independent witness layer. When used, the witnessing firm:
-
-- Receives all hashes from the airline, and any subsequent changes to the payload as they happen—which may manifest as a new hash, a status change (refunded, void), or even a 404 (record deleted)
-- Receives structured content/metadata (ticket numbers, flight numbers, service types, amounts)
-- Does **NOT** receive plaintext (passenger names, passport details, payment card numbers)
-- Provides an immutable, timestamped audit trail—available to the jurisdiction on demand, to passengers/third parties during disputes, or as expert witness testimony in legal proceedings
-
-This provides:
-- **Non-repudiation:** Airline cannot deny issuing the receipt
-- **Timestamp proof:** Transaction existed at a specific time
-- **Regulatory audit:** Aviation authorities can inspect the witness ledger for fraud patterns
-- **Resilience:** Verification works even if airline's systems go down
-
-**Public Blockchain (Non-Party)**
-
-If a witness layer exists, it may periodically commit rollups to a public blockchain as an additional timestamping mechanism. That is optional, not inherent to the use case. The verification paths would then be:
-
-1. **Airline domain** — Direct check against the issuer
-2. **Witnessing firm** — Independent confirmation with timestamp
-3. **Public blockchain** — Decentralized trust anchor via rollup inclusion
+An independent witness layer may apply — see [Witnessing Third Parties](../../docs/WITNESSING-THIRD-PARTIES.md) for the full mechanism (what a witness receives, non-repudiation, optional public-blockchain rollups). For this use case: a witness would receive the airline's hashes and status changes plus structured metadata (ticket numbers, flight numbers, service types, amounts) — never plaintext (passenger names, passport details, payment card numbers) — providing non-repudiation of the receipt.
 
 ## Competition vs. Corporate Cards
 
