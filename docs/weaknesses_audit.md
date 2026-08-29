@@ -337,7 +337,7 @@ The [decentralized professional graph](decentralized-professional-graph.md) argu
 ## Recommended Actions (Priority Order)
 
 1. **Write a normalization conformance test suite** — the single most impactful improvement. If normalization is wrong, nothing else matters.
-2. **Write a threat model** — address the real attacks (DNS hijacking, issuer compromise, enumeration, replay).
+2. **Write a threat model** — address the real attacks (DNS hijacking, issuer compromise, enumeration, replay). **DONE (first pass):** [SECURITY-CONSIDERATIONS.md](SECURITY-CONSIDERATIONS.md) consolidates the threat-by-threat treatment with implemented/proposed/open status per item — including DNS/BGP interception, domain takeover, the confirmation oracle, timing enumeration, and presentation replay. Remaining from this item: issuer-side hardening guidance (DNSSEC/CAA/CT-monitoring) is still to be written into the issuer guide.
 3. **Fix the 404 ambiguity** — distinguish "hash not found" from "server error" from "OCR likely failed." Even a simple heuristic (multiple retries with slightly different normalization?) would help.
 4. **Label aspirational vs. implemented features** — blockchain witnessing, authority chains, biometric liveness. Be explicit about what exists today and what is future work. (E-ink ID cards now have a detailed spec; still no prototype.)
 5. **Standardize status codes** — define a base set (`OK`, `EXPIRED`, `REVOKED`, `SUPERSEDED`, `SUSPENDED`) that all use cases share, with documented sector-specific extensions.

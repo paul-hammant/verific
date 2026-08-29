@@ -34,6 +34,8 @@ This is architecturally non-negotiable. Cloud OCR services see your degree certi
 
 So: **no document content ever leaves the device — but "no metadata, ever" would be an over-claim.** Content confidentiality is unconditional; query-privacy depends on preimage entropy and on blinding the lookup, and the latter is future work.
 
+The consolidated, threat-by-threat treatment — trust model, query privacy, DNS/BGP interception, issuer-supplied normalization, the 404 signal, spoofing, post-quantum, with an implemented/proposed/open status on every item — is [docs/SECURITY-CONSIDERATIONS.md](docs/SECURITY-CONSIDERATIONS.md).
+
 On-device AI (Apple Vision, ML Kit, NPUs) continues to improve OCR accuracy without changing the privacy model. See [docs/ocr-limitations.md](docs/ocr-limitations.md) for the trajectory.
 
 ## How It Works
