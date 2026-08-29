@@ -732,16 +732,37 @@ on 4 May 2025 in a chip time of 1:47:32.
             </p>
         </div>
 
-        <!-- Use case categories grid -->
+        <!-- Use cases: flagship-first, full landscape demoted -->
         <div class="card" id="useCases">
             <h2>What problems does this solve?</h2>
-            <div class="stats-row">
-                <div class="stat"><strong id="useCaseCount">...</strong> use cases</div>
-                <div class="stat">across <strong id="categoryCount">...</strong> categories</div>
-            </div>
-            <p>Fraud, safety, security, compliance, authenticity &mdash; unverified documents cause harm across every sector. We've mapped the landscape:</p>
-            <div class="category-grid" id="categoryGrid"></div>
-            <p style="margin-top: 14px;"><a href="use-cases/" style="text-decoration: underline; font-weight: 700;">Browse all use cases &rarr;</a></p>
+            <p>Fraud, safety, security, compliance, authenticity &mdash; unverified documents cause harm across every
+            sector. Start with the flagship cases, where issuer-attested verification is most consequential:</p>
+            <ul style="margin: 14px 0 6px 0; padding-left: 22px; line-height: 1.7;">
+                <li><a href="use-cases/view.html?doc=police-officer-verification">Police-officer</a> and
+                    <a href="use-cases/view.html?doc=utility-field-worker-verification">utility-worker</a> verification
+                    &mdash; the "bogus caller" defence, trust at the door</li>
+                <li><a href="use-cases/view.html?doc=bank-statements">Bank statements</a> and
+                    <a href="use-cases/view.html?doc=mortgage-verification-documents">income documents</a>
+                    &mdash; forgery-proof KYC against the issuer's own domain</li>
+                <li><a href="use-cases/view.html?doc=foreign-credential-evaluations">Credential evaluations</a> and
+                    <a href="use-cases/view.html?doc=bar-admission-good-standing">letters of good standing</a>
+                    &mdash; portable professional proof</li>
+                <li><a href="use-cases/view.html?doc=art-authentication-documents">Fine art</a> and
+                    <a href="use-cases/view.html?doc=breed-pedigree-registration">pedigree</a> provenance
+                    &mdash; high-value trust between private silos</li>
+                <li><a href="use-cases/view.html?doc=ai-content-provenance-disclosure">AI-content disclosure</a> and
+                    <a href="use-cases/view.html?doc=ad-placement-provenance">ad-placement provenance</a>
+                    &mdash; post-GenAI primitives for platforms and policy makers</li>
+            </ul>
+            <p style="margin-top: 12px;"><a href="use-cases/#flagship" style="text-decoration: underline; font-weight: 700;">Take the flagship tour &rarr;</a></p>
+            <details style="margin-top: 16px;">
+                <summary style="cursor: pointer; font-weight: 600;">The full landscape &mdash; <span id="useCaseCount">...</span> use cases across <span id="categoryCount">...</span> categories</summary>
+                <p style="margin-top: 10px;">The catalog is a breadth survey: a map of everywhere the primitive applies,
+                documented to the same template. Depth lives in the flagship cases above; the map shows the shape of the
+                whole territory.</p>
+                <div class="category-grid" id="categoryGrid"></div>
+                <p style="margin-top: 14px;"><a href="use-cases/#use-cases" style="text-decoration: underline; font-weight: 700;">Browse the full catalog &rarr;</a></p>
+            </details>
         </div>
 
         <!-- What "Verified" means -->

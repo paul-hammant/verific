@@ -705,7 +705,7 @@
         </nav>
 
 	        <div class="hero">
-	        <div class="badge">COMPREHENSIVE MARKET</div>
+	        <div class="badge">START WITH THE FLAGSHIP CASES</div>
 	        <h1 id="heroTitle">Use cases for issuer-attested verification</h1>
 	        <p data-slogan-root style="margin: 10px auto 0; max-width: 640px;">
 	            Live Verify: the next logical step up from <span data-slogan-platform>the iPhone's</span> <span data-slogan-term>Live Text</span>.
@@ -713,23 +713,8 @@
 	        </p>
 	        <p class="hero-lede">
 	            Live Verify turns a printed claim into a trustable handshake: snap the document, OCR locally, hash it, and confirm the issuer domain still serves that hash.
-	            Think of it as a trust primitive for the physical world: readable text that can also be checked.
+	            Five flagship clusters below show where that matters most; the full landscape survey follows them.
 	        </p>
-        <div class="hero-stats">
-            <div class="stat">
-                <span class="stat-number" data-stat="categories" data-target="0">0</span>
-                <div class="stat-label">Industries</div>
-            </div>
-            <div class="stat">
-                <span class="stat-number" data-stat="useCases" data-target="0">0</span>
-                <div class="stat-label">Use Cases</div>
-            </div>
-            <div class="stat" style="opacity: 0.8; font-size: 0.9em; align-self: center;">with</div>
-            <div class="stat">
-                <span class="stat-number" data-stat="furtherDerivations" data-target="0">0</span>
-                <div class="stat-label">Further Derivations</div>
-            </div>
-        </div>
     </div>
 
     <div class="story-nav">
@@ -876,8 +861,24 @@
     </div>
 
         <div class="explore-heading" id="use-cases">
-        <h2>Explore use cases</h2>
-        <p>Search the catalog or browse categories to see how Live Verify meets fraud, compliance, and operational needs across industries.</p>
+        <h2>Explore the full landscape</h2>
+        <p>Beyond the flagship cases sits a breadth survey &mdash; a map of everywhere the primitive applies, documented to one template.
+        Search it or browse by category.</p>
+        <div class="hero-stats" style="margin-bottom: 8px;">
+            <div class="stat">
+                <span class="stat-number" data-stat="categories" data-target="0">0</span>
+                <div class="stat-label">Industries</div>
+            </div>
+            <div class="stat">
+                <span class="stat-number" data-stat="useCases" data-target="0">0</span>
+                <div class="stat-label">Use Cases</div>
+            </div>
+            <div class="stat" style="opacity: 0.8; font-size: 0.9em; align-self: center;">with</div>
+            <div class="stat">
+                <span class="stat-number" data-stat="furtherDerivations" data-target="0">0</span>
+                <div class="stat-label">Further Derivations</div>
+            </div>
+        </div>
     </div>
 
         <div class="search-container">
@@ -1153,7 +1154,7 @@
 
             // Update hero title and page title
             document.getElementById('heroTitle').textContent = 'Use Cases';
-            document.title = `${indexData.totalUseCases} Use Cases - OCR Verification`;
+            document.title = 'Use Cases - Live Verify';
 
             // Update stat counters
             document.querySelector('[data-stat="useCases"]').dataset.target = indexData.totalUseCases;
